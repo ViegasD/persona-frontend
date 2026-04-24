@@ -1,0 +1,3802 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recado Animado | Vídeos Mágicos Personalizados para Crianças</title>
+    <meta name="description"
+        content="Vídeos personalizados com os personagens favoritos do seu filho! Papai Noel, CR7, Patrulha Canina e mais falam diretamente com a sua criança. A partir de R$ 19,90.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800;900&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Recado Animado",
+        "url": "https://recadoanimado.com.br",
+        "description": "Vídeos mágicos personalizados onde personagens favoritos chamam seu filho pelo nome. A partir de R$19,90."
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Recado Animado",
+        "url": "https://recadoanimado.com.br",
+        "description": "Criamos vídeos personalizados onde personagens famosos falam diretamente com crianças pelo nome. Ideal para aniversários, motivação escolar e momentos especiais.",
+        "areaServed": { "@type": "Country", "name": "Brasil" },
+        "serviceType": ["Vídeos Personalizados Infantis", "Presentes de Aniversário", "Entretenimento Infantil"]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": "Vídeo Personalizado Recado Animado",
+        "description": "Vídeo mágico onde personagens como Papai Noel, CR7, Elsa, Chase falam diretamente com seu filho pelo nome.",
+        "brand": { "@type": "Brand", "name": "Recado Animado" },
+        "offers": [
+            { "@type": "Offer", "name": "Plano Teste", "price": "19.90", "priceCurrency": "BRL", "availability": "https://schema.org/InStock", "description": "1 vídeo personalizado com personagem aleatório" },
+            { "@type": "Offer", "name": "Plano Surpresa", "price": "29.90", "priceCurrency": "BRL", "availability": "https://schema.org/InStock", "description": "3 vídeos personalizados com todos os personagens" },
+            { "@type": "Offer", "name": "Plano Completo", "price": "49.90", "priceCurrency": "BRL", "availability": "https://schema.org/InStock", "description": "5 vídeos personalizados com todos os personagens" }
+        ],
+        "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.97", "reviewCount": "700" }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            { "@type": "Question", "name": "O vídeo é realmente personalizado?", "acceptedAnswer": { "@type": "Answer", "text": "Sim! O vídeo é totalmente personalizado: o personagem chama a criança pelo nome, menciona a idade, e fala sobre o contexto que você indicou." } },
+            { "@type": "Question", "name": "Quanto tempo leva pra receber?", "acceptedAnswer": { "@type": "Answer", "text": "Nosso prazo padrão é de até 24 horas. Na maioria dos casos entregamos em poucas horas!" } },
+            { "@type": "Question", "name": "Como recebo o vídeo?", "acceptedAnswer": { "@type": "Answer", "text": "O vídeo é entregue diretamente no seu WhatsApp, em alta qualidade e sem marca d'água." } },
+            { "@type": "Question", "name": "Posso escolher o que o personagem vai falar?", "acceptedAnswer": { "@type": "Answer", "text": "Sim! Você pode enviar exatamente o texto que quer, ou dar liberdade pra nossa equipe criar uma mensagem mágica." } },
+            { "@type": "Question", "name": "É seguro pra crianças?", "acceptedAnswer": { "@type": "Answer", "text": "Totalmente! Todo conteúdo é pensado pra crianças, com linguagem adequada e mensagens positivas." } }
+        ]
+    }
+    </script>
+    <style>
+        /* ===== DESIGN TOKENS ===== */
+        :root {
+            --bg: #0a0e1a;
+            --bg2: #0f1424;
+            --text: #f5f5f7;
+            --text2: #9ca3b4;
+            --text3: #6b7280;
+            --green: #30d158;
+            --red: #ff453a;
+            --border: #1e2538;
+            --radius: 16px;
+            --accent: #4A9EF5;
+            --accent-dim: rgba(74, 158, 245, 0.12);
+            --accent2: #FF9940;
+            --purple: #4A9EF5;
+            --purple-dim: rgba(74, 158, 245, 0.12);
+            --gold: #ffd60a;
+            --transition: 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 60px;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .section {
+            padding: 120px 0;
+        }
+
+        @media (max-width: 768px) {
+            .section {
+                padding: 56px 0;
+            }
+        }
+
+        /* ===== TYPOGRAPHY ===== */
+        .headline-super {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2.8rem, 8vw, 5.2rem);
+            font-weight: 800;
+            line-height: 1.02;
+            letter-spacing: -0.04em;
+            text-align: center;
+        }
+
+        .headline-big {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2rem, 5vw, 3.4rem);
+            font-weight: 700;
+            line-height: 1.08;
+            letter-spacing: -0.03em;
+            text-align: center;
+        }
+
+        .headline-medium {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(1.4rem, 3.5vw, 2rem);
+            font-weight: 600;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        .body-large {
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
+            color: var(--text2);
+            line-height: 1.6;
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-muted {
+            color: var(--text2);
+            font-weight: 300;
+        }
+
+        .section-tag {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--purple);
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .text-green {
+            color: var(--green);
+        }
+
+        .text-purple {
+            color: var(--purple);
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 32px;
+            border-radius: 980px;
+            font-weight: 600;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-family: 'Outfit', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-white {
+            background: #fff;
+            color: #000;
+        }
+
+        .btn-white:hover {
+            background: #e8e8ed;
+            transform: scale(1.02);
+        }
+
+        .btn-whatsapp {
+            background: #25D366 !important;
+            color: #fff !important;
+            font-weight: 700;
+            box-shadow: 0 0 20px rgba(37, 211, 102, 0.2), 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-whatsapp:hover {
+            background: #1fba59 !important;
+            transform: scale(1.03);
+            box-shadow: 0 0 30px rgba(37, 211, 102, 0.35), 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-purple {
+            background: var(--purple);
+            color: #fff;
+            font-weight: 700;
+            box-shadow: 0 0 20px rgba(74, 158, 245, 0.2), 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-purple:hover {
+            background: #3b8de0;
+            transform: scale(1.03);
+            box-shadow: 0 0 30px rgba(74, 158, 245, 0.35), 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid #424245;
+        }
+
+        .btn-ghost:hover {
+            border-color: #86868b;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .btn-large {
+            padding: 18px 40px;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .btn {
+                padding: 14px 28px;
+                font-size: 0.95rem;
+            }
+
+            .btn-large {
+                padding: 16px 32px;
+                font-size: 1rem;
+            }
+        }
+
+        /* ===== ANIMATIONS ===== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delay-1 {
+            transition-delay: 0.12s;
+        }
+
+        .reveal-delay-2 {
+            transition-delay: 0.24s;
+        }
+
+        .reveal-delay-3 {
+            transition-delay: 0.36s;
+        }
+
+        .reveal-delay-4 {
+            transition-delay: 0.48s;
+        }
+
+        @keyframes float-sparkle {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 0.6;
+            }
+
+            50% {
+                transform: translateY(-12px) scale(1.15);
+                opacity: 1;
+            }
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: scale(0.8);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+        }
+
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(74, 158, 245, 0.15);
+            }
+
+            50% {
+                box-shadow: 0 0 50px rgba(74, 158, 245, 0.35);
+            }
+        }
+
+        @keyframes float-char {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 12px 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .header .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo img {
+            height: 56px;
+            width: auto;
+        }
+
+        .logo-text {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            display: flex;
+            gap: 0;
+        }
+
+        .logo-text span {
+            display: inline-block;
+            animation: logo-bounce 2s ease-in-out infinite;
+        }
+
+        .logo-text span:nth-child(1)  { color: #FF6B6B; animation-delay: 0s; }
+        .logo-text span:nth-child(2)  { color: #FFA94D; animation-delay: 0.05s; }
+        .logo-text span:nth-child(3)  { color: #FFD43B; animation-delay: 0.1s; }
+        .logo-text span:nth-child(4)  { color: #69DB7C; animation-delay: 0.15s; }
+        .logo-text span:nth-child(5)  { color: #4DABF7; animation-delay: 0.2s; }
+        .logo-text span:nth-child(6)  { color: #9775FA; animation-delay: 0.25s; }
+        .logo-text span:nth-child(7)  { color: #FF6B6B; animation-delay: 0.3s; }
+        .logo-text span:nth-child(8)  { color: #FF6B6B; animation-delay: 0.35s; }
+        .logo-text span:nth-child(9)  { color: #FFA94D; animation-delay: 0.4s; }
+        .logo-text span:nth-child(10) { color: #FFD43B; animation-delay: 0.45s; }
+        .logo-text span:nth-child(11) { color: #69DB7C; animation-delay: 0.5s; }
+        .logo-text span:nth-child(12) { color: #4DABF7; animation-delay: 0.55s; }
+        .logo-text span:nth-child(13) { color: #9775FA; animation-delay: 0.6s; }
+        .logo-text span:nth-child(14) { color: #E599F7; animation-delay: 0.65s; }
+
+        @keyframes logo-bounce {
+            0%, 100% { transform: translateY(0); }
+            15% { transform: translateY(-3px); }
+            30% { transform: translateY(0); }
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .nav a {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: var(--text2);
+            transition: color var(--transition);
+        }
+
+        .nav a:hover {
+            color: #fff;
+        }
+
+        .nav .btn {
+            padding: 8px 20px;
+            font-size: 0.85rem;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            padding: 8px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                display: none;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .logo img {
+                height: 40px;
+            }
+
+            .logo-text {
+                font-size: 1rem;
+            }
+        }
+
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(0, 0, 0, 0.97);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 36px;
+        }
+
+        .mobile-nav.open {
+            display: flex;
+        }
+
+        .mobile-nav a {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .mobile-nav-close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 100px 20px 60px;
+            position: relative;
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(74, 158, 245, 0.15) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 20% 80%, rgba(255, 153, 64, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 80% 60%, rgba(74, 158, 245, 0.05) 0%, transparent 50%),
+                var(--bg);
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: linear-gradient(to top, var(--bg), transparent);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .sparkle {
+            position: absolute;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .sparkle-star {
+            fill: var(--accent);
+            opacity: 0.5;
+            animation: float-sparkle 4s ease-in-out infinite;
+        }
+
+        .sparkle-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            opacity: 0.4;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            border-radius: 980px;
+            background: var(--accent-dim);
+            border: 1px solid rgba(74, 158, 245, 0.25);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 24px;
+        }
+
+        .hero-badge svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .hero .headline-super {
+            margin-bottom: 20px;
+        }
+
+        .hero .body-large {
+            margin-bottom: 12px;
+        }
+
+        .hero-price {
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            font-weight: 700;
+            margin-bottom: 36px;
+            color: #fff;
+            text-align: center;
+        }
+
+        .hero-price .from {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text2);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .hero-price .amount {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2.2rem, 6vw, 3.5rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        /* ===== HERO LAYOUT ===== */
+        .hero-layout {
+            display: flex;
+            align-items: center;
+            gap: 48px;
+            max-width: 1100px;
+            width: 100%;
+            position: relative;
+            z-index: 3;
+            margin-bottom: 40px;
+        }
+
+        .hero-content {
+            flex: 1;
+        }
+
+        .hero-content .headline-super {
+            text-align: left;
+        }
+
+        .hero-content .body-large {
+            text-align: left;
+            margin: 0 0 12px;
+        }
+
+        .hero-content .hero-buttons {
+            justify-content: flex-start;
+        }
+
+        .hero-video-wrap {
+            flex: 0 0 280px;
+        }
+
+        .hero-video-placeholder {
+            width: 100%;
+            aspect-ratio: 9/16;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 2px solid rgba(74, 158, 245, 0.3);
+            background: linear-gradient(160deg, rgba(74, 158, 245, 0.08) 0%, rgba(0, 0, 0, 0.3) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            position: relative;
+        }
+
+        .hero-video-placeholder video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 22px;
+        }
+
+        .hero-video-sound-btn {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: all 0.3s;
+        }
+
+        .hero-video-sound-btn:hover {
+            background: rgba(74, 158, 245, 0.5);
+            transform: scale(1.1);
+        }
+
+        .hero-video-sound-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .hero-layout {
+                flex-direction: column;
+                gap: 32px;
+            }
+
+            .hero-video-wrap {
+                flex: none;
+                width: 220px;
+            }
+
+            .hero-content .headline-super {
+                text-align: center;
+            }
+
+            .hero-content .body-large {
+                text-align: center;
+                margin: 0 auto 12px;
+            }
+
+            .hero-content .hero-buttons {
+                justify-content: center;
+            }
+        }
+
+        /* ===== CHARACTER SHOWCASE (Hero) ===== */
+        .hero-chars {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 600px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-char {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            border: 2px solid rgba(74, 158, 245, 0.3);
+            background: rgba(74, 158, 245, 0.08);
+            transition: all var(--transition);
+            position: relative;
+            animation: float-char 3s ease-in-out infinite;
+        }
+
+        .hero-char:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        .hero-char:nth-child(3) {
+            animation-delay: 0.8s;
+        }
+
+        .hero-char:nth-child(4) {
+            animation-delay: 1.2s;
+        }
+
+        .hero-char:nth-child(5) {
+            animation-delay: 1.6s;
+        }
+
+        .hero-char:nth-child(6) {
+            animation-delay: 2.0s;
+        }
+
+        .hero-char:nth-child(7) {
+            animation-delay: 2.4s;
+        }
+
+        .hero-char:nth-child(8) {
+            animation-delay: 2.8s;
+        }
+
+        .hero-char:nth-child(9) {
+            animation-delay: 3.2s;
+        }
+
+        .hero-char:nth-child(10) {
+            animation-delay: 3.6s;
+        }
+
+        .hero-char-crown {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.1rem;
+            z-index: 2;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+        }
+
+        .hero-char:hover {
+            transform: scale(1.2) translateY(-4px);
+            border-color: var(--accent);
+            box-shadow: 0 0 24px rgba(74, 158, 245, 0.35);
+            animation-play-state: paused;
+        }
+
+        .hero-char-label {
+            position: absolute;
+            bottom: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.55rem;
+            font-weight: 600;
+            color: var(--text2);
+            white-space: nowrap;
+        }
+
+        @media (max-width: 480px) {
+            .hero-chars {
+                gap: 10px;
+            }
+
+            .hero-char {
+                width: 52px;
+                height: 52px;
+                font-size: 1.4rem;
+            }
+
+            .hero-char-label {
+                font-size: 0.5rem;
+                bottom: -16px;
+            }
+
+            .hero {
+                padding: 80px 20px 40px;
+            }
+        }
+
+        /* ===== SOCIAL PROOF STRIP ===== */
+        .proof-strip {
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .proof-strip .container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .proof-item {
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .proof-number {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -0.03em;
+        }
+
+        .proof-label {
+            font-size: 0.8rem;
+            color: var(--text3);
+            margin-top: 2px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+
+        /* ===== HOW IT WORKS ===== */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+            margin-top: 48px;
+        }
+
+        .step {
+            text-align: center;
+            padding: 36px 24px;
+            border-radius: 20px;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+        }
+
+        .step-num {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--purple);
+            margin-bottom: 16px;
+        }
+
+        .step h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .step p {
+            font-size: 0.9rem;
+            color: var(--text2);
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .steps-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+        }
+
+        /* ===== VIDEO DEMO ===== */
+        .video-demo {
+            max-width: 340px;
+            margin: 0 auto;
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            background: var(--bg2);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .video-demo video {
+            width: 100%;
+            aspect-ratio: 9/16;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* ===== CHARACTERS GRID ===== */
+        .chars-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 48px;
+        }
+
+        .chars-cta {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .char-card {
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: var(--bg2);
+            transition: all var(--transition);
+            cursor: pointer;
+            position: relative;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .char-card:hover {
+            border-color: rgba(74, 158, 245, 0.4);
+            transform: translateY(-6px);
+            box-shadow: 0 12px 40px rgba(74, 158, 245, 0.15);
+        }
+
+        .char-card-img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            object-position: center top;
+            display: block;
+        }
+
+        .char-card-overflow {
+            overflow: hidden;
+            position: relative;
+        }
+
+        .char-card-overflow .char-card-img {
+            transition: transform 0.6s ease;
+        }
+
+        .char-card:hover .char-card-overflow .char-card-img {
+            transform: scale(1.08);
+        }
+
+        .char-card-body {
+            padding: 16px;
+        }
+
+        .char-card .char-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .char-card .char-desc {
+            font-size: 0.8rem;
+            color: var(--text3);
+            margin-bottom: 6px;
+        }
+
+        .char-card .char-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.8rem;
+            color: var(--text2);
+            margin-bottom: 8px;
+        }
+
+        .char-card .char-rating-star {
+            color: var(--gold);
+        }
+
+        .char-card .char-rating-count {
+            color: var(--text3);
+            font-size: 0.72rem;
+        }
+
+        .char-card-price-text {
+            font-size: 0.8rem;
+            color: var(--text2);
+        }
+
+        .char-card-price-text strong {
+            color: var(--green);
+            font-weight: 700;
+        }
+
+        .char-card-action {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .char-card-action svg {
+            width: 16px;
+            height: 16px;
+            color: #fff;
+        }
+
+        .char-card-emoji {
+            width: 100%;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            background: linear-gradient(160deg, rgba(74, 158, 245, 0.08) 0%, rgba(0, 0, 0, 0.3) 100%);
+        }
+
+        @media (max-width: 768px) {
+            .chars-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .char-card-img {
+                aspect-ratio: 5/4;
+            }
+
+            .char-card-body {
+                padding: 8px 10px;
+            }
+
+            .char-card .char-name {
+                font-size: 0.85rem;
+            }
+
+            .char-card .char-desc,
+            .char-card .char-rating,
+            .char-card-price-text {
+                font-size: 0.72rem;
+            }
+        }
+
+        /* ===== OCCASIONS ===== */
+        .usecases-grid {
+            display: flex;
+            gap: 16px;
+            margin-top: 32px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            padding-bottom: 8px;
+        }
+        .usecases-grid::-webkit-scrollbar { display: none; }
+        .usecase-card {
+            padding: 24px 18px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            text-align: center;
+            min-width: 240px;
+            flex-shrink: 0;
+            scroll-snap-align: start;
+        }
+        .usecase-icon { font-size: 2rem; margin-bottom: 10px; }
+        .usecase-card h3 { font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
+        .usecase-card p { font-size: 0.8rem; color: var(--text2); line-height: 1.4; }
+
+        /* ===== PRICING ===== */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 32px;
+            align-items: center;
+        }
+        .price-card {
+            border-radius: 20px;
+            padding: 28px 20px;
+            text-align: center;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            position: relative;
+        }
+        .price-card.popular {
+            border-color: var(--purple);
+            box-shadow: 0 0 40px rgba(74, 158, 245, 0.15);
+            padding: 36px 24px;
+            transform: scale(1.04);
+        }
+        .price-card.popular::before {
+            content: 'Mais escolhido';
+            position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+            padding: 4px 16px; border-radius: 980px; background: var(--purple);
+            color: #fff; font-size: 0.72rem; font-weight: 700; white-space: nowrap;
+        }
+        .price-card-name { font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+        .price-card-desc { font-size: 0.8rem; color: var(--text2); margin-bottom: 12px; }
+        .price-card-amount { font-family: 'Outfit', sans-serif; font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 800; letter-spacing: -0.03em; margin-bottom: 4px; }
+        .price-card-amount .currency { font-size: 0.9rem; vertical-align: super; }
+        .price-card-per { font-size: 0.75rem; color: var(--text3); margin-bottom: 16px; }
+        .price-card-features { text-align: left; display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+        .price-feature { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--text2); }
+        .price-feature svg { width: 14px; height: 14px; color: var(--purple); flex-shrink: 0; }
+        .price-card-savings { display: inline-block; padding: 3px 12px; border-radius: 980px; background: rgba(48, 209, 88, 0.1); color: var(--green); font-size: 0.72rem; font-weight: 700; margin-bottom: 16px; }
+        .price-card-promo-badge { display: inline-block; padding: 3px 12px; border-radius: 980px; background: rgba(255, 69, 58, 0.12); color: var(--red); font-size: 0.72rem; font-weight: 700; margin-bottom: 16px; animation: pulse-promo 2s ease-in-out infinite; }
+        @keyframes pulse-promo { 0%,100% { box-shadow: 0 0 0 rgba(255,69,58,0); } 50% { box-shadow: 0 0 12px rgba(255,69,58,0.2); } }
+        @media (max-width: 768px) {
+            .pricing-grid { grid-template-columns: 1fr; max-width: 380px; margin-left: auto; margin-right: auto; gap: 20px; }
+            .price-card.popular { transform: none; padding: 28px 20px; }
+            .price-card { padding: 24px 18px; }
+        }
+
+        /* ===== TRUST ===== */
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 48px;
+        }
+
+        .trust-card {
+            text-align: center;
+            padding: 28px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: var(--bg2);
+        }
+
+        .trust-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+
+        .trust-card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .trust-card p {
+            font-size: 0.82rem;
+            color: var(--text2);
+        }
+
+        @media (max-width: 768px) {
+            .trust-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+        }
+
+        /* ===== TESTIMONIALS ===== */
+        .testimonials-scroll {
+            display: flex;
+            gap: 16px;
+            margin-top: 32px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            padding-bottom: 8px;
+        }
+        .testimonials-scroll::-webkit-scrollbar { display: none; }
+
+        .testi-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            min-width: 280px;
+            max-width: 320px;
+            flex-shrink: 0;
+            scroll-snap-align: start;
+        }
+
+        .testi-stars {
+            color: var(--gold);
+            margin-bottom: 12px;
+            display: flex;
+            gap: 2px;
+        }
+
+        .testi-text {
+            font-size: 0.9rem;
+            color: var(--text2);
+            line-height: 1.6;
+            margin-bottom: 16px;
+            font-style: italic;
+        }
+
+        .testi-author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .testi-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--purple-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--purple);
+        }
+
+        .testi-name {
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+
+        .testi-role {
+            font-size: 0.72rem;
+            color: var(--text3);
+        }
+
+
+
+        /* ===== FAQ ===== */
+        .faq-list {
+            max-width: 700px;
+            margin: 48px auto 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .faq-item {
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            background: var(--bg2);
+        }
+
+        .faq-q {
+            width: 100%;
+            padding: 18px 20px;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: inherit;
+            transition: background 0.2s;
+        }
+
+        .faq-q:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .faq-icon {
+            width: 20px;
+            height: 20px;
+            color: var(--text3);
+            transition: transform 0.3s;
+            flex-shrink: 0;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-a {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .faq-a-inner {
+            padding: 0 20px 18px;
+            font-size: 0.9rem;
+            color: var(--text2);
+            line-height: 1.6;
+        }
+
+        /* ===== CTA FINAL ===== */
+        .cta-final {
+            background:
+                radial-gradient(ellipse 60% 50% at 50% 50%, rgba(74, 158, 245, 0.08) 0%, transparent 70%),
+                var(--bg);
+            text-align: center;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            padding: 48px 0 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+
+        .footer-brand p {
+            font-size: 0.82rem;
+            color: var(--text3);
+            margin-top: 12px;
+            line-height: 1.5;
+        }
+
+        .footer-col h4 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .footer-col a {
+            display: block;
+            font-size: 0.82rem;
+            color: var(--text3);
+            margin-bottom: 8px;
+            transition: color 0.2s;
+        }
+
+        .footer-col a:hover {
+            color: var(--text);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 12px;
+        }
+
+        .footer-social a {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text3);
+            transition: all 0.2s;
+        }
+
+        .footer-social a:hover {
+            border-color: var(--purple);
+            color: var(--purple);
+        }
+
+        .footer-social svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text3);
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        @media (max-width: 768px) {
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+
+            .footer-brand {
+                grid-column: 1 / -1;
+                text-align: center;
+            }
+
+            .footer-brand .logo {
+                justify-content: center;
+            }
+
+            .footer-col {
+                text-align: center;
+            }
+
+            .footer-social {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .footer-col {
+                text-align: center;
+            }
+
+            .footer-social {
+                justify-content: center;
+            }
+        }
+
+        /* ===== TOAST NOTIFICATION ===== */
+        .toast-notif {
+            position: fixed;
+            top: 80px;
+            left: 24px;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 9998;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            transform: translateX(-120%);
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-width: 340px;
+            backdrop-filter: blur(16px);
+        }
+        .toast-notif.show { transform: translateX(0); }
+        .toast-notif-icon {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: rgba(37, 211, 102, 0.15);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; flex-shrink: 0;
+        }
+        .toast-notif-text { font-size: 0.8rem; color: var(--text2); line-height: 1.4; }
+        .toast-notif-text strong { color: var(--text); }
+        .toast-notif-time { font-size: 0.65rem; color: var(--text3); margin-top: 2px; }
+
+        @media (max-width: 768px) {
+            .toast-notif { left: 12px; right: 12px; max-width: none; top: 120px; }
+        }
+
+        /* ===== PROMO TIMER ===== */
+        .promo-timer-bar {
+            background: linear-gradient(90deg, #ff453a, #ff6b35);
+            color: #fff;
+            text-align: center;
+            padding: 10px 16px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: 0.02em;
+            border-radius: 12px;
+            margin-bottom: 32px;
+            animation: pulse-promo 2s infinite;
+        }
+        .promo-timer-bar span { font-family: 'Outfit', monospace; font-size: 1.1rem; }
+
+        /* ===== PRICE OLD / STRIKETHROUGH ===== */
+        .price-old {
+            font-size: 1.1rem;
+            color: var(--text3);
+            text-decoration: line-through;
+            font-weight: 400;
+            margin-bottom: 4px;
+        }
+        .price-discount-badge {
+            display: inline-block;
+            background: #ff453a;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 3px 10px;
+            border-radius: 980px;
+            margin-left: 8px;
+            animation: pulse-promo 2s infinite;
+        }
+
+        /* ===== LIVE COUNTER ===== */
+        .live-dot {
+            display: inline-block;
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #ff453a;
+            margin-right: 6px;
+            animation: pulse-dot 1.5s infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.7); }
+        }
+        /* ===== FILTER BAR ===== */
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 28px;
+            margin-top: 16px;
+            position: sticky;
+            top: 72px;
+            z-index: 999;
+            background: var(--bg);
+            padding: 12px 16px;
+            transition: box-shadow 0.3s;
+        }
+        .filter-bar.stuck {
+            box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+        }
+        .filter-btn {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            color: var(--text2);
+            padding: 8px 16px;
+            border-radius: 980px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            white-space: nowrap;
+        }
+        .filter-btn:hover {
+            border-color: var(--accent);
+            color: var(--text);
+            background: rgba(74, 158, 245, 0.08);
+        }
+        .filter-btn.active {
+            background: linear-gradient(135deg, var(--accent), var(--purple));
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 4px 16px rgba(74, 158, 245, 0.3);
+        }
+        @media (max-width: 768px) {
+            .filter-bar {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                justify-content: flex-start;
+                padding: 10px 12px;
+                gap: 6px;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                top: 64px;
+            }
+            .filter-bar::-webkit-scrollbar { display: none; }
+            .filter-btn { font-size: 0.72rem; padding: 7px 14px; flex-shrink: 0; }
+        }
+
+        .char-popular-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: linear-gradient(135deg, #ff453a, #ff6b35);
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 980px;
+            z-index: 2;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            box-shadow: 0 2px 8px rgba(255,69,58,0.4);
+        }
+
+        /* ===== BENEFITS GRID ===== */
+        .benefits-section {
+            padding: 48px 0;
+            background: var(--bg);
+            position: relative;
+        }
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .benefit-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 20px 16px;
+            text-align: center;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .benefit-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 0%, rgba(74, 158, 245, 0.06) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .benefit-card:hover {
+            border-color: rgba(74, 158, 245, 0.25);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 36px rgba(74, 158, 245, 0.1);
+        }
+        .benefit-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .benefit-icon svg { width: 24px; height: 24px; }
+        .benefit-card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--text);
+        }
+        .benefit-card p {
+            font-size: 0.8rem;
+            color: var(--text2);
+            line-height: 1.5;
+        }
+        @media (max-width: 768px) {
+            .benefits-section { padding: 32px 0; }
+            .benefits-grid { grid-template-columns: 1fr; gap: 10px; }
+            .benefit-card { padding: 16px 14px; display: flex; align-items: center; gap: 14px; text-align: left; }
+            .benefit-icon { margin-bottom: 0; font-size: 1.6rem; flex-shrink: 0; }
+            .benefit-card h3 { font-size: 0.9rem; margin-bottom: 2px; }
+            .benefit-card p { font-size: 0.75rem; }
+        }
+
+        /* ===== SCROLLING NAMES TICKER ===== */
+        .ticker-section {
+            padding: 20px 0;
+            overflow: hidden;
+            background: rgba(74, 158, 245, 0.04);
+            border-top: 1px solid rgba(74, 158, 245, 0.08);
+            border-bottom: 1px solid rgba(74, 158, 245, 0.08);
+        }
+        .ticker-track {
+            display: flex;
+            width: max-content;
+            animation: ticker-scroll 40s linear infinite;
+        }
+        .ticker-track:hover { animation-play-state: paused; }
+        .ticker-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 20px;
+            font-size: 0.82rem;
+            color: var(--text2);
+            white-space: nowrap;
+            font-weight: 500;
+        }
+        .ticker-item .ticker-star { color: var(--gold); font-size: 0.75rem; }
+        .ticker-item .ticker-dot {
+            width: 4px; height: 4px; border-radius: 50%;
+            background: var(--text3); margin: 0 8px;
+        }
+        @keyframes ticker-scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* ===== FLOATING WHATSAPP BUTTON ===== */
+        .float-wa {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9990;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #25D366;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.35), 0 2px 8px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: wa-pulse 2.5s ease-in-out infinite;
+            text-decoration: none;
+        }
+        .float-wa:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 28px rgba(37, 211, 102, 0.5), 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .float-wa svg { width: 30px; height: 30px; fill: #fff; }
+        .float-wa-label {
+            position: absolute;
+            right: 72px;
+            background: #fff;
+            color: #1a1a1a;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            white-space: nowrap;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+            opacity: 0;
+            transform: translateX(8px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+        .float-wa-label::after {
+            content: '';
+            position: absolute;
+            right: -6px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 6px solid transparent;
+            border-left-color: #fff;
+        }
+        .float-wa:hover .float-wa-label {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        @keyframes wa-pulse {
+            0%, 100% { box-shadow: 0 4px 20px rgba(37, 211, 102, 0.35), 0 2px 8px rgba(0,0,0,0.3); }
+            50% { box-shadow: 0 4px 20px rgba(37, 211, 102, 0.55), 0 0 30px rgba(37, 211, 102, 0.2), 0 2px 8px rgba(0,0,0,0.3); }
+        }
+        @media (max-width: 768px) {
+            .float-wa { width: 54px; height: 54px; bottom: 18px; right: 18px; }
+            .float-wa svg { width: 26px; height: 26px; }
+            .float-wa-label { display: none; }
+        }
+
+        /* ===== STICKY CTA BAR ===== */
+        .sticky-cta {
+            position: fixed;
+            top: 56px;
+            left: 0;
+            right: 0;
+            z-index: 998;
+            background: linear-gradient(90deg, rgba(10, 14, 26, 0.97), rgba(15, 20, 36, 0.97));
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid rgba(74, 158, 245, 0.15);
+            padding: 10px 0;
+            transform: translateY(-200%);
+            transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        .sticky-cta.visible { transform: translateY(0); }
+        .sticky-cta-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+        .sticky-cta-text {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .sticky-cta-text span {
+            color: var(--green);
+            font-weight: 800;
+        }
+        .sticky-cta .btn {
+            padding: 8px 24px;
+            font-size: 0.82rem;
+        }
+        @media (max-width: 768px) {
+            .sticky-cta-text { font-size: 0.78rem; }
+            .sticky-cta .btn { padding: 7px 18px; font-size: 0.75rem; }
+        }
+
+        /* ===== WHATSAPP CHATBOT "BIA" ===== */
+        .wa-chat-widget {
+            position: fixed;
+            bottom: 96px;
+            left: 24px;
+            z-index: 9991;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+        }
+        .wa-chat-bubble {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #25D366;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(37, 211, 102, 0.35);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .wa-chat-bubble:hover { transform: scale(1.08); }
+        .wa-chat-bubble img {
+            width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
+        }
+        .wa-chat-bubble-ping {
+            position: absolute; top: -2px; right: -2px;
+            width: 18px; height: 18px; border-radius: 50%;
+            background: #ff453a; border: 2px solid var(--bg);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.6rem; font-weight: 800; color: #fff;
+            animation: pulse-dot 1.5s infinite;
+        }
+        .wa-chat-popup {
+            position: absolute;
+            bottom: 68px;
+            left: 0;
+            width: 360px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 12px 48px rgba(0,0,0,0.5);
+            transform: scale(0.8) translateY(10px);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-origin: bottom left;
+        }
+        .wa-chat-popup.open {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+            pointer-events: all;
+        }
+        /* WhatsApp Header */
+        .wa-header {
+            background: #075E54;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .wa-header-back {
+            background: none; border: none; color: #fff;
+            cursor: pointer; font-size: 1.2rem; padding: 4px;
+            display: flex; align-items: center;
+        }
+        .wa-header-avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            overflow: hidden; flex-shrink: 0;
+        }
+        .wa-header-avatar img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+        .wa-header-info { flex: 1; }
+        .wa-header-name {
+            font-weight: 600; font-size: 0.95rem; color: #fff;
+        }
+        .wa-header-status {
+            font-size: 0.72rem; color: rgba(255,255,255,0.75);
+        }
+        .wa-header-actions {
+            display: flex; gap: 16px;
+        }
+        .wa-header-actions button {
+            background: none; border: none; color: rgba(255,255,255,0.7);
+            cursor: pointer; font-size: 1.1rem;
+        }
+        /* WhatsApp Chat Body */
+        .wa-body {
+            background: #0B141A;
+            background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='p' width='40' height='40' patternUnits='userSpaceOnUse'%3E%3Cpath d='M20 5l2 3h-4z M5 20l3-2v4z M35 20l-3-2v4z M20 35l-2-3h4z' fill='%23ffffff' opacity='0.02'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='200' height='200' fill='url(%23p)'/%3E%3C/svg%3E");
+            min-height: 200px;
+            max-height: 320px;
+            overflow-y: auto;
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .wa-body::-webkit-scrollbar { width: 4px; }
+        .wa-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+        /* Message Bubbles */
+        .wa-msg {
+            max-width: 85%;
+            padding: 8px 12px 4px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            line-height: 1.4;
+            position: relative;
+            margin-bottom: 2px;
+            word-wrap: break-word;
+        }
+        .wa-msg-in {
+            background: #1F2C34;
+            color: #E9EDEF;
+            align-self: flex-start;
+            border-top-left-radius: 0;
+        }
+        .wa-msg-in::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -8px;
+            border-width: 0 8px 8px 0;
+            border-style: solid;
+            border-color: transparent #1F2C34 transparent transparent;
+        }
+        .wa-msg-out {
+            background: #005C4B;
+            color: #E9EDEF;
+            align-self: flex-end;
+            border-top-right-radius: 0;
+        }
+        .wa-msg-out::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -8px;
+            border-width: 0 0 8px 8px;
+            border-style: solid;
+            border-color: transparent transparent transparent #005C4B;
+        }
+        .wa-msg-time {
+            font-size: 0.65rem;
+            color: rgba(255,255,255,0.45);
+            text-align: right;
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 3px;
+        }
+        .wa-msg-time .wa-check {
+            font-size: 0.7rem;
+            color: #53BDEB;
+        }
+        /* Typing Indicator */
+        .wa-typing {
+            display: flex;
+            gap: 4px;
+            padding: 10px 14px;
+            background: #1F2C34;
+            border-radius: 8px;
+            border-top-left-radius: 0;
+            max-width: 70px;
+            align-self: flex-start;
+            position: relative;
+        }
+        .wa-typing::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -8px;
+            border-width: 0 8px 8px 0;
+            border-style: solid;
+            border-color: transparent #1F2C34 transparent transparent;
+        }
+        .wa-typing span {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: #8696A0;
+            animation: typing-bounce 1.4s ease-in-out infinite;
+        }
+        .wa-typing span:nth-child(2) { animation-delay: 0.2s; }
+        .wa-typing span:nth-child(3) { animation-delay: 0.4s; }
+        /* WhatsApp Input Bar */
+        .wa-input-bar {
+            background: #1F2C34;
+            padding: 8px 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .wa-input-emoji {
+            background: none; border: none; color: #8696A0;
+            font-size: 1.3rem; cursor: pointer; padding: 4px;
+            flex-shrink: 0;
+        }
+        .wa-input-field {
+            flex: 1;
+            background: #2A3942;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 16px;
+            font-size: 0.88rem;
+            color: #E9EDEF;
+            outline: none;
+            font-family: inherit;
+        }
+        .wa-input-field::placeholder { color: #8696A0; }
+        .wa-input-send {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: #00A884;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+        .wa-input-send:hover { background: #02906f; }
+        .wa-input-send svg { width: 20px; height: 20px; fill: #fff; }
+        @media (max-width: 768px) {
+            .wa-chat-widget { bottom: 84px; left: 14px; }
+            .wa-chat-popup { width: 310px; }
+            .wa-chat-bubble { width: 50px; height: 50px; }
+        }
+
+        /* ===== URGENCY TOP BANNER ===== */
+        .urgency-banner {
+            background: linear-gradient(90deg, #ff453a, #ff6b35, #ff453a);
+            background-size: 200% 100%;
+            animation: urgency-shift 3s linear infinite;
+            color: #fff;
+            text-align: center;
+            padding: 8px 16px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: 0.02em;
+            position: relative;
+            z-index: 100;
+        }
+        .urgency-banner span { font-family: 'Outfit', monospace; font-size: 0.95rem; }
+        @keyframes urgency-shift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+
+
+        /* ===== CHARACTER STOCK BADGE ===== */
+        .char-stock-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(255, 69, 58, 0.95);
+            backdrop-filter: blur(6px);
+            color: #fff;
+            font-size: 0.62rem;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            animation: pulse-promo 2s infinite;
+        }
+
+        /* ===== CHARACTER VIEWER TOOLTIP ===== */
+        .char-viewers {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            color: #fff;
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 8px;
+            white-space: nowrap;
+            z-index: 3;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+        .char-card:hover .char-viewers {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* ===== VIDEOS PROGRESS BAR ===== */
+        .videos-progress {
+            margin-top: 24px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .videos-progress-label {
+            font-size: 0.85rem;
+            color: var(--text2);
+            margin-bottom: 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+        .videos-progress-label strong {
+            color: var(--green);
+        }
+        .videos-progress-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .videos-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--green), #00d4aa);
+            border-radius: 8px;
+            width: 0%;
+            transition: width 2s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        /* ===== CONFETTI ===== */
+        .confetti-piece {
+            position: fixed;
+            width: 8px;
+            height: 16px;
+            z-index: 99999;
+            pointer-events: none;
+            animation: confetti-fall 2.5s ease-in forwards;
+        }
+        @keyframes confetti-fall {
+            0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg) scale(0.3); opacity: 0; }
+        }
+
+        /* ===== TRUST BADGES ===== */
+        .trust-section {
+            padding: 48px 0;
+            border-top: 1px solid var(--border);
+        }
+        .trust-grid {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        .trust-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text2);
+        }
+        .trust-badge-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(48, 209, 88, 0.08);
+            border: 1px solid rgba(48, 209, 88, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+        .trust-badge-text {
+            font-size: 0.82rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+        .trust-badge-text strong {
+            display: block;
+            color: var(--text);
+            font-size: 0.88rem;
+        }
+        @media (max-width: 768px) {
+            .trust-grid { gap: 20px; }
+            .trust-badge { flex: 1 1 calc(50% - 20px); min-width: 140px; }
+        }
+
+        /* ===== MOBILE BOTTOM CTA ===== */
+        .mobile-bottom-cta {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 997;
+            background: rgba(10, 14, 26, 0.97);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-top: 1px solid rgba(48, 209, 88, 0.2);
+            padding: 12px 16px;
+            padding-bottom: max(12px, env(safe-area-inset-bottom));
+        }
+        .mobile-bottom-cta-inner {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .mobile-bottom-cta-info {
+            flex: 1;
+        }
+        .mobile-bottom-cta-price {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--green);
+        }
+        .mobile-bottom-cta-sub {
+            font-size: 0.7rem;
+            color: var(--text3);
+        }
+        .mobile-bottom-cta .btn {
+            padding: 12px 24px;
+            font-size: 0.88rem;
+            white-space: nowrap;
+        }
+        @media (max-width: 768px) {
+            .mobile-bottom-cta { display: block; }
+            .wa-chat-widget { bottom: 140px; }
+            .float-wa { bottom: 80px; }
+        }
+
+        /* ===== PROOF COUNT ANIMATION ===== */
+        .proof-number.counted {
+            animation: proof-pop 0.5s ease;
+        }
+        @keyframes proof-pop {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            60% { transform: scale(1.15); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        /* ===== KID-FOCUSED: CHAR CARD BOUNCE ===== */
+        .char-card {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+        }
+        .char-card:hover {
+            transform: translateY(-8px) scale(1.04) !important;
+        }
+        .char-card:active {
+            transform: scale(0.96) !important;
+        }
+        @keyframes char-jiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-2deg); }
+            75% { transform: rotate(2deg); }
+        }
+
+        /* ===== KID-FOCUSED: BRIDGE BUTTON ===== */
+        .bridge-btn-wrap {
+            text-align: center;
+            padding: 32px 0 0;
+        }
+        .bridge-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 32px;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #ff9f0a, #ff453a);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 800;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 24px rgba(255, 159, 10, 0.35);
+            transition: all 0.3s ease;
+            animation: bridge-pulse 2s infinite;
+        }
+        .bridge-btn:hover {
+            transform: scale(1.06);
+            box-shadow: 0 6px 32px rgba(255, 159, 10, 0.5);
+        }
+        .bridge-btn svg { flex-shrink: 0; }
+        @keyframes bridge-pulse {
+            0%, 100% { box-shadow: 0 4px 24px rgba(255, 159, 10, 0.35); }
+            50% { box-shadow: 0 4px 40px rgba(255, 159, 10, 0.6); }
+        }
+
+        /* ===== KID-FOCUSED: HERO VIDEO PLAY OVERLAY ===== */
+        .hero-video-play-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.25);
+            cursor: pointer;
+            z-index: 5;
+            transition: opacity 0.3s;
+        }
+        .hero-video-play-overlay.hidden { opacity: 0; pointer-events: none; }
+        .hero-play-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.3);
+            animation: play-pulse 2s infinite;
+        }
+        .hero-play-circle svg {
+            width: 32px;
+            height: 32px;
+            fill: #0a0e1a;
+            margin-left: 4px;
+        }
+        @keyframes play-pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 4px 32px rgba(0,0,0,0.3); }
+            50% { transform: scale(1.08); box-shadow: 0 4px 48px rgba(255,255,255,0.25); }
+        }
+        @media (max-width: 768px) {
+            .hero-play-circle { width: 64px; height: 64px; }
+            .hero-play-circle svg { width: 24px; height: 24px; }
+            .bridge-btn { font-size: 0.92rem; padding: 14px 24px; }
+        }
+
+        /* ===== SPIN WHEEL / ROULETTE ===== */
+        .wheel-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100000;
+            background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            gap: 24px;
+        }
+        .wheel-overlay.hidden { display: none; }
+        .wheel-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #fff;
+            text-align: center;
+        }
+        .wheel-title span { color: var(--gold); }
+        .wheel-subtitle {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.6);
+            text-align: center;
+            margin-top: -12px;
+        }
+        .wheel-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+        }
+        @media (max-width: 480px) {
+            .wheel-container { width: 260px; height: 260px; }
+            .wheel-title { font-size: 1.3rem; }
+        }
+        .wheel-canvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 4px solid var(--gold);
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
+            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+        }
+        .wheel-pointer {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 14px solid transparent;
+            border-right: 14px solid transparent;
+            border-top: 24px solid var(--gold);
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+            z-index: 2;
+        }
+        .wheel-spin-btn {
+            background: linear-gradient(135deg, var(--gold), #ff9f0a);
+            color: #0a0e1a;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.1rem;
+            padding: 16px 48px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 24px rgba(255, 215, 0, 0.4);
+            transition: all 0.3s;
+        }
+        .wheel-spin-btn:hover { transform: scale(1.06); }
+        .wheel-spin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .wheel-result {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--green);
+            text-align: center;
+            display: none;
+        }
+        .wheel-result.visible { display: block; animation: proof-pop 0.5s ease; }
+        .wheel-result-sub {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.5);
+            margin-top: 4px;
+        }
+        .wheel-close-btn {
+            background: var(--green);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 14px 40px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            display: none;
+        }
+        .wheel-close-btn.visible { display: block; animation: proof-pop 0.5s ease; }
+
+        /* ===== HERO CHAR RANKING PROMINENCE ===== */
+        .hero-char:nth-child(1) {
+            border: 2.5px solid #FFD700;
+            box-shadow: 0 0 16px rgba(255, 215, 0, 0.4);
+        }
+        .hero-char:nth-child(2) {
+            border: 2.5px solid #C0C0C0;
+            box-shadow: 0 0 12px rgba(192, 192, 192, 0.3);
+        }
+        .hero-char:nth-child(3) {
+            border: 2.5px solid #CD7F32;
+            box-shadow: 0 0 12px rgba(205, 127, 50, 0.3);
+        }
+        .hero-char:nth-child(1), .hero-char:nth-child(2), .hero-char:nth-child(3) {
+            width: 72px;
+            height: 72px;
+        }
+        @media (max-width: 480px) {
+            .hero-char:nth-child(1), .hero-char:nth-child(2), .hero-char:nth-child(3) {
+                width: 58px;
+                height: 58px;
+            }
+        }
+
+        /* ===== PRICING PROMO STYLING ===== */
+        .price-original {
+            text-decoration: line-through;
+            color: var(--text3);
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+        .price-promo-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff453a, #ff6b35);
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 3px 10px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+    </style>
+
+
+<body>
+
+
+    <!-- SPIN WHEEL OVERLAY -->
+    <div class="wheel-overlay" id="wheelOverlay">
+        <div class="wheel-title" style="font-size:1.8rem;animation:char-jiggle 1s ease infinite;">Gire e ganhe um <span style="color:#ff9f0a;">presente!</span></div>
+        <div class="wheel-subtitle">Toque na roleta ou no botão para girar!</div>
+        <div class="wheel-container" style="cursor:pointer;" id="wheelClickArea">
+            <div class="wheel-pointer"></div>
+            <canvas class="wheel-canvas" id="wheelCanvas" width="300" height="300"></canvas>
+        </div>
+        <button class="wheel-spin-btn" id="wheelSpinBtn" style="font-size:1.2rem;padding:18px 56px;">Girar Roleta</button>
+        <div class="wheel-result" id="wheelResult">
+            CUPOM DESBLOQUEADO!
+            <div class="wheel-result-sub">Use o cupom abaixo no checkout</div>
+            <div style="margin-top:12px;background:var(--bg3);border:2px dashed var(--gold);border-radius:12px;padding:12px 24px;font-size:1.3rem;letter-spacing:0.1em;color:var(--gold);font-weight:800;" id="couponBox">MAGIA15</div>
+            <div style="display:flex;gap:10px;margin-top:14px;justify-content:center;flex-wrap:wrap;">
+                <button class="wheel-close-btn visible" id="wheelCopyBtn" style="background:var(--gold);color:#0a0e1a;padding:12px 28px;font-size:0.95rem;">Copiar cupom</button>
+                <button class="wheel-close-btn visible" id="wheelUseBtn" style="padding:12px 28px;font-size:0.95rem;">Usar cupom</button>
+            </div>
+            <div id="couponCopied" style="display:none;color:var(--green);font-size:0.85rem;margin-top:8px;font-weight:600;">Cupom copiado!</div>
+        </div>
+    </div>
+
+    <!-- URGENCY TOP BANNER -->
+    <div class="urgency-banner" id="urgencyBanner">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff" style="vertical-align:-2px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> ÚLTIMA CHANCE: Preço especial acaba em <span id="urgencyTimer">14:59</span> — Garanta agora!
+    </div>
+
+    <!-- HEADER -->
+    <header class="header" id="header">
+        <div class="container">
+            <a href="./" class="logo"><img src="img/Recado-animado-LOGO.webp" alt="Recado Animado"><span class="logo-text"><span>R</span><span>e</span><span>c</span><span>a</span><span>d</span><span>o</span><span>&nbsp;</span><span>A</span><span>n</span><span>i</span><span>m</span><span>a</span><span>d</span><span>o</span></span></a>
+            <nav class="nav">
+                <a href="#personagens">Personagens</a>
+                <a href="#como-funciona">Como funciona</a>
+                <a href="#ocasioes">Ocasiões</a>
+                <a href="#precos">Preços</a>
+                <a href="#faq">FAQ</a>
+                <a href="checkout.html" class="btn btn-whatsapp">Pedir agora</a>
+            </nav>
+            <button class="menu-toggle" onclick="toggleMobileNav()" aria-label="Menu">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <path d="M4 7h16M4 12h16M4 17h16" />
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <div class="mobile-nav" id="mobileNav">
+        <button class="mobile-nav-close" onclick="toggleMobileNav()" aria-label="Fechar">
+            <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M6 6l16 16M22 6L6 22" />
+            </svg>
+        </button>
+        <a href="#personagens" onclick="toggleMobileNav()">Personagens</a>
+        <a href="#como-funciona" onclick="toggleMobileNav()">Como funciona</a>
+        <a href="#ocasioes" onclick="toggleMobileNav()">Ocasiões</a>
+        <a href="#precos" onclick="toggleMobileNav()">Preços</a>
+        <a href="#faq" onclick="toggleMobileNav()">FAQ</a>
+        <a href="checkout.html" class="btn btn-whatsapp btn-large" onclick="toggleMobileNav()">Pedir agora</a>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+        <!-- Sparkles -->
+        <div class="sparkle" style="top:15%;left:8%;"><svg class="sparkle-star" width="20" height="20"
+                viewBox="0 0 24 24">
+                <path d="M12 2l2.4 7.2H22l-6 4.8 2.4 7.2L12 16.4l-6.4 4.8L8 14 2 9.2h7.6z" />
+            </svg></div>
+        <div class="sparkle" style="top:25%;right:12%;">
+            <div class="sparkle-dot"></div>
+        </div>
+        <div class="sparkle" style="bottom:30%;left:15%;"><svg class="sparkle-star" width="14" height="14"
+                viewBox="0 0 24 24" style="animation-delay:0.6s;">
+                <path d="M12 2l2.4 7.2H22l-6 4.8 2.4 7.2L12 16.4l-6.4 4.8L8 14 2 9.2h7.6z" />
+            </svg></div>
+        <div class="sparkle" style="top:40%;right:6%;">
+            <div class="sparkle-dot" style="animation-delay:2s;"></div>
+        </div>
+        <div class="sparkle" style="bottom:20%;right:20%;"><svg class="sparkle-star" width="12" height="12"
+                viewBox="0 0 24 24" style="animation-delay:0.8s;">
+                <path d="M12 2l2.4 7.2H22l-6 4.8 2.4 7.2L12 16.4l-6.4 4.8L8 14 2 9.2h7.6z" />
+            </svg></div>
+        <div class="sparkle" style="top:10%;left:30%;">
+            <div class="sparkle-dot" style="animation-delay:1.5s;background:var(--gold);"></div>
+        </div>
+        <div class="sparkle" style="bottom:40%;left:5%;">
+            <div class="sparkle-dot" style="animation-delay:2.5s;"></div>
+        </div>
+        <div class="sparkle" style="top:60%;right:10%;"><svg class="sparkle-star" width="16" height="16"
+                viewBox="0 0 24 24" style="animation-delay:0.3s;">
+                <path d="M12 2l2.4 7.2H22l-6 4.8 2.4 7.2L12 16.4l-6.4 4.8L8 14 2 9.2h7.6z" />
+            </svg></div>
+
+        <div class="hero-layout">
+            <div class="hero-content">
+                <div class="hero-badge reveal">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2l2.4 7.2H22l-6 4.8 2.4 7.2L12 16.4l-6.4 4.8L8 14 2 9.2h7.6z" />
+                    </svg>
+                    Vídeos mágicos personalizados
+                </div>
+
+                <h1 class="headline-super reveal reveal-delay-1">
+                    O personagem favorito<br>do seu filho<br>
+                    <span class="text-muted">fala diretamente com ele.</span>
+                </h1>
+
+                <p class="body-large reveal reveal-delay-2">Vídeos personalizados onde o Papai Noel, o CR7, a Patrulha
+                    Canina e outros personagens chamam o seu filho pelo nome. Ideal pra aniversários, surpresas ou
+                    simplesmente pra ver ele sorrir.</p>
+
+                <div class="hero-price reveal reveal-delay-2">
+                    <span class="from">A partir de</span>
+                    <span class="amount">R$ 19,90</span>
+                    <span style="font-size:0.9rem; color:var(--text2); font-weight:500;"> /vídeo</span>
+                </div>
+
+                <div class="hero-buttons reveal reveal-delay-3">
+                    <a href="checkout.html" class="btn btn-whatsapp btn-large">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+                        Criar vídeo mágico
+                    </a>
+                    <a href="#personagens" class="btn btn-ghost">Ver personagens</a>
+                </div>
+            </div>
+
+            <div class="hero-video-wrap reveal reveal-delay-3">
+                <div class="hero-video-placeholder">
+                    <video id="heroVideo" autoplay muted loop playsinline>
+                        <source src="img/video-inicio.mp4" type="video/mp4">
+                    </video>
+                    <!-- KID-FOCUSED: Pulsing play button overlay -->
+                    <div class="hero-video-play-overlay" id="heroPlayOverlay">
+                        <div class="hero-play-circle">
+                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                    </div>
+                    <button class="hero-video-sound-btn" id="heroSoundBtn" aria-label="Ativar som">
+                        <svg id="soundOffIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                            <line x1="23" y1="9" x2="17" y2="15" />
+                            <line x1="17" y1="9" x2="23" y2="15" />
+                        </svg>
+                        <svg id="soundOnIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                            <path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-chars reveal reveal-delay-4">
+            <div class="hero-char" style="background-image:url('img/chase-paw-patrol.webp');background-size:cover;background-position:center;"><span class="hero-char-crown"><svg width="14" height="14" viewBox="0 0 24 24" fill="#FFD700"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5z"/></svg></span><span class="hero-char-label">Chase</span></div>
+            <div class="hero-char" style="background-image:url('img/papai-natal.webp');background-size:cover;background-position:center;"><span class="hero-char-crown"><svg width="14" height="14" viewBox="0 0 24 24" fill="#C0C0C0"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5z"/></svg></span><span class="hero-char-label">Papai Noel</span></div>
+            <div class="hero-char" style="background-image:url('img/galinha-pintadinha.webp');background-size:cover;background-position:center;"><span class="hero-char-crown"><svg width="14" height="14" viewBox="0 0 24 24" fill="#CD7F32"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5z"/></svg></span><span class="hero-char-label">G. Pintadinha</span></div>
+            <div class="hero-char" style="background-image:url('img/cr7.webp');background-size:cover;background-position:center;"><span class="hero-char-label">CR7</span></div>
+            <div class="hero-char" style="background-image:url('img/elsa-frozen.webp');background-size:cover;background-position:center;"><span class="hero-char-label">Elsa</span></div>
+            <div class="hero-char" style="background-image:url('img/homem-aranha.webp');background-size:cover;background-position:center;"><span class="hero-char-label">H. Aranha</span></div>
+            <div class="hero-char" style="background-image:url('img/mira-kpop.png');background-size:cover;background-position:center;"><span class="hero-char-label">Mira</span></div>
+            <div class="hero-char" style="background-image:url('img/bluey.webp');background-size:cover;background-position:center;"><span class="hero-char-label">Bluey</span></div>
+            <div class="hero-char" style="background-image:url('img/peppapig.webp');background-size:cover;background-position:center;"><span class="hero-char-label">Peppa</span></div>
+            <div class="hero-char" style="background-image:url('img/zoey-kpop.jpg');background-size:cover;background-position:center;"><span class="hero-char-label">Zoey</span></div>
+        </div>
+    </section>
+
+    <!-- BENEFITS GRID -->
+    <section class="benefits-section">
+        <div class="container">
+            <div class="benefits-grid">
+                <div class="benefit-card reveal">
+                    <span class="benefit-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
+                    <h3>Magia Instantânea</h3>
+                    <p>Vídeos prontos em até 24h. Na maioria dos casos, em poucas horas! Sem espera, sem complicação.</p>
+                </div>
+                <div class="benefit-card reveal reveal-delay-1">
+                    <span class="benefit-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></span>
+                    <h3>Chama pelo Nome</h3>
+                    <p>O personagem fala diretamente com seu filho, usando o nome dele. É personalização de verdade.</p>
+                </div>
+                <div class="benefit-card reveal reveal-delay-2">
+                    <span class="benefit-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9z"/><path d="M11 3l1 6h6"/><path d="M2 9h20"/><path d="M13 3l-1 6H6"/></svg></span>
+                    <h3>Memória Eterna</h3>
+                    <p>Um presente que fica pra sempre. Seu filho vai reassistir dezenas de vezes — e sorrir todas elas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SOCIAL PROOF -->
+    <section class="proof-strip">
+        <div class="container">
+            <div class="proof-item">
+                <div class="proof-number" data-count="700">0+</div>
+                <div class="proof-label">Famílias felizes</div>
+            </div>
+            <div class="proof-item">
+                <div class="proof-number">99%</div>
+                <div class="proof-label">Crianças encantadas</div>
+            </div>
+            <div class="proof-item">
+                <div class="proof-number">24h</div>
+                <div class="proof-label">Entrega</div>
+            </div>
+            <div class="proof-item">
+                <div class="proof-number">52+</div>
+                <div class="proof-label">Personagens</div>
+            </div>
+            <!-- VIDEOS PROGRESS BAR -->
+            <div class="videos-progress">
+                <div class="videos-progress-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M10 8l6 4-6 4V8z"/></svg> <strong id="videosCount">47</strong> vídeos criados hoje</div>
+                <div class="videos-progress-bar"><div class="videos-progress-fill" id="videosFill"></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SCROLLING NAMES TICKER -->
+    <section class="ticker-section" aria-label="Compras recentes">
+        <div class="ticker-track" id="tickerTrack"></div>
+    </section>
+
+    <!-- COMO FUNCIONA -->
+    <section class="section" id="como-funciona">
+        <div class="container">
+            <p class="section-tag reveal">Simples e mágico</p>
+            <h2 class="headline-big reveal">Como funciona?</h2>
+            <div class="steps-grid">
+                <div class="step reveal">
+                    <div class="step-num">1</div>
+                    <h3>Escolha o personagem</h3>
+                    <p>Papai Noel, CR7, Patrulha Canina, Bluey, princesas, Galinha Pintadinha e muito mais.</p>
+                </div>
+                <div class="step reveal reveal-delay-1">
+                    <div class="step-num">2</div>
+                    <h3>Personalize a mensagem</h3>
+                    <p>Nos diga o nome da criança, a idade e o que quer que o personagem fale.</p>
+                </div>
+                <div class="step reveal reveal-delay-2">
+                    <div class="step-num">3</div>
+                    <h3>Receba o vídeo</h3>
+                    <p>Em até 24h você recebe o vídeo mágico no WhatsApp, pronto pra surpreender.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DEMO VISUAL -->
+    <section class="section" style="background: var(--bg2);">
+        <div class="container">
+            <p class="section-tag reveal">Veja um exemplo</p>
+            <h2 class="headline-big reveal" style="margin-bottom:48px;">É assim que a magia acontece.</h2>
+            <div class="video-demo reveal">
+                <video controls playsinline preload="auto">
+                    <source src="img/video-exemplo.mp4" type="video/mp4">
+                    Seu navegador não suporta vídeo.
+                </video>
+            </div>
+            <p class="body-large reveal" style="margin-top:24px;">Cada vídeo tem até 1 minuto, com o nome da criança,
+                mensagem personalizada e entregue pelo WhatsApp.</p>
+        </div>
+    </section>
+
+    <!-- PERSONAGENS -->
+    <section class="section" id="personagens">
+        <div class="container">
+            <p class="section-tag reveal">+52 personagens disponíveis</p>
+            <h2 class="headline-big reveal" style="margin-bottom:16px;">Escolha o favorito do seu filho.</h2>
+            <p class="body-large reveal">De personagens clássicos a ídolos do esporte, temos o personagem certo pra
+                fazer seu filho pular de alegria.</p>
+            <div class="filter-bar reveal" id="filterBar"></div>
+            <div class="chars-grid" id="charsGrid">
+                <!-- Generated by JS below -->
+            </div>
+            <div class="chars-cta">
+                <a href="checkout.html" class="btn btn-whatsapp btn-large">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+                    Pedir vídeo mágico
+                </a>
+            </div>
+            <!-- KID-FOCUSED: Bridge button -->
+            <div class="bridge-btn-wrap reveal">
+                <a href="#precos" class="bridge-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                    Gostou? Mostre pro papai ou mamãe!
+                </a>
+            </div>
+            <p class="body-large reveal" style="margin-top:24px;">Não encontrou o personagem que procura? <a
+                    href="https://wa.me/5562991118737?text=Ol%C3%A1!%20Gostaria%20de%20saber%20se%20t%C3%AAm%20o%20personagem%20que%20eu%20procuro."
+                    target="_blank" style="color:var(--purple);font-weight:600;">Fale com a gente</a>. Criamos
+                personagens
+                sob demanda.</p>
+        </div>
+    </section>
+
+    <!-- OCASIÕES -->
+    <section class="section" id="ocasioes" style="background: var(--bg2);">
+        <div class="container">
+            <p class="section-tag reveal">Pra qualquer momento especial</p>
+            <h2 class="headline-big reveal">Quando usar um vídeo mágico?</h2>
+            <div class="usecases-grid">
+                <div class="usecase-card reveal">
+                    <div class="usecase-icon">🎂</div>
+                    <h3>Aniversário</h3>
+                    <p>O personagem favorito dá os parabéns pelo nome. A melhor surpresa pra abrir a festa.</p>
+                </div>
+                <div class="usecase-card reveal reveal-delay-1">
+                    <div class="usecase-icon">⭐</div>
+                    <h3>Bom comportamento</h3>
+                    <p>"O Papai Noel tá vendo que você tá se comportando direitinho!" Funciona que é uma beleza.</p>
+                </div>
+                <div class="usecase-card reveal reveal-delay-2">
+                    <div class="usecase-icon">📚</div>
+                    <h3>Motivação escolar</h3>
+                    <p>O CR7 dizendo "Força, campeão!" pra lição de casa? A criança vai voar.</p>
+                </div>
+                <div class="usecase-card reveal reveal-delay-3">
+                    <div class="usecase-icon">🎄</div>
+                    <h3>Natal e festas</h3>
+                    <p>Mensagens do Papai Noel, do Coelhinho da Páscoa ou da Fada dos Dentes nas datas especiais.</p>
+                </div>
+                <div class="usecase-card reveal">
+                    <div class="usecase-icon">💪</div>
+                    <h3>Superar medos</h3>
+                    <p>Personagens corajosos dizendo "Você consegue!" antes de uma ida ao dentista ou primeiro dia de
+                        escola.</p>
+                </div>
+                <div class="usecase-card reveal reveal-delay-1">
+                    <div class="usecase-icon">🎁</div>
+                    <h3>Presente especial</h3>
+                    <p>Dê de presente para avós, padrinhos ou amigos. É o presente mais original que existe.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TOAST NOTIFICATION -->
+    <div class="toast-notif" id="toastNotif">
+        <div class="toast-notif-icon">✅</div>
+        <div>
+            <div class="toast-notif-text" id="toastText"><strong>João</strong> acabou de adquirir o Plano Surpresa!</div>
+            <div class="toast-notif-time" id="toastTime">agora mesmo</div>
+        </div>
+    </div>
+
+    <!-- PREÇOS -->
+    <section class="section pricing" id="precos">
+        <div class="container">
+            <p class="section-tag reveal">Preços simples e acessíveis</p>
+            <h2 class="headline-big reveal">Quanto mais vídeos, maior a magia.</h2>
+            <p class="body-large text-center reveal" style="margin-bottom:8px;"><span class="live-dot"></span> <strong id="liveCount">23</strong> pessoas estão vendo os planos agora</p>
+
+            <!-- PROMO TIMER -->
+            <div class="promo-timer-bar reveal" id="promoTimer">
+                🔥 PROMOÇÃO RELÂMPAGO! Preço especial acaba em <span id="timerDisplay">15:00</span>
+            </div>
+
+            <div class="pricing-grid">
+                <!-- TESTE -->
+                <div class="price-card reveal">
+                    <div class="price-card-name">✨ Plano Teste</div>
+                    <div class="price-card-desc">Só pra sentir a magia 💜</div>
+                    <div class="price-card-amount"><span class="currency">R$</span> 19<span style="font-size:1.6rem;">,90</span></div>
+                    <div class="price-card-per">personagem aleatório • pagamento único</div>
+                    <div class="price-card-features">
+                        <div class="price-feature"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>1 vídeo personalizado</div>
+                        <div class="price-feature"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>1 personagem (entre 5 opções)</div>
+                        <div class="price-feature"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>Alta qualidade + sem marca d'água</div>
+                        <div class="price-feature"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>Entrega via WhatsApp</div>
+                    </div>
+                    <a href="checkout.html?plan=teste" class="btn btn-ghost">Escolher Teste</a>
+                </div>
+
+                <!-- SURPRESA (mais escolhido) -->
+                <div class="price-card popular reveal reveal-delay-1">
+                    <div class="price-card-name">⭐ Plano Surpresa</div>
+                    <div class="price-card-desc">O mais escolhido pelas mamães!</div>
+                    <div class="price-old">De R$ 39,90 <span class="price-discount-badge">-25% OFF</span></div>
+                    <div class="price-card-amount"><span class="currency">R$</span> 29<span style="font-size:1.6rem;">,90</span></div>
+                    <div class="price-card-promo-badge">🔥 Só R$ 9,97 por vídeo!</div>
+                    <div class="price-card-features">
+                        <div class="price-feature"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg><strong>3 vídeos diferentes</strong></div>
+                        <div class="price-feature"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>Todos os personagens liberados</div>
+                        <div class="price-feature"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>Novos personagens todo dia</div>
+                        <div class="price-feature"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>Suporte prioritário via WhatsApp</div>
+                    </div>
+                    <a href="checkout.html?plan=surpresa" class="btn btn-whatsapp" style="font-size:1.05rem;padding:14px 28px;">Garantir promoção →</a>
+                </div>
+
+                <!-- COMPLETO -->
+                <div class="price-card reveal reveal-delay-2">
+                    <div class="price-card-name">🎁 Plano Completo</div>
+                    <div class="price-card-desc">A experiência completa</div>
+                    <div class="price-card-amount"><span class="currency">R$</span> 49<span style="font-size:1.6rem;">,90</span></div>
+                    <div class="price-card-savings">Apenas R$ 9,98 por vídeo!</div>
+                    <div class="price-card-features">
+                        <div class="price-feature"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg><strong>5 vídeos diferentes</strong></div>
+                        <div class="price-feature"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>Todos os personagens liberados</div>
+                        <div class="price-feature"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>Novos personagens todo dia</div>
+                        <div class="price-feature"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>Suporte prioritário via WhatsApp</div>
+                    </div>
+                    <a href="checkout.html?plan=completo" class="btn btn-ghost">Escolher Completo</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONFIANÇA -->
+    <section class="section">
+        <div class="container">
+            <p class="section-tag reveal">Pode confiar</p>
+            <h2 class="headline-big reveal">Por que escolher a gente?</h2>
+            <div class="trust-grid">
+                <div class="trust-card reveal"><div class="trust-icon">🔒</div><h3>Segurança garantida</h3><p>Seus dados estão protegidos. Privacidade em primeiro lugar.</p></div>
+                <div class="trust-card reveal"><div class="trust-icon">⚡</div><h3>Entrega rápida</h3><p>Vídeo pronto em até 24h. Na maioria dos casos, em poucas horas!</p></div>
+                <div class="trust-card reveal"><div class="trust-icon">🎨</div><h3>100% personalizado</h3><p>O personagem fala o nome da criança e uma mensagem única feita pra ela.</p></div>
+                <div class="trust-card reveal"><div class="trust-icon">💬</div><h3>Suporte humanizado</h3><p>Atendimento direto pelo WhatsApp. Sem robôs, sem espera.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DEPOIMENTOS -->
+    <section class="section" id="depoimentos" style="background: var(--bg2);">
+        <div class="container">
+            <p class="section-tag reveal">Reações reais de famílias brasileiras</p>
+            <h2 class="headline-big reveal" style="margin-bottom:12px;">+700 famílias já se emocionaram</h2>
+            <p class="body-large text-center reveal" style="margin-bottom:48px;">⭐⭐⭐⭐⭐ Nota 4.97 — baseado em avaliações reais</p>
+            <div class="testimonials-scroll reveal">
+                <div class="testi-card"><div class="testi-stars" style="color:var(--gold);">★★★★★</div><p class="testi-text">"Meu filho ficou de boca aberta quando o Sonic falou o nome dele! Chorei de emoção vendo a reação dele. Super recomendo!"</p><div class="testi-author"><div class="testi-avatar">AS</div><div><div class="testi-name">Amanda S.</div><div class="testi-role">Mãe do Miguel, 4 anos • Goiânia/GO</div></div></div></div>
+                <div class="testi-card"><div class="testi-stars" style="color:var(--gold);">★★★★★</div><p class="testi-text">"Pedi pro aniversário da minha filha e foi o ponto alto da festa. A Elsa chamando ela pelo nome... as crianças ficaram malucas!"</p><div class="testi-author"><div class="testi-avatar">CM</div><div><div class="testi-name">Carla M.</div><div class="testi-role">Mãe da Sofia, 6 anos • São Paulo/SP</div></div></div></div>
+                <div class="testi-card"><div class="testi-stars" style="color:var(--gold);">★★★★★</div><p class="testi-text">"O atendimento pelo WhatsApp foi super rápido. Pedi de tarde e de manhã já tinha o vídeo. Meu filho não parou de assistir o vídeo do Chase!"</p><div class="testi-author"><div class="testi-avatar">RF</div><div><div class="testi-name">Rodrigo F.</div><div class="testi-role">Pai do Davi, 3 anos • Brasília/DF</div></div></div></div>
+                <div class="testi-card"><div class="testi-stars" style="color:var(--gold);">★★★★★</div><p class="testi-text">"Comprei o Plano Surpresa e os 3 vídeos ficaram PERFEITOS. O CR7 falando pro meu sobrinho foi o melhor presente que já dei. Ele assistiu umas 50 vezes!"</p><div class="testi-author"><div class="testi-avatar">LR</div><div><div class="testi-name">Lucas R.</div><div class="testi-role">Tio do Pedro, 7 anos • Belo Horizonte/MG</div></div></div></div>
+                <div class="testi-card"><div class="testi-stars" style="color:var(--gold);">★★★★★</div><p class="testi-text">"Minha filha tava triste por causa da escola e eu pedi um vídeo da Moana pra animar ela. Gente, o sorriso que ela deu não tem preço! Melhor R$ 24,90 que já gastei."</p><div class="testi-author"><div class="testi-avatar">FO</div><div><div class="testi-name">Fernanda O.</div><div class="testi-role">Mãe da Helena, 5 anos • Curitiba/PR</div></div></div></div>
+                <div class="testi-card"><div class="testi-stars" style="color:var(--gold);">★★★★★</div><p class="testi-text">"Achei que ia ser coisa simples, mas a qualidade é ABSURDA! O Papai Noel falou o nome da minha filha, disse que ela foi comportada o ano todo... ela acreditou 100%!"</p><div class="testi-author"><div class="testi-avatar">JB</div><div><div class="testi-name">Juliana B.</div><div class="testi-role">Mãe da Laura, 4 anos • Recife/PE</div></div></div></div>
+                <div class="testi-card"><div class="testi-stars" style="color:var(--gold);">★★★★★</div><p class="testi-text">"Comprei pro Dia das Crianças e agora toda vez que meu filho faz algo legal ele pergunta: 'mãe, o Chase vai mandar outro vídeo?' 😂 Já pedi 4 vezes!"</p><div class="testi-author"><div class="testi-avatar">PM</div><div><div class="testi-name">Patrícia M.</div><div class="testi-role">Mãe do Enzo, 3 anos • Fortaleza/CE</div></div></div></div>
+                <div class="testi-card"><div class="testi-stars" style="color:var(--gold);">★★★★★</div><p class="testi-text">"Sou professora e pedi vídeos pra 6 alunos meus que estavam de aniversário. Os pais ficaram EMOCIONADOS! Recomendo pra qualquer escola."</p><div class="testi-author"><div class="testi-avatar">AC</div><div><div class="testi-name">Ana C.</div><div class="testi-role">Professora • Manaus/AM</div></div></div></div>
+                <div class="testi-card"><div class="testi-stars" style="color:var(--gold);">★★★★★</div><p class="testi-text">"Meu neto mora longe e eu queria mandar algo especial. O Woody mandando um abraço pelo avô... nós dois choramos. Obrigada por essa magia!"</p><div class="testi-author"><div class="testi-avatar">MG</div><div><div class="testi-name">Maria G.</div><div class="testi-role">Avó do Theo, 5 anos • Porto Alegre/RS</div></div></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" id="faq">
+        <div class="container">
+            <p class="section-tag reveal">Dúvidas frequentes</p>
+            <h2 class="headline-big reveal">Perguntas frequentes</h2>
+            <div class="faq-list">
+                <div class="faq-item reveal"><button class="faq-q">O vídeo é realmente personalizado?<svg
+                            class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round">
+                            <path d="M12 5v14M5 12h14" />
+                        </svg></button>
+                    <div class="faq-a">
+                        <div class="faq-a-inner">Sim! É essa a magia. O vídeo é totalmente personalizado: o personagem
+                            chama a criança pelo nome, menciona a idade, e fala sobre o contexto que você indicou
+                            (aniversário, bom comportamento, etc.). É isso que torna a experiência tão especial e
+                            inesquecível.</div>
+                    </div>
+                </div>
+                <div class="faq-item reveal"><button class="faq-q">Quanto tempo leva pra receber?<svg class="faq-icon"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round">
+                            <path d="M12 5v14M5 12h14" />
+                        </svg></button>
+                    <div class="faq-a">
+                        <div class="faq-a-inner">Nosso prazo padrão é de até 24 horas. Na maioria dos casos entregamos
+                            em poucas horas!</div>
+                    </div>
+                </div>
+                <div class="faq-item reveal"><button class="faq-q">Como recebo o vídeo?<svg class="faq-icon"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round">
+                            <path d="M12 5v14M5 12h14" />
+                        </svg></button>
+                    <div class="faq-a">
+                        <div class="faq-a-inner">O vídeo é entregue diretamente no seu WhatsApp, em alta qualidade e sem
+                            marca d'água. Você pode baixar e compartilhar quantas vezes quiser!</div>
+                    </div>
+                </div>
+                <div class="faq-item reveal"><button class="faq-q">Posso escolher o que o personagem vai falar?<svg
+                            class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round">
+                            <path d="M12 5v14M5 12h14" />
+                        </svg></button>
+                    <div class="faq-a">
+                        <div class="faq-a-inner">Sim! Você pode nos enviar exatamente o texto que quer, ou dar liberdade
+                            pra nossa equipe criar uma mensagem mágica com base nas informações que passar (nome, idade,
+                            ocasião).</div>
+                    </div>
+                </div>
+                <div class="faq-item reveal"><button class="faq-q">É seguro pra crianças?<svg class="faq-icon"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round">
+                            <path d="M12 5v14M5 12h14" />
+                        </svg></button>
+                    <div class="faq-a">
+                        <div class="faq-a-inner">Totalmente! Todo conteúdo é pensado pra crianças, com linguagem
+                            adequada e mensagens positivas. Os vídeos são feitos pra emocionar e alegrar.</div>
+                    </div>
+                </div>
+                <div class="faq-item reveal"><button class="faq-q">Como faço o pedido?<svg class="faq-icon"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round">
+                            <path d="M12 5v14M5 12h14" />
+                        </svg></button>
+                    <div class="faq-a">
+                        <div class="faq-a-inner">É super simples! Clique em "Pedir agora", escolha seu
+                            plano, selecione os personagens, preencha os dados da criança e finalize o pagamento. A gente cuida do resto e envia o vídeo no seu WhatsApp! 💜
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section class="section cta-final" id="contato">
+        <div class="container">
+            <div class="reveal">
+                <h2 class="headline-big" style="margin-bottom:16px;">Transforme um momento comum<br>numa memória mágica.
+                </h2>
+                <p class="body-large">3 passos simples. Checkout rápido e seguro. Em 24 horas você recebe um vídeo que
+                    vai fazer o
+                    seu filho pular de alegria. A partir de R$ 19,90.</p>
+            </div>
+            <a href="checkout.html" class="btn btn-whatsapp btn-large reveal" style="margin-top:40px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+                Quero criar essa surpresa
+            </a>
+        </div>
+    </section>
+
+    <!-- TRUST BADGES -->
+    <section class="trust-section">
+        <div class="container">
+            <div class="trust-grid">
+                <div class="trust-badge reveal">
+                    <div class="trust-badge-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#30d158" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div>
+                    <div class="trust-badge-text"><strong>Entrega Garantida</strong>Até 24h ou seu dinheiro de volta</div>
+                </div>
+                <div class="trust-badge reveal reveal-delay-1">
+                    <div class="trust-badge-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#30d158" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+                    <div class="trust-badge-text"><strong>Pagamento Seguro</strong>Pix, cartão ou transferência</div>
+                </div>
+                <div class="trust-badge reveal reveal-delay-2">
+                    <div class="trust-badge-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#30d158" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M10 8l6 4-6 4V8z"/></svg></div>
+                    <div class="trust-badge-text"><strong>Sem Marca d’Água</strong>Vídeo 100% limpo e seu</div>
+                </div>
+                <div class="trust-badge reveal reveal-delay-3">
+                    <div class="trust-badge-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#30d158" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
+                    <div class="trust-badge-text"><strong>Suporte Humano</strong>Atendimento real no WhatsApp</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="./" class="logo"><img src="img/Recado-animado-LOGO.webp" alt="Recado Animado"
+                            style="height:36px;"></a>
+                    <p>Vídeos mágicos personalizados com os personagens favoritos do seu filho. A partir de R$ 19,90.
+                    </p>
+                </div>
+                <div class="footer-col">
+                    <h4>Navegação</h4>
+                    <a href="#personagens">Personagens</a>
+                    <a href="#como-funciona">Como funciona</a>
+                    <a href="#precos">Preços</a>
+                    <a href="#faq">FAQ</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Contato</h4>
+                    <a href="https://wa.me/5562991118737" target="_blank" id="footerWhatsapp">WhatsApp</a>
+                    <a href="#" target="_blank">Instagram</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Social</h4>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="2" width="20" height="20" rx="5" />
+                                <circle cx="12" cy="12" r="5" />
+                                <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none" />
+                            </svg></a>
+                        <a href="https://wa.me/5562991118737" target="_blank" aria-label="WhatsApp"
+                            id="footerWhatsapp2"><svg viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                            </svg></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">&copy; 2026 Recado Animado. Todos os direitos reservados.</div>
+        </div>
+    </footer>
+
+    <script>
+        /* ===== CHARACTERS DATABASE ===== */
+        const CHARACTERS = [
+            { name: 'Papai Noel', img: 'papai-natal.webp', cat: 'Clássico', rating: '5.00', reviews: 412 },
+            { name: 'Cristiano Ronaldo', img: 'cr7.webp', cat: 'Esporte', rating: '4.95', reviews: 387 },
+            { name: 'Chase', img: 'chase-paw-patrol.webp', cat: 'Patrulha Canina', popular: true, rating: '4.98', reviews: 456 },
+            { name: 'Skye', img: 'skye-paw-patrol.webp', cat: 'Patrulha Canina', rating: '4.88', reviews: 298 },
+            { name: 'Marshall', img: 'marshall-paw-patrol.webp', cat: 'Patrulha Canina', rating: '4.85', reviews: 267 },
+            { name: 'Rocky', img: 'rocky-patrulha.webp', cat: 'Patrulha Canina', rating: '4.80', reviews: 189 },
+            { name: 'Rubble', img: 'rubble-patrulha.webp', cat: 'Patrulha Canina', rating: '4.82', reviews: 201 },
+            { name: 'Everest', img: 'everest-patrulha.webp', cat: 'Patrulha Canina', rating: '4.78', reviews: 167 },
+            { name: 'Ryder', img: 'ryder-patrulha.webp', cat: 'Patrulha Canina', rating: '4.75', reviews: 145 },
+            { name: 'Zuma', img: 'zuma-patrulha.webp', cat: 'Patrulha Canina', rating: '4.79', reviews: 156 },
+            { name: 'Liberty', img: 'liberty-patrulha.webp', cat: 'Patrulha Canina', rating: '4.77', reviews: 134 },
+            { name: 'Bluey', img: 'bluey.webp', cat: 'Bluey', popular: true, rating: '4.92', reviews: 345 },
+            { name: 'Bingo', img: 'bingo.webp', cat: 'Bluey', rating: '4.85', reviews: 223 },
+            { name: 'Sonic', img: 'sonic.webp', cat: 'Sonic', popular: true, rating: '4.88', reviews: 312 },
+            { name: 'Knuckles', img: 'knuckles.webp', cat: 'Sonic', rating: '4.80', reviews: 178 },
+            { name: 'Shadow', img: 'shadow.webp', cat: 'Sonic', rating: '4.82', reviews: 167 },
+            { name: 'Amy Rose', img: 'amy-rose.webp', cat: 'Sonic', rating: '4.78', reviews: 145 },
+            { name: 'Mickey Mouse', img: 'mickey.webp', cat: 'Disney', popular: true, rating: '4.90', reviews: 298 },
+            { name: 'Minnie Mouse', img: 'minnie.webp', cat: 'Disney', rating: '4.88', reviews: 267 },
+            { name: 'Elsa', img: 'elsa-frozen.webp', cat: 'Frozen', popular: true, rating: '4.95', reviews: 389 },
+            { name: 'Anna', img: 'anna-frozen.webp', cat: 'Frozen', rating: '4.85', reviews: 234 },
+            { name: 'Olaf', img: 'olaf-frozen.webp', cat: 'Frozen', rating: '4.82', reviews: 201 },
+            { name: 'Moana', img: 'moana.webp', cat: 'Disney', popular: true, rating: '4.90', reviews: 278 },
+            { name: 'Maui', img: 'maui.webp', cat: 'Disney', rating: '4.84', reviews: 198 },
+            { name: 'Rapunzel', img: 'rapunzel-enrolados.webp', cat: 'Disney', rating: '4.87', reviews: 234 },
+            { name: 'Relâmpago McQueen', img: 'lightning-mcqueen.webp', cat: 'Cars', rating: '4.85', reviews: 212 },
+            { name: 'Mate', img: 'mate-cars.webp', cat: 'Cars', rating: '4.78', reviews: 167 },
+            { name: 'Woody', img: 'woody.webp', cat: 'Toy Story', rating: '4.86', reviews: 223 },
+            { name: 'Menino Gato', img: 'menino-gato.webp', cat: 'PJ Masks', rating: '4.80', reviews: 178 },
+            { name: 'Corujita', img: 'corujita-pjmasks.webp', cat: 'PJ Masks', rating: '4.78', reviews: 156 },
+            { name: 'Peppa Pig', img: 'peppapig.webp', cat: 'Peppa Pig', popular: true, rating: '4.92', reviews: 334 },
+            { name: 'Thomas', img: 'thomas-trem.webp', cat: 'Clássico', rating: '4.80', reviews: 189 },
+            { name: 'Masha', img: 'masha.webp', cat: 'Clássico', rating: '4.82', reviews: 201 },
+            { name: 'Homem-Aranha', img: 'homem-aranha.webp', cat: 'Super-Herói', popular: true, rating: '4.94', reviews: 367 },
+            { name: 'Barbie', img: 'barbie.webp', cat: 'Clássico', rating: '4.85', reviews: 234 },
+            { name: 'Shrek', img: 'shrek.webp', cat: 'Shrek', rating: '4.80', reviews: 178 },
+            { name: 'Burro', img: 'burro-shrek.webp', cat: 'Shrek', rating: '4.78', reviews: 156 },
+            { name: 'Minions', img: 'minions.webp', cat: 'Minions', rating: '4.86', reviews: 245 },
+            { name: 'Galinha Pintadinha', img: 'galinha-pintadinha.webp', cat: 'Clássico BR', popular: true, rating: '4.96', reviews: 401 },
+            { name: 'Chico Bento', img: 'chico-bento.webp', cat: 'Clássico BR', rating: '4.88', reviews: 234 },
+            { name: 'Alegria', img: 'alegria.webp', cat: 'Divertida Mente', rating: '4.90', reviews: 256 },
+            { name: 'Tristeza', img: 'tristeza.webp', cat: 'Divertida Mente', rating: '4.82', reviews: 189 },
+            { name: 'Raiva', img: 'raiva.webp', cat: 'Divertida Mente', rating: '4.78', reviews: 145 },
+            { name: 'Medo', img: 'medo.webp', cat: 'Divertida Mente', rating: '4.75', reviews: 134 },
+            { name: 'Nojinho', img: 'nojinho.webp', cat: 'Divertida Mente', rating: '4.77', reviews: 148 },
+            { name: 'Ansiedade', img: 'ansiedade.webp', cat: 'Divertida Mente', rating: '4.85', reviews: 198 },
+            { name: 'Inveja', img: 'inveja.webp', cat: 'Divertida Mente', rating: '4.79', reviews: 156 },
+            { name: 'Tédio', img: 'tedio.webp', cat: 'Divertida Mente', rating: '4.76', reviews: 134 },
+            { name: 'Vergonha', img: 'vergonha.webp', cat: 'Divertida Mente', rating: '4.80', reviews: 167 },
+            { name: 'Mira', img: 'mira-kpop.png', cat: 'K-Pop', popular: true, rating: '4.93', reviews: 378 },
+            { name: 'Zoey', img: 'zoey-kpop.jpg', cat: 'K-Pop', popular: true, rating: '4.91', reviews: 356 },
+            { name: 'Rumi', img: 'rumi-kpop.jpg', cat: 'K-Pop', popular: true, rating: '4.89', reviews: 334 },
+        ];
+
+        const CK_URL = 'checkout.html';
+
+        /* Render characters grid */
+        const grid = document.getElementById('charsGrid');
+        let activeFilter = 'Todos';
+
+        /* Build filter bar */
+        const categories = ['Todos', ...new Set(CHARACTERS.map(c => c.cat))];
+        const filterBar = document.getElementById('filterBar');
+        filterBar.innerHTML = categories.map(cat => 
+            `<button class="filter-btn${cat === 'Todos' ? ' active' : ''}" data-cat="${cat}">${cat}</button>`
+        ).join('');
+
+        function renderGrid(filter) {
+            const filtered = filter === 'Todos' ? CHARACTERS : CHARACTERS.filter(c => c.cat === filter);
+            grid.innerHTML = filtered.map(c => `
+                <a class="char-card" href="${CK_URL}">
+                    <div class="char-card-overflow">${c.popular ? '<span class="char-popular-badge">Popular \uD83D\uDD25</span>' : ''}<img class="char-card-img" src="img/${c.img}" alt="${c.name}" loading="lazy" width="400" height="400"></div>
+                    <div class="char-card-body">
+                        <div class="char-name">${c.name}</div>
+                        <div class="char-desc">${c.cat}</div>
+                        <div class="char-rating"><span class="char-rating-star">★</span> ${c.rating} <span class="char-rating-count">(${c.reviews})</span></div>
+                        <div class="char-card-price-text">a partir de <strong>R$ 19,90</strong></div>
+                    </div>
+                    <div class="char-card-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+                </a>
+            `).join('');
+        }
+        renderGrid('Todos');
+
+        filterBar.addEventListener('click', e => {
+            if (!e.target.classList.contains('filter-btn')) return;
+            filterBar.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+            activeFilter = e.target.dataset.cat;
+            renderGrid(activeFilter);
+        });
+
+        /* ===== INTERACTIONS ===== */
+        function toggleMobileNav() { document.getElementById('mobileNav').classList.toggle('open'); }
+
+        document.querySelectorAll('.faq-q').forEach(b => {
+            b.addEventListener('click', () => {
+                const item = b.parentElement, ans = item.querySelector('.faq-a'), active = item.classList.contains('active');
+                document.querySelectorAll('.faq-item').forEach(i => { i.classList.remove('active'); i.querySelector('.faq-a').style.maxHeight = null; });
+                if (!active) { item.classList.add('active'); ans.style.maxHeight = ans.scrollHeight + 'px'; }
+            });
+        });
+
+        /* Reveal on scroll */
+        document.querySelectorAll('.hero .reveal').forEach(el => { el.classList.add('visible'); });
+
+        function animateCount(el) {
+            const target = +el.dataset.count;
+            const duration = 2000;
+            const start = performance.now();
+            function update(now) {
+                const progress = Math.min((now - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                el.textContent = Math.floor(eased * target) + '+';
+                if (progress < 1) requestAnimationFrame(update);
+            }
+            requestAnimationFrame(update);
+        }
+        const counterObs = new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) { animateCount(e.target); counterObs.unobserve(e.target); } }); }, { threshold: 0.5 });
+        document.querySelectorAll('[data-count]').forEach(el => counterObs.observe(el));
+
+        const obs = new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } }); }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
+        document.querySelectorAll('.reveal:not(.visible)').forEach(el => obs.observe(el));
+
+        /* Hero video sound toggle + visibility-based audio */
+        const heroVideo = document.getElementById('heroVideo');
+        const soundBtn = document.getElementById('heroSoundBtn');
+        const soundOff = document.getElementById('soundOffIcon');
+        const soundOn = document.getElementById('soundOnIcon');
+        let userUnmuted = false;
+        if (heroVideo && soundBtn) {
+            soundBtn.addEventListener('click', () => {
+                heroVideo.muted = !heroVideo.muted;
+                userUnmuted = !heroVideo.muted;
+                soundOff.style.display = heroVideo.muted ? 'block' : 'none';
+                soundOn.style.display = heroVideo.muted ? 'none' : 'block';
+            });
+
+            /* Pause sound when video scrolls out of view */
+            const videoVisObs = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) {
+                        /* Video scrolled out – mute it */
+                        heroVideo.muted = true;
+                        soundOff.style.display = 'block';
+                        soundOn.style.display = 'none';
+                    } else if (userUnmuted) {
+                        /* Video scrolled back in – restore unmuted state */
+                        heroVideo.muted = false;
+                        soundOff.style.display = 'none';
+                        soundOn.style.display = 'block';
+                    }
+                });
+            }, { threshold: 0.25 });
+            videoVisObs.observe(heroVideo);
+        }
+
+        /* ===== TOAST NOTIFICATIONS (Social Proof) ===== */
+        const toastNames = [
+            'João', 'Maria', 'Ana', 'Pedro', 'Lucas', 'Fernanda', 'Carla', 'Rafael', 'Juliana',
+            'Bruno', 'Camila', 'Thiago', 'Letícia', 'Gabriel', 'Amanda', 'Rodrigo', 'Patrícia',
+            'Marcos', 'Isabela', 'Felipe', 'Renata', 'Diego', 'Beatriz', 'Gustavo', 'Larissa',
+            'Ricardo', 'Daniela', 'André', 'Vanessa', 'Eduardo', 'Tatiana', 'Paulo', 'Mônica'
+        ];
+        const toastPlans = ['Plano Teste', 'Plano Surpresa', 'Plano Surpresa', 'Plano Surpresa', 'Plano Completo'];
+        const toastTimes = ['agora mesmo', 'agora', 'há poucos segundos'];
+        const toastCities = ['São Paulo', 'Rio de Janeiro', 'Brasília', 'Goiânia', 'Belo Horizonte', 'Curitiba', 'Fortaleza', 'Recife', 'Porto Alegre', 'Manaus', 'Salvador', 'Campinas'];
+        let toastIndex = 0;
+
+        function showToast() {
+            const toast = document.getElementById('toastNotif');
+            const textEl = document.getElementById('toastText');
+            const timeEl = document.getElementById('toastTime');
+            const name = toastNames[Math.floor(Math.random() * toastNames.length)];
+            const plan = toastPlans[Math.floor(Math.random() * toastPlans.length)];
+            const time = toastTimes[Math.floor(Math.random() * toastTimes.length)];
+            const city = toastCities[Math.floor(Math.random() * toastCities.length)];
+            textEl.innerHTML = `<strong>${name}</strong> de ${city} adquiriu o ${plan}!`;
+            timeEl.textContent = time;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 5000);
+        }
+        /* Weighted random delay: shorter delays are rarer */
+        function getRandomToastDelay() {
+            const r = Math.random();
+            if (r < 0.08) return 3000;        /* 8% chance – 3s */
+            else if (r < 0.18) return 6000;   /* 10% chance – 6s */
+            else if (r < 0.35) return 8000;   /* 17% chance – 8s */
+            else if (r < 0.55) return 10000;  /* 20% chance – 10s */
+            else if (r < 0.75) return 14000;  /* 20% chance – 14s */
+            else if (r < 0.90) return 17000;  /* 15% chance – 17s */
+            else return 20000;                /* 10% chance – 20s */
+        }
+
+        function scheduleNextToast() {
+            setTimeout(() => {
+                showToast();
+                scheduleNextToast();
+            }, getRandomToastDelay());
+        }
+        setTimeout(() => { showToast(); scheduleNextToast(); }, 8000);
+
+        /* ===== COUNTDOWN TIMER (Urgency) ===== */
+        (function() {
+            const TIMER_KEY = 'recadoAnimadoPromoEnd';
+            let endTime = sessionStorage.getItem(TIMER_KEY);
+            if (!endTime) {
+                endTime = Date.now() + 15 * 60 * 1000;
+                sessionStorage.setItem(TIMER_KEY, endTime);
+            }
+            endTime = parseInt(endTime);
+
+            function updateTimer() {
+                const now = Date.now();
+                let diff = endTime - now;
+                if (diff <= 0) {
+                    endTime = Date.now() + 15 * 60 * 1000;
+                    sessionStorage.setItem(TIMER_KEY, endTime);
+                    diff = 15 * 60 * 1000;
+                }
+                const mins = Math.floor(diff / 60000);
+                const secs = Math.floor((diff % 60000) / 1000);
+                const display = document.getElementById('timerDisplay');
+                if (display) display.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            }
+            updateTimer();
+            setInterval(updateTimer, 1000);
+        })();
+
+        /* ===== LIVE VIEWER COUNT (FOMO) ===== */
+        (function() {
+            const el = document.getElementById('liveCount');
+            if (!el) return;
+            function updateCount() {
+                const base = 18 + Math.floor(Math.random() * 17);
+                el.textContent = base;
+            }
+            updateCount();
+            setInterval(updateCount, 30000);
+        })();
+        /* ===== SCROLLING NAMES TICKER ===== */
+        (function() {
+            const tickerNames = [
+                { name: 'Sofia', age: 4, city: 'São Paulo', char: 'Elsa' },
+                { name: 'Miguel', age: 5, city: 'Goiânia', char: 'Chase' },
+                { name: 'Laura', age: 3, city: 'Rio de Janeiro', char: 'Peppa Pig' },
+                { name: 'Davi', age: 6, city: 'Brasília', char: 'CR7' },
+                { name: 'Helena', age: 4, city: 'Curitiba', char: 'Moana' },
+                { name: 'Enzo', age: 3, city: 'Fortaleza', char: 'Chase' },
+                { name: 'Alice', age: 5, city: 'Belo Horizonte', char: 'Elsa' },
+                { name: 'Pedro', age: 7, city: 'Salvador', char: 'Sonic' },
+                { name: 'Valentina', age: 4, city: 'Recife', char: 'Rapunzel' },
+                { name: 'Theo', age: 5, city: 'Porto Alegre', char: 'Bluey' },
+                { name: 'Luna', age: 3, city: 'Manaus', char: 'Galinha Pintadinha' },
+                { name: 'Arthur', age: 6, city: 'Campinas', char: 'Homem-Aranha' },
+                { name: 'Cecília', age: 4, city: 'Belém', char: 'Minnie' },
+                { name: 'Bernardo', age: 5, city: 'Florianópolis', char: 'Mickey' },
+                { name: 'Heloísa', age: 3, city: 'Vitória', char: 'Peppa Pig' },
+                { name: 'Lorenzo', age: 7, city: 'Natal', char: 'Papai Noel' },
+            ];
+            const track = document.getElementById('tickerTrack');
+            if (!track) return;
+            const items = tickerNames.map(t => 
+                `<span class="ticker-item"><span class="ticker-star"><svg width="12" height="12" viewBox="0 0 24 24" fill="var(--gold)" stroke="var(--gold)" stroke-width="1"><path d="M12 2l2.4 7.2H22l-6 4.8 2.4 7.2L12 16.4l-6.4 4.8L8 14 2 9.2h7.6z"/></svg></span> ${t.name}, ${t.age} anos • ${t.city} — vídeo do ${t.char}<span class="ticker-dot"></span></span>`
+            ).join('');
+            track.innerHTML = items + items; /* duplicate for seamless loop */
+        })();
+    </script>
+
+    <!-- FLOATING WHATSAPP BUTTON -->
+    <a href="https://wa.me/5562991118737?text=Ol%C3%A1%21%20Preciso%20de%20ajuda%20com%20meu%20pedido" target="_blank" class="float-wa" id="floatWa" aria-label="Suporte WhatsApp">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        <span class="float-wa-label">Suporte</span>
+    </a>
+
+    <!-- STICKY CTA BAR -->
+    <div class="sticky-cta" id="stickyCta">
+        <div class="sticky-cta-inner">
+            <span class="sticky-cta-text"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg> Vídeos mágicos a partir de <span>R$ 19,90</span></span>
+            <a href="checkout.html" class="btn btn-whatsapp">Pedir agora →</a>
+        </div>
+    </div>
+
+    <!-- WHATSAPP CHATBOT BIA -->
+    <div class="wa-chat-widget" id="waChatWidget">
+        <div class="wa-chat-popup" id="waChatPopup">
+            <div class="wa-header">
+                <button class="wa-header-back" id="waChatClose" aria-label="Fechar">←</button>
+                <div class="wa-header-avatar"><img src="img/bia.jpeg" alt="Bia"></div>
+                <div class="wa-header-info">
+                    <div class="wa-header-name">Bia • Recado Animado</div>
+                    <div class="wa-header-status">online</div>
+                </div>
+                <div class="wa-header-actions">
+                    <button aria-label="Vídeo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button>
+                    <button aria-label="Ligar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg></button>
+                </div>
+            </div>
+            <div class="wa-body" id="waChatBody"></div>
+            <div class="wa-input-bar">
+                <button class="wa-input-emoji"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8696A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></button>
+                <input type="text" class="wa-input-field" id="waChatInput" placeholder="Digite uma mensagem..." maxlength="500">
+                <button class="wa-input-send" id="waChatSend" aria-label="Enviar">
+                    <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                </button>
+            </div>
+        </div>
+        <div class="wa-chat-bubble" id="waChatBubble">
+            <img src="img/bia.jpeg" alt="Bia">
+            <div class="wa-chat-bubble-ping">1</div>
+        </div>
+    </div>
+
+
+    <!-- ALL NEW SCRIPTS -->
+    <script>
+        /* ===== STICKY CTA BAR ===== */
+        (function() {
+            const stickyBar = document.getElementById('stickyCta');
+            const hero = document.querySelector('.hero');
+            if (!stickyBar || !hero) return;
+            window.addEventListener('scroll', () => {
+                const heroBottom = hero.offsetTop + hero.offsetHeight;
+                if (window.scrollY > heroBottom + 200) {
+                    stickyBar.classList.add('visible');
+                } else {
+                    stickyBar.classList.remove('visible');
+                }
+            }, { passive: true });
+        })();
+
+        /* ===== WHATSAPP CHATBOT BIA ===== */
+        (function() {
+            const bubble = document.getElementById('waChatBubble');
+            const popup = document.getElementById('waChatPopup');
+            const closeBtn = document.getElementById('waChatClose');
+            const chatBody = document.getElementById('waChatBody');
+            const input = document.getElementById('waChatInput');
+            const sendBtn = document.getElementById('waChatSend');
+            if (!bubble || !popup || !chatBody || !input) return;
+
+            let isOpen = false;
+            const now = new Date();
+            const timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+
+            function addMsg(text, type, delay) {
+                return new Promise(resolve => {
+                    if (type === 'in') {
+                        /* Show typing first */
+                        const typingEl = document.createElement('div');
+                        typingEl.className = 'wa-typing';
+                        typingEl.innerHTML = '<span></span><span></span><span></span>';
+                        chatBody.appendChild(typingEl);
+                        chatBody.scrollTop = chatBody.scrollHeight;
+                        setTimeout(() => {
+                            typingEl.remove();
+                            const msg = document.createElement('div');
+                            msg.className = 'wa-msg wa-msg-in';
+                            msg.innerHTML = text + '<div class="wa-msg-time">' + timeStr + '</div>';
+                            chatBody.appendChild(msg);
+                            chatBody.scrollTop = chatBody.scrollHeight;
+                            resolve();
+                        }, delay || 1500);
+                    } else {
+                        const msg = document.createElement('div');
+                        msg.className = 'wa-msg wa-msg-out';
+                        msg.innerHTML = text + '<div class="wa-msg-time">' + timeStr + ' <span class="wa-check">✓✓</span></div>';
+                        chatBody.appendChild(msg);
+                        chatBody.scrollTop = chatBody.scrollHeight;
+                        resolve();
+                    }
+                });
+            }
+
+            function toggleChat() {
+                isOpen = !isOpen;
+                popup.classList.toggle('open', isOpen);
+                const ping = bubble.querySelector('.wa-chat-bubble-ping');
+                if (ping && isOpen) ping.style.display = 'none';
+                if (isOpen) input.focus();
+            }
+
+            function sendUserMsg() {
+                const text = input.value.trim();
+                if (!text) return;
+                addMsg(text, 'out');
+                input.value = '';
+                /* Open WhatsApp with user's message */
+                setTimeout(() => {
+                    const waText = encodeURIComponent('Olá! ' + text);
+                    window.open('https://wa.me/5562991118737?text=' + waText, '_blank');
+                }, 800);
+                /* Show Bia response */
+                setTimeout(() => {
+                    addMsg('Perfeito! Vou te atender pelo WhatsApp agora. Te espero lá!', 'in', 1200);
+                }, 1000);
+            }
+
+            bubble.addEventListener('click', toggleChat);
+            closeBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleChat(); });
+            sendBtn.addEventListener('click', sendUserMsg);
+            input.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendUserMsg(); });
+
+            /* Auto-open after 30s with conversation flow */
+            setTimeout(async () => {
+                popup.classList.add('open');
+                isOpen = true;
+                await addMsg('Oi! Eu sou a Bia, atendente do Recado Animado.', 'in', 1500);
+                await addMsg('Qual personagem seu filho mais gosta? Posso te ajudar a escolher o vídeo perfeito!', 'in', 2000);
+            }, 30000);
+        })();
+
+        /* ===== URGENCY TOP BANNER TIMER ===== */
+        (function() {
+            const timerEl = document.getElementById('urgencyTimer');
+            const promoTimerEl = document.getElementById('timerDisplay');
+            if (!timerEl) return;
+            /* Sync with promo timer if exists */
+            setInterval(() => {
+                if (promoTimerEl) timerEl.textContent = promoTimerEl.textContent;
+            }, 1000);
+        })();
+
+
+
+        /* ===== CONFETTI ON CTA CLICKS ===== */
+        (function() {
+            const colors = ['#ff453a','#30d158','#0a84ff','#ff9f0a','#bf5af2','#64d2ff','#ffd60a'];
+            function burst(x, y) {
+                for (let i = 0; i < 40; i++) {
+                    const piece = document.createElement('div');
+                    piece.className = 'confetti-piece';
+                    piece.style.left = (x + (Math.random() - 0.5) * 200) + 'px';
+                    piece.style.top = (y - 20) + 'px';
+                    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    piece.style.width = (4 + Math.random() * 6) + 'px';
+                    piece.style.height = (8 + Math.random() * 12) + 'px';
+                    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                    piece.style.animationDuration = (1.5 + Math.random() * 1.5) + 's';
+                    document.body.appendChild(piece);
+                    setTimeout(() => piece.remove(), 3000);
+                }
+            }
+            document.querySelectorAll('.btn-whatsapp').forEach(btn => {
+                btn.addEventListener('click', (e) => burst(e.clientX, e.clientY));
+            });
+        })();
+
+        /* ===== VIDEOS PROGRESS BAR ===== */
+        (function() {
+            const fill = document.getElementById('videosFill');
+            const countEl = document.getElementById('videosCount');
+            if (!fill || !countEl) return;
+            const count = 38 + Math.floor(Math.random() * 25);
+            countEl.textContent = count;
+            setTimeout(() => { fill.style.width = Math.min(count / 80 * 100, 95) + '%'; }, 500);
+        })();
+
+        /* ===== CHARACTER STOCK BADGES + VIEWER TOOLTIPS ===== */
+        (function() {
+            /* Inject into char cards after render */
+            setTimeout(() => {
+                const cards = document.querySelectorAll('.char-card');
+                cards.forEach(card => {
+                    /* Stock badge (random, 30% chance) */
+                    if (Math.random() < 0.3) {
+                        const stock = 1 + Math.floor(Math.random() * 4);
+                        const badge = document.createElement('div');
+                        badge.className = 'char-stock-badge';
+                        badge.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Restam ' + stock;
+                        card.style.position = 'relative';
+                        card.appendChild(badge);
+                    }
+                    /* Viewer tooltip */
+                    const viewers = 3 + Math.floor(Math.random() * 15);
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'char-viewers';
+                    tooltip.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> ' + viewers + ' pessoas vendo agora';
+                    card.style.position = 'relative';
+                    card.appendChild(tooltip);
+                });
+            }, 1500);
+        })();
+        /* ===== ANIMATED PROOF COUNTER ===== */
+        (function() {
+            const proofNumbers = document.querySelectorAll('.proof-number[data-count]');
+            if (!proofNumbers.length) return;
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const el = entry.target;
+                        const target = parseInt(el.getAttribute('data-count'));
+                        if (el.classList.contains('counted')) return;
+                        el.classList.add('counted');
+                        let current = 0;
+                        const increment = Math.ceil(target / 40);
+                        const timer = setInterval(() => {
+                            current += increment;
+                            if (current >= target) {
+                                current = target;
+                                clearInterval(timer);
+                            }
+                            el.textContent = current + '+';
+                        }, 30);
+                        observer.unobserve(el);
+                    }
+                });
+            }, { threshold: 0.5 });
+            proofNumbers.forEach(el => observer.observe(el));
+        })();
+    </script>
+
+    <!-- KID-FOCUSED + WHEEL + PROMO SCRIPTS -->
+    <script>
+        /* ===== HERO VIDEO PLAY OVERLAY ===== */
+        (function() {
+            const overlay = document.getElementById('heroPlayOverlay');
+            const video = document.getElementById('heroVideo');
+            const soundBtn = document.getElementById('heroSoundBtn');
+            if (!overlay || !video) return;
+            overlay.addEventListener('click', () => {
+                video.muted = false;
+                overlay.classList.add('hidden');
+                if (soundBtn) {
+                    const onIcon = document.getElementById('soundOnIcon');
+                    const offIcon = document.getElementById('soundOffIcon');
+                    if (onIcon) onIcon.style.display = 'block';
+                    if (offIcon) offIcon.style.display = 'none';
+                }
+            });
+        })();
+
+        /* ===== SOUND EFFECTS (pop only) ===== */
+        (function() {
+            const popSound = new Audio('audio/pop.MP3');
+            popSound.volume = 0.4;
+            document.querySelectorAll('.btn-whatsapp, .bridge-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    popSound.currentTime = 0;
+                    popSound.play().catch(() => {});
+                });
+            });
+            setTimeout(() => {
+                document.querySelectorAll('.char-card').forEach(card => {
+                    card.addEventListener('mouseenter', () => {
+                        card.style.animation = 'char-jiggle 0.4s ease';
+                        setTimeout(() => card.style.animation = '', 400);
+                    });
+                });
+            }, 2000);
+        })();
+
+        /* ===== STICKY FILTER BAR SHADOW ===== */
+        (function() {
+            const fb = document.getElementById('filterBar');
+            if (!fb) return;
+            const obs = new IntersectionObserver(([e]) => {
+                fb.classList.toggle('stuck', e.intersectionRatio < 1);
+            }, { threshold: [1], rootMargin: '-65px 0px 0px 0px' });
+            obs.observe(fb);
+        })();
+
+        /* ===== SPIN WHEEL ===== */
+        (function() {
+            if (sessionStorage.getItem('wheelSpun')) {
+                const wo = document.getElementById('wheelOverlay');
+                if (wo) wo.classList.add('hidden');
+                activatePromo();
+                return;
+            }
+            const canvas = document.getElementById('wheelCanvas');
+            const ctx = canvas ? canvas.getContext('2d') : null;
+            const overlay = document.getElementById('wheelOverlay');
+            const spinBtn = document.getElementById('wheelSpinBtn');
+            const resultEl = document.getElementById('wheelResult');
+            const copyBtn = document.getElementById('wheelCopyBtn');
+            const useBtn = document.getElementById('wheelUseBtn');
+            const clickArea = document.getElementById('wheelClickArea');
+            if (!canvas || !ctx || !overlay) return;
+
+            const segments = [
+                { text: 'Video Gratis', color: '#e74c3c' },
+                { text: 'CUPOM ESPECIAL', color: '#30d158' },
+                { text: 'Brinde Secreto', color: '#9b59b6' },
+                { text: 'Desconto VIP', color: '#2980b9' },
+                { text: 'Entrega Express', color: '#e67e22' },
+                { text: 'CUPOM ESPECIAL', color: '#30d158' },
+                { text: '2x1 Especial', color: '#1abc9c' },
+                { text: 'Frete Gratis', color: '#f39c12' },
+            ];
+            const segCount = segments.length;
+            const segAngle = (2 * Math.PI) / segCount;
+
+            function drawWheel() {
+                const s = canvas.width, cx = s/2, cy = s/2, r = s/2 - 4;
+                ctx.clearRect(0, 0, s, s);
+                for (let i = 0; i < segCount; i++) {
+                    const sa = i * segAngle, ea = sa + segAngle;
+                    ctx.beginPath(); ctx.moveTo(cx, cy);
+                    ctx.arc(cx, cy, r, sa, ea);
+                    ctx.fillStyle = segments[i].color; ctx.fill();
+                    ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth = 2; ctx.stroke();
+                    ctx.save(); ctx.translate(cx, cy); ctx.rotate(sa + segAngle / 2);
+                    ctx.textAlign = 'center'; ctx.fillStyle = '#fff';
+                    ctx.font = 'bold 12px Outfit, sans-serif';
+                    const words = segments[i].text.split(' ');
+                    if (words.length > 1) {
+                        ctx.fillText(words[0], r * 0.6, -4);
+                        ctx.fillText(words[1], r * 0.6, 10);
+                    } else {
+                        ctx.fillText(segments[i].text, r * 0.6, 4);
+                    }
+                    ctx.restore();
+                }
+                ctx.beginPath(); ctx.arc(cx, cy, 22, 0, 2 * Math.PI);
+                ctx.fillStyle = '#0a0e1a'; ctx.fill();
+                ctx.strokeStyle = '#FFD700'; ctx.lineWidth = 3; ctx.stroke();
+                ctx.fillStyle = '#FFD700'; ctx.font = 'bold 10px Outfit'; ctx.textAlign = 'center';
+                ctx.fillText('GIRE', cx, cy + 4);
+            }
+            canvas.width = 300; canvas.height = 300;
+            drawWheel();
+
+            let spinning = false;
+            function doSpin() {
+                if (spinning) return;
+                spinning = true;
+                spinBtn.disabled = true;
+                /* Pointer is at top (12 o'clock = -90deg = -PI/2).
+                   Segment i occupies angle range [i*segAngle, (i+1)*segAngle].
+                   We want the pointer to land in the middle of segment 1 (CUPOM ESPECIAL).
+                   The canvas rotates clockwise. After rotation by angle R,
+                   the segment under the pointer is at angle (-PI/2 - R) mod 2PI.
+                   So we need: (-PI/2 - R) mod 2PI = 1*segAngle + segAngle/2
+                   R = -PI/2 - (1*segAngle + segAngle/2) + N*2PI */
+                const targetCenter = 1 * segAngle + segAngle / 2;
+                const baseR = -Math.PI / 2 - targetCenter;
+                const spins = 6 + Math.floor(Math.random() * 3);
+                const finalR = baseR + spins * 2 * Math.PI;
+                canvas.style.transition = 'transform 4.5s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
+                canvas.style.transform = 'rotate(' + finalR + 'rad)';
+                setTimeout(() => {
+                    resultEl.classList.add('visible');
+                    spinBtn.style.display = 'none';
+                    sessionStorage.setItem('wheelSpun', '1');
+                }, 4700);
+            }
+
+            spinBtn.addEventListener('click', doSpin);
+            if (clickArea) clickArea.addEventListener('click', doSpin);
+
+            function copyCoupon() {
+                navigator.clipboard.writeText('MAGIA15').catch(() => {});
+                const msg = document.getElementById('couponCopied');
+                if (msg) { msg.style.display = 'block'; }
+                setTimeout(() => {
+                    overlay.classList.add('hidden');
+                    activatePromo();
+                }, 1200);
+            }
+            if (copyBtn) copyBtn.addEventListener('click', copyCoupon);
+            if (useBtn) useBtn.addEventListener('click', copyCoupon);
+        })();
+
+        function activatePromo() {
+            document.querySelectorAll('.plan-card').forEach(card => {
+                const priceEl = card.querySelector('.plan-price');
+                if (!priceEl || priceEl.querySelector('.price-promo-badge')) return;
+                const badge = document.createElement('div');
+                badge.className = 'price-promo-badge';
+                badge.textContent = 'PROMO ESPECIAL';
+                priceEl.parentNode.insertBefore(badge, priceEl);
+            });
+        }
+
+        /* ===== VIDEOS PROGRESS ↔ COUNT ===== */
+        (function() {
+            const countEl = document.getElementById('videosCount');
+            const fillEl = document.getElementById('videosFill');
+            if (!countEl || !fillEl) return;
+            let vc = parseInt(countEl.textContent) || 47;
+            const mx = 100;
+            function upd() {
+                fillEl.style.width = Math.min((vc/mx)*100,100) + '%';
+                countEl.textContent = vc;
+            }
+            upd();
+            window.incrementVideoCount = function() { if(vc<mx){vc++;upd();} };
+        })();
+    </script>
+
+    <!-- MOBILE BOTTOM CTA -->
+    <div class="mobile-bottom-cta">
+        <div class="mobile-bottom-cta-inner">
+            <div class="mobile-bottom-cta-info">
+                <div class="mobile-bottom-cta-price">R$ 19,90</div>
+                <div class="mobile-bottom-cta-sub"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Entrega em até 24h</div>
+            </div>
+            <a href="checkout.html" class="btn btn-whatsapp">Pedir agora</a>
+        </div>
+    </div>
+
+</body>
+
+</html>
