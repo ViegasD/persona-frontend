@@ -445,9 +445,35 @@ const fields=['fName','fAge','fOcc','fWa','fEmail'];
 const btnPay=document.getElementById('btnPay');
 const occL={aniversario:'Aniversário',comportamento:'Bom comportamento',motivacao:'Motivação escolar',natal:'Natal',pascoa:'Páscoa',medos:'Superar medos',surpresa:'Surpresa',outro:'Outro'};
 
+const FIELD_RULES={
+  fName:{test:v=>v.trim().length>=2,msg:'Digite o nome da criança (mín. 2 letras)'},
+  fAge:{test:v=>{const n=parseInt(v);return !isNaN(n)&&n>=1&&n<=15;},msg:'Idade deve ser entre 1 e 15 anos'},
+  fOcc:{test:v=>v!=='',msg:'Selecione uma ocasião'},
+  fWa:{test:v=>/^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/.test(v.replace(/\s/g,'')),msg:'WhatsApp inválido. Ex: (47) 99999-9999'},
+  fEmail:{test:v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),msg:'E-mail inválido'}
+};
+
+function setFieldError(id,msg){
+  const el=document.getElementById(id);
+  let err=el.parentElement.querySelector('.field-err');
+  if(!err){err=document.createElement('span');err.className='field-err';err.style.cssText='color:#f87171;font-size:.75rem;margin-top:3px;display:block;';el.parentElement.appendChild(err);}
+  if(msg){err.textContent=msg;el.style.borderColor='#f87171';}
+  else{err.textContent='';el.style.borderColor='';}
+}
+
+function valField(id){
+  const el=document.getElementById(id);
+  const val=el.value;
+  const rule=FIELD_RULES[id];
+  if(!rule)return true;
+  const ok=rule.test(val);
+  if(el.dataset.touched)setFieldError(id,ok?'':rule.msg);
+  return ok;
+}
+
 function valForm(){
-  const ok=fields.every(id=>document.getElementById(id).value.trim()!=='');
-  btnPay.disabled=!ok;updateSum();
+  const allOk=fields.every(id=>FIELD_RULES[id]?FIELD_RULES[id].test(document.getElementById(id).value):true);
+  btnPay.disabled=!allOk;updateSum();
 }
 
 document.getElementById('aiTog').addEventListener('change',function(){
@@ -455,7 +481,12 @@ document.getElementById('aiTog').addEventListener('change',function(){
   d.innerHTML=this.checked?'✨ <strong>Ativado</strong>. Usamos IA para criar a mensagem perfeita.':'📌 <strong>Desativado</strong>. Usamos exatamente o texto que escrever.';
 });
 
-fields.forEach(id=>{const el=document.getElementById(id);el.addEventListener('input',valForm);el.addEventListener('change',valForm)});
+fields.forEach(id=>{
+  const el=document.getElementById(id);
+  el.addEventListener('blur',()=>{el.dataset.touched='1';valField(id);valForm();});
+  el.addEventListener('input',()=>{if(el.dataset.touched)valField(id);valForm();});
+  el.addEventListener('change',()=>{el.dataset.touched='1';valField(id);valForm();});
+});
 
 function updateSum(){
   const pkgN={teste:'Teste (1 vídeo)',surpresa:'Surpresa (3 vídeos)',completo:'Completo (5 vídeos)'};
@@ -470,6 +501,10 @@ function updateSum(){
 document.getElementById('btnB3').addEventListener('click',()=>goStep(2));
 
 btnPay.addEventListener('click',async()=>{
+  // mark all touched and validate
+  fields.forEach(id=>{document.getElementById(id).dataset.touched='1';valField(id);});
+  const allOk=fields.every(id=>FIELD_RULES[id]?FIELD_RULES[id].test(document.getElementById(id).value):true);
+  if(!allOk)return;
   if(btnPay.disabled)return;btnPay.disabled=true;
   btnPay.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Processando...';
   try{
