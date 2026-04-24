@@ -479,11 +479,11 @@ btnPay.addEventListener('click',async()=>{
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         plan_id:S.pkg,
-        recipient_name:document.getElementById('fName').value.trim(),
-        recipient_age:parseInt(document.getElementById('fAge').value)||0,
-        occasion_slug:document.getElementById('fOcc').value,
-        guest_email:document.getElementById('fEmail').value.trim(),
-        guest_phone:document.getElementById('fWa').value.trim()
+        recipient_name:document.getElementById('fName').value.trim()||null,
+        recipient_age:document.getElementById('fAge').value.trim()||null,
+        occasion_slug:document.getElementById('fOcc').value||null,
+        guest_email:document.getElementById('fEmail').value.trim()||null,
+        guest_phone:document.getElementById('fWa').value.trim()||null
       })
     });
     if(!orderRes.ok)throw new Error('Erro ao criar pedido');
