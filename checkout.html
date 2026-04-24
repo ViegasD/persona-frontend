@@ -298,313 +298,406 @@ Oferta expira em <span id="ckTimer">14:59</span> — Garanta seu preço!
 </div>
 
 <script>
+'use strict';
 
-const CHK = (s='14px') => `<svg viewBox="0 0 20 20" fill="currentColor" width="${s}" height="${s}"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>`;
+// ─── Helpers ────────────────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const API_BASE = 'https://hermes-persona-website.5tpiot.easypanel.host/api/v1';
+const fmt = c => 'R$ ' + (c / 100).toFixed(2).replace('.', ',');
 
+async function apiFetch(path, opts = {}) {
+  const res = await fetch(API_BASE + path, {
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    ...opts,
+  });
+  if (!res.ok) {
+    let msg = `Erro ${res.status}`;
+    try { const d = await res.json(); msg = d.detail || d.message || msg; } catch (_) {}
+    throw new Error(msg);
+  }
+  return res.json();
+}
+
+function showError(msg) {
+  let toast = document.getElementById('_toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = '_toast';
+    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#ff453a;color:#fff;padding:12px 20px;border-radius:12px;font-size:.88rem;font-weight:600;z-index:9999;max-width:90vw;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.4)';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.style.display = 'block';
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => { toast.style.display = 'none'; }, 4000);
+}
+
+// ─── Data ───────────────────────────────────────────────────────────────────
 const PACKAGES = [
-  {id:'teste',name:'Teste',chars:1,price:1990,old:2990,icon:'⭐',feats:['1 vídeo personalizado','Até 1 minuto','Entrega em 24h']},
-  {id:'surpresa',name:'Surpresa',chars:3,price:2990,old:3990,icon:'🌟',popular:true,promo:true,feats:['3 vídeos personalizados','Até 1 min cada','Entrega em 24h']},
-  {id:'completo',name:'Completo',chars:5,price:4990,old:6990,icon:'💎',save:'Economize R$20',feats:['5 vídeos personalizados','Até 1 min cada','Entrega prioritária 12h']}
+  { id: 'teste',    name: 'Teste',    chars: 1, price: 1990, old: 2990, icon: '⭐', feats: ['1 vídeo personalizado', 'Até 1 minuto', 'Entrega em 24h'] },
+  { id: 'surpresa', name: 'Surpresa', chars: 3, price: 2990, old: 3990, icon: '🌟', popular: true, promo: true, feats: ['3 vídeos personalizados', 'Até 1 min cada', 'Entrega em 24h'] },
+  { id: 'completo', name: 'Completo', chars: 5, price: 4990, old: 6990, icon: '💎', save: 'Economize R$20', feats: ['5 vídeos personalizados', 'Até 1 min cada', 'Entrega prioritária 12h'] },
 ];
 
 const CHARS = [
-  {id:'papai-noel',name:'Papai Noel',img:'papai-natal.webp',cat:'Clássico',pop:1},
-  {id:'cr7',name:'Cristiano Ronaldo',img:'cr7.webp',cat:'Esporte',pop:1},
-  {id:'chase',name:'Chase',img:'chase-paw-patrol.webp',cat:'Patrulha Canina'},
-  {id:'skye',name:'Skye',img:'skye-paw-patrol.webp',cat:'Patrulha Canina'},
-  {id:'marshall',name:'Marshall',img:'marshall-paw-patrol.webp',cat:'Patrulha Canina'},
-  {id:'bluey',name:'Bluey',img:'bluey.webp',cat:'Bluey',pop:1},
-  {id:'bingo',name:'Bingo',img:'bingo.webp',cat:'Bluey'},
-  {id:'sonic',name:'Sonic',img:'sonic.webp',cat:'Sonic'},
-  {id:'mickey',name:'Mickey',img:'mickey.webp',cat:'Disney'},
-  {id:'minnie',name:'Minnie',img:'minnie.webp',cat:'Disney'},
-  {id:'elsa',name:'Elsa',img:'elsa-frozen.webp',cat:'Frozen',pop:1},
-  {id:'anna',name:'Anna',img:'anna-frozen.webp',cat:'Frozen'},
-  {id:'olaf',name:'Olaf',img:'olaf-frozen.webp',cat:'Frozen'},
-  {id:'peppa',name:'Peppa Pig',img:'peppapig.webp',cat:'Clássico',pop:1},
-  {id:'mcqueen',name:'Relâmpago McQueen',img:'lightning-mcqueen.webp',cat:'Disney'},
-  {id:'homem-aranha',name:'Homem-Aranha',img:'homem-aranha.webp',cat:'Super-Herói',pop:1},
-  {id:'moana',name:'Moana',img:'moana.webp',cat:'Disney',pop:1},
-  {id:'alegria',name:'Alegria',img:'alegria.webp',cat:'Divertidamente',pop:1},
-  {id:'medo',name:'Medo',img:'medo.webp',cat:'Divertidamente'},
-  {id:'raiva',name:'Raiva',img:'raiva.webp',cat:'Divertidamente'},
-  {id:'barbie',name:'Barbie',img:'barbie.webp',cat:'Clássico'},
-  {id:'woody',name:'Woody',img:'woody.webp',cat:'Disney'},
-  {id:'rapunzel',name:'Rapunzel',img:'rapunzel-enrolados.webp',cat:'Disney'},
-  {id:'shrek',name:'Shrek',img:'shrek.webp',cat:'Clássico'},
-  {id:'minion',name:'Minion',img:'minions.webp',cat:'Clássico'},
-  {id:'masha',name:'Masha',img:'masha.webp',cat:'Clássico'},
+  { id: 'papai-noel',    name: 'Papai Noel',           img: 'papai-natal.webp',        cat: 'Clássico',       pop: 1 },
+  { id: 'cr7',           name: 'Cristiano Ronaldo',    img: 'cr7.webp',                cat: 'Esporte',        pop: 1 },
+  { id: 'chase',         name: 'Chase',                img: 'chase-paw-patrol.webp',   cat: 'Patrulha Canina'        },
+  { id: 'skye',          name: 'Skye',                 img: 'skye-paw-patrol.webp',    cat: 'Patrulha Canina'        },
+  { id: 'marshall',      name: 'Marshall',             img: 'marshall-paw-patrol.webp',cat: 'Patrulha Canina'        },
+  { id: 'bluey',         name: 'Bluey',                img: 'bluey.webp',              cat: 'Bluey',          pop: 1 },
+  { id: 'bingo',         name: 'Bingo',                img: 'bingo.webp',              cat: 'Bluey'                  },
+  { id: 'sonic',         name: 'Sonic',                img: 'sonic.webp',              cat: 'Sonic'                  },
+  { id: 'mickey',        name: 'Mickey',               img: 'mickey.webp',             cat: 'Disney'                 },
+  { id: 'minnie',        name: 'Minnie',               img: 'minnie.webp',             cat: 'Disney'                 },
+  { id: 'elsa',          name: 'Elsa',                 img: 'elsa-frozen.webp',        cat: 'Frozen',         pop: 1 },
+  { id: 'anna',          name: 'Anna',                 img: 'anna-frozen.webp',        cat: 'Frozen'                 },
+  { id: 'olaf',          name: 'Olaf',                 img: 'olaf-frozen.webp',        cat: 'Frozen'                 },
+  { id: 'peppa',         name: 'Peppa Pig',            img: 'peppapig.webp',           cat: 'Clássico',       pop: 1 },
+  { id: 'mcqueen',       name: 'Relâmpago McQueen',    img: 'lightning-mcqueen.webp',  cat: 'Disney'                 },
+  { id: 'homem-aranha',  name: 'Homem-Aranha',         img: 'homem-aranha.webp',       cat: 'Super-Herói',    pop: 1 },
+  { id: 'moana',         name: 'Moana',                img: 'moana.webp',              cat: 'Disney',         pop: 1 },
+  { id: 'alegria',       name: 'Alegria',              img: 'alegria.webp',            cat: 'Divertidamente', pop: 1 },
+  { id: 'medo',          name: 'Medo',                 img: 'medo.webp',               cat: 'Divertidamente'         },
+  { id: 'raiva',         name: 'Raiva',                img: 'raiva.webp',              cat: 'Divertidamente'         },
+  { id: 'barbie',        name: 'Barbie',               img: 'barbie.webp',             cat: 'Clássico'               },
+  { id: 'woody',         name: 'Woody',                img: 'woody.webp',              cat: 'Disney'                 },
+  { id: 'rapunzel',      name: 'Rapunzel',             img: 'rapunzel-enrolados.webp', cat: 'Disney'                 },
+  { id: 'shrek',         name: 'Shrek',                img: 'shrek.webp',              cat: 'Clássico'               },
+  { id: 'minion',        name: 'Minion',               img: 'minions.webp',            cat: 'Clássico'               },
+  { id: 'masha',         name: 'Masha',                img: 'masha.webp',              cat: 'Clássico'               },
 ];
 
-const API_BASE = 'https://hermes-persona-website.5tpiot.easypanel.host/api/v1';
-let S = {step:1,pkg:null,maxC:0,price:0,selC:[]};
-const fmt = c => 'R$ '+(c/100).toFixed(2).replace('.',',');
-
-/* TIMER */
-let secs=15*60;
-(function tick(){const m=Math.floor(secs/60),s=secs%60;const t=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');const el=document.getElementById('ckTimer');if(el)el.textContent=t;if(secs>0){secs--;setTimeout(tick,1000)}})();
-
-/* STEPPER */
-function goStep(n){
-  S.step=n;
-  document.querySelectorAll('.wizard-step').forEach(s=>s.classList.remove('active'));
-  document.getElementById('step'+n).classList.add('active');
-  document.querySelectorAll('.stepper-step').forEach(s=>{
-    const sn=+s.dataset.step;s.classList.remove('active','done');
-    if(sn<n)s.classList.add('done');if(sn===n)s.classList.add('active');
-  });
-  document.querySelectorAll('.stepper-step.done .stepper-icon').forEach(i=>i.innerHTML=CHK('16px'));
-  document.querySelectorAll('.stepper-step:not(.done) .stepper-icon').forEach(i=>{
-    if(!i.closest('.stepper-step').classList.contains('done'))i.textContent=i.closest('.stepper-step').dataset.step;
-  });
-  window.scrollTo({top:0,behavior:'smooth'});
-  if(n===3)updateSum();
-}
-
-/* STEP 1: PACKAGES */
-const pkgGrid=document.getElementById('pkgGrid');
-pkgGrid.innerHTML=PACKAGES.map(p=>`
-<div class="package-card${p.popular?' popular-pkg':''}" data-pkg="${p.id}" data-price="${p.price}" data-chars="${p.chars}">
-<div class="check-ind">${CHK('12px')}</div>
-<div class="pkg-icon">${p.icon}</div>
-<div class="pkg-name">${p.name}</div>
-<div class="pkg-chars">${p.chars} ${p.chars===1?'vídeo':'vídeos'}</div>
-${p.old?`<div class="pkg-old">${fmt(p.old)}</div>`:''}
-<div class="pkg-price"><span class="cur">R$</span>${(p.price/100).toFixed(2).replace('.',',').split(',')[0]}<span style="font-size:.9rem">,${(p.price/100).toFixed(2).split('.')[1]}</span></div>
-${p.promo?'<div class="pkg-promo">🔥 Em promoção!</div>':''}
-${p.save?`<div class="pkg-save">${p.save}</div>`:'<div style="height:18px"></div>'}
-<div class="pkg-feats">${p.feats.map(f=>`<div class="pkg-feat">${CHK('14px')}${f}</div>`).join('')}</div>
-</div>`).join('');
-
-const btnS1=document.getElementById('btnS1');
-const urlP=new URLSearchParams(location.search);
-const pre=urlP.get('plan')||urlP.get('pacote');
-
-pkgGrid.querySelectorAll('.package-card').forEach(c=>{
-  c.addEventListener('click',()=>{
-    pkgGrid.querySelectorAll('.package-card').forEach(x=>x.classList.remove('selected'));
-    c.classList.add('selected');S.pkg=c.dataset.pkg;S.maxC=+c.dataset.chars;S.price=+c.dataset.price;S.selC=[];
-    btnS1.disabled=false;
-  });
-  if(pre&&c.dataset.pkg===pre)c.click();
-});
-if(pre&&S.pkg)setTimeout(()=>{renderChars();goStep(2)},100);
-btnS1.addEventListener('click',()=>{if(S.pkg){renderChars();goStep(2)}});
-
-/* STEP 2: CHARACTERS */
-function renderChars(){
-  const g=document.getElementById('charsG');
-  document.getElementById('charLim').textContent=S.maxC;
-  document.getElementById('charMax').textContent=S.maxC;
-  document.getElementById('charCnt').textContent=S.selC.length;
-  g.innerHTML=CHARS.map(c=>`
-  <div class="char-opt${S.selC.includes(c.id)?' selected':''}" data-id="${c.id}">
-  <div class="char-chk">${CHK('11px')}</div>
-  <img class="char-opt-img" src="img/${c.img}" alt="${c.name}" loading="lazy" onerror="this.style.display='none'">
-  <div class="cn">${c.name}</div>
-  <div class="cc">${c.cat}</div>
-  ${c.pop?'<div style="margin-top:2px"><span style="font-size:.55rem;padding:1px 5px;border-radius:980px;background:rgba(191,90,242,.15);color:#BF5AF2;font-weight:700;">Popular</span></div>':''}
-  </div>`).join('');
-  g.querySelectorAll('.char-opt').forEach(o=>o.addEventListener('click',()=>togChar(o.dataset.id)));
-  updCharUI();
-}
-
-function togChar(id){
-  const i=S.selC.indexOf(id);
-  if(i>-1)S.selC.splice(i,1);else if(S.selC.length<S.maxC)S.selC.push(id);
-  updCharUI();
-}
-
-function updCharUI(){
-  const cnt=S.selC.length,max=S.maxC;
-  document.getElementById('charCnt').textContent=cnt;
-  document.getElementById('charMax').textContent=max;
-  document.getElementById('selCnt').textContent=cnt+'/'+max;
-  document.querySelectorAll('.char-opt').forEach(o=>{
-    const id=o.dataset.id,sel=S.selC.includes(id);
-    o.classList.toggle('selected',sel);o.classList.toggle('disabled',!sel&&cnt>=max);
-  });
-  const panel=document.getElementById('selPanel'),list=document.getElementById('selList');
-  if(cnt>0){
-    panel.style.display='block';
-    list.innerHTML=S.selC.map(id=>{const c=CHARS.find(x=>x.id===id);return`<span class="sel-pill">${c.name}<button class="rm" onclick="togChar('${id}')">&times;</button></span>`}).join('');
-  }else panel.style.display='none';
-  document.getElementById('btnS2').disabled=cnt<max;
-  const btnTop=document.getElementById('btnS2Top');
-  const topWrap=document.getElementById('topNextBtn');
-  btnTop.disabled=cnt<max;
-  topWrap.classList.toggle('show',cnt>=max);
-}
-
-document.getElementById('btnS2').addEventListener('click',()=>{if(S.selC.length===S.maxC)goStep(3)});
-document.getElementById('btnS2Top').addEventListener('click',()=>{if(S.selC.length===S.maxC)goStep(3)});
-document.getElementById('btnB2').addEventListener('click',()=>goStep(1));
-
-/* STEP 3: FORM */
-const fields=['fName','fAge','fOcc','fWa','fEmail'];
-const btnPay=document.getElementById('btnPay');
-const occL={aniversario:'Aniversário',comportamento:'Bom comportamento',motivacao:'Motivação escolar',natal:'Natal',pascoa:'Páscoa',medos:'Superar medos',surpresa:'Surpresa',outro:'Outro'};
-
-const FIELD_RULES={
-  fName:{test:v=>v.trim().length>=2,msg:'Digite o nome da criança (mín. 2 letras)'},
-  fAge:{test:v=>{const n=parseInt(v);return !isNaN(n)&&n>=1&&n<=15;},msg:'Idade deve ser entre 1 e 15 anos'},
-  fOcc:{test:v=>v!=='',msg:'Selecione uma ocasião'},
-  fWa:{test:v=>/^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/.test(v.replace(/\s/g,'')),msg:'WhatsApp inválido. Ex: (47) 99999-9999'},
-  fEmail:{test:v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),msg:'E-mail inválido'}
+const OCC_LABELS = {
+  aniversario: 'Aniversário', comportamento: 'Bom comportamento',
+  motivacao: 'Motivação escolar', natal: 'Natal', pascoa: 'Páscoa',
+  medos: 'Superar medos', surpresa: 'Surpresa', outro: 'Outro',
 };
 
-function setFieldError(id,msg){
-  const el=document.getElementById(id);
-  let err=el.parentElement.querySelector('.field-err');
-  if(!err){err=document.createElement('span');err.className='field-err';err.style.cssText='color:#f87171;font-size:.75rem;margin-top:3px;display:block;';el.parentElement.appendChild(err);}
-  if(msg){err.textContent=msg;el.style.borderColor='#f87171';}
-  else{err.textContent='';el.style.borderColor='';}
+const FIELD_RULES = {
+  fName:  { test: v => v.trim().length >= 2,                                              msg: 'Digite o nome da criança (mín. 2 letras)' },
+  fAge:   { test: v => { const n = parseInt(v); return !isNaN(n) && n >= 1 && n <= 15; }, msg: 'Idade deve ser entre 1 e 15 anos' },
+  fOcc:   { test: v => v !== '',                                                           msg: 'Selecione uma ocasião' },
+  fWa:    { test: v => /^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/.test(v.replace(/\s/g, '')),      msg: 'WhatsApp inválido. Ex: (47) 99999-9999' },
+  fEmail: { test: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),                      msg: 'E-mail inválido' },
+};
+
+// ─── State ──────────────────────────────────────────────────────────────────
+const state = { step: 1, pkg: null, maxChars: 0, price: 0, selectedChars: [] };
+let pollTimer = null;
+
+// ─── Timer ──────────────────────────────────────────────────────────────────
+function startTimer() {
+  let secs = 15 * 60;
+  (function tick() {
+    const m = Math.floor(secs / 60), s = secs % 60;
+    const el = $('ckTimer');
+    if (el) el.textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+    if (secs-- > 0) setTimeout(tick, 1000);
+  })();
 }
 
-function valField(id){
-  const el=document.getElementById(id);
-  const val=el.value;
-  const rule=FIELD_RULES[id];
-  if(!rule)return true;
-  const ok=rule.test(val);
-  if(el.dataset.touched)setFieldError(id,ok?'':rule.msg);
-  return ok;
+// ─── Stepper ────────────────────────────────────────────────────────────────
+const CHK = (s = '14px') => `<svg viewBox="0 0 20 20" fill="currentColor" width="${s}" height="${s}"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>`;
+
+function goStep(n) {
+  state.step = n;
+  document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
+  $('step' + n).classList.add('active');
+  document.querySelectorAll('.stepper-step').forEach(s => {
+    const sn = +s.dataset.step;
+    s.classList.remove('active', 'done');
+    if (sn < n) s.classList.add('done');
+    if (sn === n) s.classList.add('active');
+  });
+  document.querySelectorAll('.stepper-step.done .stepper-icon').forEach(i => i.innerHTML = CHK('16px'));
+  document.querySelectorAll('.stepper-step:not(.done) .stepper-icon').forEach(i => {
+    if (!i.closest('.stepper-step').classList.contains('done'))
+      i.textContent = i.closest('.stepper-step').dataset.step;
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (n === 3) updateSummary();
 }
 
-function valForm(){
-  const allOk=fields.every(id=>FIELD_RULES[id]?FIELD_RULES[id].test(document.getElementById(id).value):true);
-  btnPay.disabled=!allOk;updateSum();
-}
+// ─── Step 1: Packages ───────────────────────────────────────────────────────
+function initPackages() {
+  const grid = $('pkgGrid');
+  grid.innerHTML = PACKAGES.map(p => `
+    <div class="package-card${p.popular ? ' popular-pkg' : ''}" data-pkg="${p.id}" data-price="${p.price}" data-chars="${p.chars}">
+      <div class="check-ind">${CHK('12px')}</div>
+      <div class="pkg-icon">${p.icon}</div>
+      <div class="pkg-name">${p.name}</div>
+      <div class="pkg-chars">${p.chars} ${p.chars === 1 ? 'vídeo' : 'vídeos'}</div>
+      ${p.old ? `<div class="pkg-old">${fmt(p.old)}</div>` : ''}
+      <div class="pkg-price"><span class="cur">R$</span>${Math.floor(p.price / 100)}<span style="font-size:.9rem">,${String(p.price % 100).padStart(2, '0')}</span></div>
+      ${p.promo ? '<div class="pkg-promo">🔥 Em promoção!</div>' : ''}
+      ${p.save ? `<div class="pkg-save">${p.save}</div>` : '<div style="height:18px"></div>'}
+      <div class="pkg-feats">${p.feats.map(f => `<div class="pkg-feat">${CHK('14px')}${f}</div>`).join('')}</div>
+    </div>`).join('');
 
-document.getElementById('aiTog').addEventListener('change',function(){
-  const d=document.getElementById('aiDesc');
-  d.innerHTML=this.checked?'✨ <strong>Ativado</strong>. Usamos IA para criar a mensagem perfeita.':'📌 <strong>Desativado</strong>. Usamos exatamente o texto que escrever.';
-});
-
-fields.forEach(id=>{
-  const el=document.getElementById(id);
-  el.addEventListener('blur',()=>{el.dataset.touched='1';valField(id);valForm();});
-  el.addEventListener('input',()=>{if(el.dataset.touched)valField(id);valForm();});
-  el.addEventListener('change',()=>{el.dataset.touched='1';valField(id);valForm();});
-});
-
-function updateSum(){
-  const pkgN={teste:'Teste (1 vídeo)',surpresa:'Surpresa (3 vídeos)',completo:'Completo (5 vídeos)'};
-  document.getElementById('sumPkg').textContent=pkgN[S.pkg]||'—';
-  document.getElementById('sumChars').textContent=S.selC.map(id=>CHARS.find(c=>c.id===id)?.name).join(', ')||'—';
-  const n=document.getElementById('fName').value.trim(),a=document.getElementById('fAge').value.trim();
-  document.getElementById('sumChild').textContent=n&&a?n+', '+a+' anos':'—';
-  document.getElementById('sumOcc').textContent=occL[document.getElementById('fOcc').value]||'—';
-  document.getElementById('sumTotal').textContent=fmt(S.price);
-}
-
-document.getElementById('btnB3').addEventListener('click',()=>goStep(2));
-
-btnPay.addEventListener('click',async()=>{
-  // mark all touched and validate
-  fields.forEach(id=>{document.getElementById(id).dataset.touched='1';valField(id);});
-  const allOk=fields.every(id=>FIELD_RULES[id]?FIELD_RULES[id].test(document.getElementById(id).value):true);
-  if(!allOk)return;
-  if(btnPay.disabled)return;btnPay.disabled=true;
-  btnPay.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Processando...';
-  try{
-    /* 1. Create order */
-    const orderRes=await fetch(API_BASE+'/orders',{
-      method:'POST',credentials:'include',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        plan_id:S.pkg,
-        recipient_name:document.getElementById('fName').value.trim()||null,
-        recipient_age:document.getElementById('fAge').value.trim()||null,
-        occasion_slug:document.getElementById('fOcc').value||null,
-        guest_email:document.getElementById('fEmail').value.trim()||null,
-        guest_phone:document.getElementById('fWa').value.trim()||null
-      })
+  grid.querySelectorAll('.package-card').forEach(card => {
+    card.addEventListener('click', () => {
+      grid.querySelectorAll('.package-card').forEach(x => x.classList.remove('selected'));
+      card.classList.add('selected');
+      state.pkg = card.dataset.pkg;
+      state.maxChars = +card.dataset.chars;
+      state.price = +card.dataset.price;
+      state.selectedChars = [];
+      $('btnS1').disabled = false;
     });
-    if(!orderRes.ok)throw new Error('Erro ao criar pedido');
-    const order=await orderRes.json();
-    /* 2. Fill items (one per character slug) */
-    const aiOn=document.getElementById('aiTog').checked;
-    const msgText=document.getElementById('fMsg').value.trim();
-    let customMsg='';
-    if(msgText&&aiOn)customMsg='[IA c/ base] '+msgText;
-    else if(msgText&&!aiOn)customMsg='[Texto exato] '+msgText;
-    else customMsg='[Gerar automaticamente com IA]';
-    const fillRes=await fetch(API_BASE+'/orders/'+order.id+'/fill',{
-      method:'POST',credentials:'include',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({character_slugs:S.selC,custom_message:customMsg})
-    });
-    if(!fillRes.ok)throw new Error('Erro ao adicionar personagens');
-    /* 3. Checkout (Pix) */
-    const ckRes=await fetch(API_BASE+'/orders/'+order.id+'/checkout',{
-      method:'POST',credentials:'include'
-    });
-    if(!ckRes.ok)throw new Error('Erro no checkout');
-    const ckData=await ckRes.json();
-    /* 4. Show Pix QR screen */
-    showPixScreen(order.id, ckData);
-  }catch(err){
-    alert(err.message||'Erro ao processar pedido. Tente novamente.');
-    btnPay.disabled=false;
-    btnPay.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg> Pagar agora';
+    const pre = new URLSearchParams(location.search).get('plan') || new URLSearchParams(location.search).get('pacote');
+    if (pre && card.dataset.pkg === pre) card.click();
+  });
+
+  const pre = new URLSearchParams(location.search).get('plan') || new URLSearchParams(location.search).get('pacote');
+  if (pre && state.pkg) setTimeout(() => { renderChars(); goStep(2); }, 100);
+}
+
+// ─── Step 2: Characters ─────────────────────────────────────────────────────
+function renderChars() {
+  const g = $('charsG');
+  $('charLim').textContent = state.maxChars;
+  g.innerHTML = CHARS.map(c => `
+    <div class="char-opt${state.selectedChars.includes(c.id) ? ' selected' : ''}" data-id="${c.id}">
+      <div class="char-chk">${CHK('11px')}</div>
+      <img class="char-opt-img" src="img/${c.img}" alt="${c.name}" loading="lazy" onerror="this.style.display='none'">
+      <div class="cn">${c.name}</div>
+      <div class="cc">${c.cat}</div>
+      ${c.pop ? '<div style="margin-top:2px"><span style="font-size:.55rem;padding:1px 5px;border-radius:980px;background:rgba(191,90,242,.15);color:#BF5AF2;font-weight:700;">Popular</span></div>' : ''}
+    </div>`).join('');
+  g.querySelectorAll('.char-opt').forEach(o => o.addEventListener('click', () => toggleChar(o.dataset.id)));
+  updateCharUI();
+}
+
+function toggleChar(id) {
+  const i = state.selectedChars.indexOf(id);
+  if (i > -1) state.selectedChars.splice(i, 1);
+  else if (state.selectedChars.length < state.maxChars) state.selectedChars.push(id);
+  updateCharUI();
+}
+
+function updateCharUI() {
+  const cnt = state.selectedChars.length, max = state.maxChars;
+  $('charCnt').textContent = cnt;
+  $('charMax').textContent = max;
+  $('selCnt').textContent = cnt + '/' + max;
+  document.querySelectorAll('.char-opt').forEach(o => {
+    const sel = state.selectedChars.includes(o.dataset.id);
+    o.classList.toggle('selected', sel);
+    o.classList.toggle('disabled', !sel && cnt >= max);
+  });
+  const panel = $('selPanel'), list = $('selList');
+  if (cnt > 0) {
+    panel.style.display = 'block';
+    list.innerHTML = state.selectedChars.map(id => {
+      const c = CHARS.find(x => x.id === id);
+      return `<span class="sel-pill">${c.name}<button class="rm" onclick="toggleChar('${id}')">&times;</button></span>`;
+    }).join('');
+  } else {
+    panel.style.display = 'none';
   }
-});
-
-/* PIX SCREEN */
-let _pollTimer=null;
-function showPixScreen(orderId, ck){
-  document.querySelector('.wizard').style.display='none';
-  document.querySelector('.stepper').style.display='none';
-  const pix=document.getElementById('pixScreen');
-  pix.style.display='block';
-  if(ck.qr_code_base64){
-    document.getElementById('qrImg').src='data:image/png;base64,'+ck.qr_code_base64;
-    document.getElementById('qrImg').style.display='block';
-  }
-  document.getElementById('pixCopy').value=ck.qr_code_payload||'';
-  document.getElementById('pixTotal').textContent=fmt(ck.amount_cents||0);
-  if(ck.ticket_url)document.getElementById('pixTicketLink').href=ck.ticket_url;
-  else document.getElementById('pixTicketLink').style.display='none';
-  _pollTimer=setInterval(()=>pollOrder(orderId),3000);
+  $('btnS2').disabled = cnt < max;
+  const btnTop = $('btnS2Top'), topWrap = $('topNextBtn');
+  btnTop.disabled = cnt < max;
+  topWrap.classList.toggle('show', cnt >= max);
 }
 
-async function pollOrder(orderId){
-  try{
-    const r=await fetch(API_BASE+'/orders/'+orderId,{credentials:'include'});
-    if(!r.ok)return;
-    const o=await r.json();
-    if(['PAID','QUEUED','RENDERING','READY','DELIVERED'].includes(o.status)){
-      clearInterval(_pollTimer);
-      showSuccess(o);
+// ─── Step 3: Form ───────────────────────────────────────────────────────────
+function initForm() {
+  const fields = ['fName', 'fAge', 'fOcc', 'fWa', 'fEmail'];
+
+  function setFieldError(id, msg) {
+    const el = $(id);
+    let err = el.parentElement.querySelector('.field-err');
+    if (!err) {
+      err = document.createElement('span');
+      err.className = 'field-err';
+      err.style.cssText = 'color:#f87171;font-size:.75rem;margin-top:3px;display:block;';
+      el.parentElement.appendChild(err);
     }
-  }catch(e){}
+    if (msg) { err.textContent = msg; el.style.borderColor = '#f87171'; }
+    else      { err.textContent = ''; el.style.borderColor = ''; }
+  }
+
+  function validateField(id) {
+    const el = $(id), rule = FIELD_RULES[id];
+    if (!rule) return true;
+    const ok = rule.test(el.value);
+    if (el.dataset.touched) setFieldError(id, ok ? '' : rule.msg);
+    return ok;
+  }
+
+  function validateForm() {
+    const allOk = fields.every(id => FIELD_RULES[id] ? FIELD_RULES[id].test($(id).value) : true);
+    $('btnPay').disabled = !allOk;
+    updateSummary();
+  }
+
+  $('aiTog').addEventListener('change', function () {
+    $('aiDesc').innerHTML = this.checked
+      ? '✨ <strong>Ativado</strong>. Usamos IA para criar a mensagem perfeita.'
+      : '📌 <strong>Desativado</strong>. Usamos exatamente o texto que escrever.';
+  });
+
+  fields.forEach(id => {
+    const el = $(id);
+    el.addEventListener('blur',   () => { el.dataset.touched = '1'; validateField(id); validateForm(); });
+    el.addEventListener('input',  () => { if (el.dataset.touched) validateField(id); validateForm(); });
+    el.addEventListener('change', () => { el.dataset.touched = '1'; validateField(id); validateForm(); });
+  });
+
+  // Phone mask
+  $('fWa').addEventListener('input', function (e) {
+    let v = e.target.value.replace(/\D/g, '').slice(0, 11);
+    if      (v.length > 6) v = v.replace(/(\d{2})(\d{5})(\d{1,4})/, '($1) $2-$3');
+    else if (v.length > 2) v = v.replace(/(\d{2})(\d{1,5})/,        '($1) $2');
+    e.target.value = v;
+  });
 }
 
-function showSuccess(order){
-  document.getElementById('pixScreen').style.display='none';
-  document.getElementById('successScreen').style.display='block';
-  const name=order.recipient_name||'';
-  document.getElementById('successName').textContent=name?'O vídeo mágico para '+name+' está sendo preparado!':'Seu vídeo mágico está sendo preparado!';
-  window.scrollTo({top:0,behavior:'smooth'});
+// ─── Summary ────────────────────────────────────────────────────────────────
+function updateSummary() {
+  const pkgNames = { teste: 'Teste (1 vídeo)', surpresa: 'Surpresa (3 vídeos)', completo: 'Completo (5 vídeos)' };
+  $('sumPkg').textContent    = pkgNames[state.pkg] || '—';
+  $('sumChars').textContent  = state.selectedChars.map(id => CHARS.find(c => c.id === id)?.name).join(', ') || '—';
+  const n = $('fName').value.trim(), a = $('fAge').value.trim();
+  $('sumChild').textContent  = n && a ? `${n}, ${a} anos` : '—';
+  $('sumOcc').textContent    = OCC_LABELS[$('fOcc').value] || '—';
+  $('sumTotal').textContent  = fmt(state.price);
 }
 
-document.getElementById('btnCopyPix').addEventListener('click',()=>{
-  const v=document.getElementById('pixCopy').value;
-  navigator.clipboard.writeText(v).then(()=>{
-    const b=document.getElementById('btnCopyPix');b.textContent='Copiado ✓';
-    setTimeout(()=>b.textContent='Copiar código',2000);
+// ─── Checkout ───────────────────────────────────────────────────────────────
+async function submitCheckout() {
+  const fields = ['fName', 'fAge', 'fOcc', 'fWa', 'fEmail'];
+  fields.forEach(id => { $(id).dataset.touched = '1'; });
+  const allOk = fields.every(id => FIELD_RULES[id] ? FIELD_RULES[id].test($(id).value) : true);
+  if (!allOk) return;
+
+  const btnPay = $('btnPay');
+  if (btnPay.disabled) return;
+  btnPay.disabled = true;
+
+  const setPayLabel = txt => {
+    btnPay.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> ${txt}`;
+  };
+  const resetPayBtn = () => {
+    btnPay.disabled = false;
+    btnPay.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg> Pagar agora';
+  };
+
+  setPayLabel('Processando…');
+
+  try {
+    // 1. Create order
+    const order = await apiFetch('/orders', {
+      method: 'POST',
+      body: JSON.stringify({
+        plan_id:        state.pkg,
+        recipient_name: $('fName').value.trim()  || null,
+        recipient_age:  $('fAge').value.trim()   || null,
+        occasion_slug:  $('fOcc').value          || null,
+        guest_email:    $('fEmail').value.trim()  || null,
+        guest_phone:    $('fWa').value.trim()     || null,
+      }),
+    });
+
+    // 2. Attach characters + message
+    const msgText = $('fMsg').value.trim();
+    const aiOn = $('aiTog').checked;
+    let customMsg = '[Gerar automaticamente com IA]';
+    if (msgText && aiOn)  customMsg = '[IA c/ base] ' + msgText;
+    if (msgText && !aiOn) customMsg = '[Texto exato] ' + msgText;
+
+    await apiFetch(`/orders/${order.id}/fill`, {
+      method: 'POST',
+      body: JSON.stringify({ character_slugs: state.selectedChars, custom_message: customMsg }),
+    });
+
+    // 3. Checkout — retry up to 3× (browser may suspend long requests if tab goes background)
+    setPayLabel('Gerando Pix… não feche esta aba');
+    let ckData = null;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        ckData = await apiFetch(`/orders/${order.id}/checkout`, { method: 'POST' });
+        break;
+      } catch (e) {
+        if (attempt === 2) throw e;
+        setPayLabel('Tentando novamente… não feche esta aba');
+        await new Promise(r => setTimeout(r, 2000));
+      }
+    }
+
+    showPixScreen(order.id, ckData);
+  } catch (err) {
+    showError(err.message || 'Erro ao processar pedido. Tente novamente.');
+    resetPayBtn();
+  }
+}
+
+// ─── Pix screen ─────────────────────────────────────────────────────────────
+function showPixScreen(orderId, ck) {
+  document.querySelector('.wizard').style.display = 'none';
+  document.querySelector('.stepper').style.display = 'none';
+  const pix = $('pixScreen');
+  pix.style.display = 'block';
+
+  if (ck.qr_code_base64) {
+    const img = $('qrImg');
+    img.src = 'data:image/png;base64,' + ck.qr_code_base64;
+    img.style.display = 'block';
+  }
+  $('pixCopy').value = ck.qr_code_payload || '';
+  $('pixTotal').textContent = fmt(ck.amount_cents || 0);
+
+  const ticketLink = $('pixTicketLink');
+  if (ck.ticket_url) ticketLink.href = ck.ticket_url;
+  else ticketLink.style.display = 'none';
+
+  pollTimer = setInterval(() => pollOrder(orderId), 3000);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function pollOrder(orderId) {
+  try {
+    const order = await apiFetch(`/orders/${orderId}`);
+    if (['PAID', 'QUEUED', 'RENDERING', 'READY', 'DELIVERED'].includes(order.status)) {
+      clearInterval(pollTimer);
+      showSuccess(order);
+    }
+  } catch (_) { /* silent — keep polling */ }
+}
+
+function showSuccess(order) {
+  $('pixScreen').style.display = 'none';
+  const screen = $('successScreen');
+  screen.style.display = 'block';
+  const name = order.recipient_name || '';
+  $('successName').textContent = name
+    ? `O vídeo mágico para ${name} está sendo preparado!`
+    : 'Seu vídeo mágico está sendo preparado!';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── Init ────────────────────────────────────────────────────────────────────
+startTimer();
+initPackages();
+initForm();
+
+$('btnS1').addEventListener('click',    () => { if (state.pkg) { renderChars(); goStep(2); } });
+$('btnS2').addEventListener('click',    () => { if (state.selectedChars.length === state.maxChars) goStep(3); });
+$('btnS2Top').addEventListener('click', () => { if (state.selectedChars.length === state.maxChars) goStep(3); });
+$('btnB2').addEventListener('click',    () => goStep(1));
+$('btnB3').addEventListener('click',    () => goStep(2));
+$('btnPay').addEventListener('click',   () => submitCheckout());
+
+$('btnCopyPix').addEventListener('click', () => {
+  navigator.clipboard.writeText($('pixCopy').value).then(() => {
+    const btn = $('btnCopyPix');
+    btn.textContent = 'Copiado ✓';
+    setTimeout(() => btn.textContent = 'Copiar código', 2000);
   });
 });
-
-/* PHONE MASK */
-document.getElementById('fWa').addEventListener('input',function(e){
-  let v=e.target.value.replace(/\D/g,'').slice(0,11);
-  if(v.length>6)v=v.replace(/(\d{2})(\d{5})(\d{1,4})/,'($1) $2-$3');
-  else if(v.length>2)v=v.replace(/(\d{2})(\d{1,5})/,'($1) $2');
-  e.target.value=v;
-});
-
 </script>
 </body>
 </html>
