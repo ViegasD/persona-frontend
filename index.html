@@ -3374,6 +3374,25 @@
             const CHAT_API = 'https://hermes-persona-website.5tpiot.easypanel.host/api/v1/chat/message';
             let chatSessionId = localStorage.getItem('bia_session') || '';
 
+            function addPixCard(payment) {
+                const card = document.createElement('div');
+                card.className = 'wa-msg wa-msg-in';
+                card.style.maxWidth = '95%';
+                const amountStr = (payment.amount_cents / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                const imgHtml = payment.qr_code_base64
+                    ? `<img src="data:image/png;base64,${payment.qr_code_base64}" alt="QR Code Pix" style="width:100%;max-width:220px;border-radius:8px;display:block;margin:8px auto;">`
+                    : '';
+                card.innerHTML = `
+                    <div style="font-size:0.78rem;font-weight:700;color:#25D366;margin-bottom:6px;">💸 QR Code Pix — ${amountStr}</div>
+                    ${imgHtml}
+                    <div style="font-size:0.7rem;color:#8696A0;word-break:break-all;margin:6px 0;background:rgba(255,255,255,0.05);padding:6px;border-radius:6px;cursor:pointer;" id="pixCopyPayload" title="Toque para copiar">${payment.qr_code_payload}</div>
+                    <button onclick="(function(){navigator.clipboard&&navigator.clipboard.writeText('${payment.qr_code_payload.replace(/'/g,"\\'")}');this.textContent='Copiado ✓';this.style.background='#25D366';})()" style="width:100%;margin-top:4px;padding:8px;border:none;border-radius:8px;background:#00A884;color:#fff;font-weight:700;font-size:0.82rem;cursor:pointer;">Copiar código Pix</button>
+                    ${payment.ticket_url ? `<a href="${payment.ticket_url}" target="_blank" rel="noopener" style="display:block;text-align:center;margin-top:6px;font-size:0.75rem;color:#53BDEB;">Abrir boleto / link alternativo</a>` : ''}
+                    <div class="wa-msg-time">${timeStr}</div>`;
+                chatBody.appendChild(card);
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }
+
             const biaReplies = [
                 'Que ótimo! Para garantir o vídeo perfeito, é só <a href="checkout.html" style="color:#53BDEB">clicar aqui</a> e escolher o personagem 🎉',
                 'Boa escolha! Acesse o <a href="checkout.html" style="color:#53BDEB">checkout</a> e monte o vídeo em menos de 2 minutos 😊',
@@ -3387,11 +3406,12 @@
                 input.value = '';
                 sendBtn.disabled = true;
                 try {
+                    const body = { session_id: chatSessionId, message: text };
                     const res = await fetch(CHAT_API, {
                         method: 'POST',
                         credentials: 'include',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ session_id: chatSessionId, message: text }),
+                        body: JSON.stringify(body),
                     });
                     if (res.ok) {
                         const data = await res.json();
@@ -3399,6 +3419,9 @@
                         localStorage.setItem('bia_session', chatSessionId);
                         for (const msg of data.messages) {
                             await addMsg(msg, 'in', 600);
+                        }
+                        if (data.payment) {
+                            addPixCard(data.payment);
                         }
                     } else {
                         throw new Error();

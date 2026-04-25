@@ -306,10 +306,16 @@ const API_BASE = 'https://hermes-persona-website.5tpiot.easypanel.host/api/v1';
 const fmt = c => 'R$ ' + (c / 100).toFixed(2).replace('.', ',');
 
 async function apiFetch(path, opts = {}) {
+  const headers = { 'Content-Type': 'application/json', ...opts.headers };
+  // Include the guest token (returned by POST /orders) as a header so
+  // ownership is verified without relying on third-party cookies.
+  const gt = sessionStorage.getItem('persona_guest_token');
+  if (gt) headers['X-Guest-Token'] = gt;
+  const { headers: _ignored, ...restOpts } = opts;
   const res = await fetch(API_BASE + path, {
     credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
-    ...opts,
+    ...restOpts,
+    headers,
   });
   if (!res.ok) {
     let msg = `Erro ${res.status}`;
@@ -601,6 +607,9 @@ async function submitCheckout() {
         guest_phone:    $('fWa').value.trim()     || null,
       }),
     });
+    // Store guest_token so subsequent requests can pass it as X-Guest-Token
+    // header, bypassing third-party cookie restrictions.
+    if (order.guest_token) sessionStorage.setItem('persona_guest_token', order.guest_token);
 
     // 2. Attach characters + message
     const msgText = $('fMsg').value.trim();
