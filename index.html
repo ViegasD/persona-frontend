@@ -1771,51 +1771,9 @@
             .float-wa-label { display: none; }
         }
 
-        /* ===== STICKY CTA BAR ===== */
-        .sticky-cta {
-            position: fixed;
-            top: 56px;
-            left: 0;
-            right: 0;
-            z-index: 998;
-            background: linear-gradient(90deg, rgba(10, 14, 26, 0.97), rgba(15, 20, 36, 0.97));
-            backdrop-filter: saturate(180%) blur(20px);
-            -webkit-backdrop-filter: saturate(180%) blur(20px);
-            border-bottom: 1px solid rgba(74, 158, 245, 0.15);
-            padding: 10px 0;
-            transform: translateY(-200%);
-            transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
-        }
-        .sticky-cta.visible { transform: translateY(0); }
-        .sticky-cta-inner {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-        }
-        .sticky-cta-text {
-            font-family: 'Outfit', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text);
-        }
-        .sticky-cta-text span {
-            color: var(--green);
-            font-weight: 800;
-        }
-        .sticky-cta .btn {
-            padding: 8px 24px;
-            font-size: 0.82rem;
-        }
-        @media (max-width: 768px) {
-            .sticky-cta-text { font-size: 0.78rem; }
-            .sticky-cta .btn { padding: 7px 18px; font-size: 0.75rem; }
-        }
-
         /* ===== WHATSAPP CHATBOT "BIA" ===== */
+        .wa-chat-widget,
+        .wa-chat-widget * { box-sizing: border-box; }
         .wa-chat-widget {
             position: fixed;
             bottom: 24px;
@@ -1852,7 +1810,7 @@
             position: absolute;
             bottom: 68px;
             left: 0;
-            width: min(280px, 90vw);
+            width: min(280px, calc(100vw - 28px));
             max-height: calc(100svh - 120px);
             border-radius: 12px;
             overflow: hidden;
@@ -1891,9 +1849,10 @@
         .wa-header-avatar img {
             width: 100%; height: 100%; object-fit: cover;
         }
-        .wa-header-info { flex: 1; }
+        .wa-header-info { flex: 1; min-width: 0; overflow: hidden; }
         .wa-header-name {
             font-weight: 600; font-size: 0.95rem; color: #fff;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
         .wa-header-status {
             font-size: 0.72rem; color: rgba(255,255,255,0.75);
@@ -1929,6 +1888,8 @@
             position: relative;
             margin-bottom: 2px;
             word-wrap: break-word;
+            word-break: break-word;
+            overflow-wrap: break-word;
         }
         .wa-msg-in {
             background: #1F2C34;
@@ -2010,22 +1971,21 @@
             gap: 8px;
             border-top: 1px solid rgba(255,255,255,0.06);
             flex-shrink: 0;
+            min-width: 0;
         }
-        .wa-input-emoji {
-            background: none; border: none; color: #8696A0;
-            font-size: 1.3rem; cursor: pointer; padding: 4px;
-            flex-shrink: 0;
-        }
+        .wa-input-emoji { display: none; }
         .wa-input-field {
             flex: 1;
+            min-width: 0;
             background: #2A3942;
             border: none;
             border-radius: 20px;
-            padding: 10px 16px;
+            padding: 10px 14px;
             font-size: 0.88rem;
             color: #E9EDEF;
             outline: none;
             font-family: inherit;
+            width: 0;
         }
         .wa-input-field::placeholder { color: #8696A0; }
         .wa-input-send {
@@ -2046,7 +2006,7 @@
         .wa-input-send svg { width: 20px; height: 20px; fill: #fff; }
         @media (max-width: 768px) {
             .wa-chat-widget { bottom: 76px; left: 14px; }
-            .wa-chat-popup { width: min(260px, 88vw); }
+            .wa-chat-popup { width: min(260px, calc(100vw - 28px)); }
             .wa-chat-bubble { width: 50px; height: 50px; }
         }
 
@@ -2205,47 +2165,8 @@
             .trust-badge { flex: 1 1 calc(50% - 20px); min-width: 140px; }
         }
 
-        /* ===== MOBILE BOTTOM CTA ===== */
-        .mobile-bottom-cta {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 997;
-            background: rgba(10, 14, 26, 0.97);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-top: 1px solid rgba(48, 209, 88, 0.2);
-            padding: 12px 16px;
-            padding-bottom: max(12px, env(safe-area-inset-bottom));
-        }
-        .mobile-bottom-cta-inner {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .mobile-bottom-cta-info {
-            flex: 1;
-        }
-        .mobile-bottom-cta-price {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.1rem;
-            font-weight: 800;
-            color: var(--green);
-        }
-        .mobile-bottom-cta-sub {
-            font-size: 0.7rem;
-            color: var(--text3);
-        }
-        .mobile-bottom-cta .btn {
-            padding: 12px 24px;
-            font-size: 0.88rem;
-            white-space: nowrap;
-        }
         @media (max-width: 768px) {
-            .mobile-bottom-cta { display: block; }
-            .wa-chat-widget { bottom: 76px; }
+            .wa-chat-widget { bottom: 24px; }
         }
 
         /* ===== PROOF COUNT ANIMATION ===== */
@@ -3368,14 +3289,6 @@
         })();
     </script>
 
-    <!-- STICKY CTA BAR -->
-    <div class="sticky-cta" id="stickyCta">
-        <div class="sticky-cta-inner">
-            <span class="sticky-cta-text"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg> Vídeos mágicos a partir de <span>R$ 19,90</span></span>
-            <a href="checkout.html" class="btn btn-whatsapp">Pedir agora →</a>
-        </div>
-    </div>
-
     <!-- WHATSAPP CHATBOT BIA -->
     <div class="wa-chat-widget" id="waChatWidget">
         <div class="wa-chat-popup" id="waChatPopup">
@@ -3392,7 +3305,6 @@
             </div>
             <div class="wa-body" id="waChatBody"></div>
             <div class="wa-input-bar">
-                <button class="wa-input-emoji"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8696A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></button>
                 <input type="text" class="wa-input-field" id="waChatInput" placeholder="Digite uma mensagem..." maxlength="500">
                 <button class="wa-input-send" id="waChatSend" aria-label="Enviar">
                     <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
@@ -3408,21 +3320,6 @@
 
     <!-- ALL NEW SCRIPTS -->
     <script>
-        /* ===== STICKY CTA BAR ===== */
-        (function() {
-            const stickyBar = document.getElementById('stickyCta');
-            const hero = document.querySelector('.hero');
-            if (!stickyBar || !hero) return;
-            window.addEventListener('scroll', () => {
-                const heroBottom = hero.offsetTop + hero.offsetHeight;
-                if (window.scrollY > heroBottom + 200) {
-                    stickyBar.classList.add('visible');
-                } else {
-                    stickyBar.classList.remove('visible');
-                }
-            }, { passive: true });
-        })();
-
         /* ===== WHATSAPP CHATBOT BIA ===== */
         (function() {
             const bubble = document.getElementById('waChatBubble');
@@ -3798,17 +3695,6 @@
             window.incrementVideoCount = function() { if(vc<mx){vc++;upd();} };
         })();
     </script>
-
-    <!-- MOBILE BOTTOM CTA -->
-    <div class="mobile-bottom-cta">
-        <div class="mobile-bottom-cta-inner">
-            <div class="mobile-bottom-cta-info">
-                <div class="mobile-bottom-cta-price">R$ 19,90</div>
-                <div class="mobile-bottom-cta-sub"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Entrega em até 24h</div>
-            </div>
-            <a href="checkout.html" class="btn btn-whatsapp">Pedir agora</a>
-        </div>
-    </div>
 
 </body>
 
