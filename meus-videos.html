@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meus Vídeos | Recado Animado</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0e1a;--bg2:#111827;--bg3:#1a2035;--border:rgba(255,255,255,.08);--text:#f0f0f5;--text2:#8a8f9e;--text3:#555a6e;--green:#30d158;--green-dim:rgba(48,209,88,.1);--accent:#4a9ef5;--purple:#BF5AF2;--purple-dim:rgba(191,90,242,.15);--gold:#FFD700;--red:#ff453a;--t:.4s cubic-bezier(.25,.1,.25,1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg)}
+body{font-family:'Outfit',sans-serif;color:var(--text);min-height:100dvh;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+
+.header{position:sticky;top:0;z-index:100;padding:12px 20px;background:rgba(0,0,0,.85);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between}
+.header-back{display:flex;align-items:center;gap:8px;font-size:.85rem;font-weight:500;color:var(--text2);transition:color var(--t);text-decoration:none}
+.header-back:hover{color:#fff}
+.header-back svg{width:18px;height:18px}
+.header-title{font-size:.95rem;font-weight:600}
+
+.container{max-width:640px;margin:0 auto;padding:32px 16px 80px}
+
+.hero{text-align:center;margin-bottom:36px}
+.hero-emoji{font-size:3rem;margin-bottom:12px}
+.hero h1{font-size:clamp(1.6rem,5vw,2.2rem);font-weight:800;letter-spacing:-.03em;margin-bottom:8px}
+.hero p{color:var(--text2);font-size:.95rem;line-height:1.5}
+
+.search-card{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:24px}
+.search-card label{display:block;font-size:.8rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.input-wrap{position:relative}
+.input-wrap input{width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;font-family:'Outfit',sans-serif;font-size:1rem;color:var(--text);outline:none;transition:border-color var(--t)}
+.input-wrap input::placeholder{color:var(--text3)}
+.input-wrap input:focus{border-color:var(--purple)}
+.btn-search{width:100%;margin-top:14px;padding:15px;background:var(--purple);color:#fff;border:none;border-radius:12px;font-family:'Outfit',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:opacity var(--t),transform var(--t)}
+.btn-search:hover{opacity:.88;transform:translateY(-1px)}
+.btn-search:active{transform:translateY(0)}
+.btn-search:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+.divider{display:flex;align-items:center;gap:10px;margin:16px 0}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.divider span{font-size:.75rem;color:var(--text3);font-weight:500}
+
+.error-msg{background:rgba(255,69,58,.1);border:1px solid rgba(255,69,58,.25);border-radius:12px;padding:14px 16px;color:var(--red);font-size:.88rem;margin-top:16px;display:none}
+.error-msg.show{display:block}
+
+.results{margin-top:28px;display:none}
+.results.show{display:block}
+.results-title{font-size:.8rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px}
+
+.empty-state{text-align:center;padding:40px 16px;color:var(--text3)}
+.empty-state .emoji{font-size:2.5rem;margin-bottom:10px}
+.empty-state p{font-size:.9rem;line-height:1.5}
+
+.order-card{background:var(--bg3);border:1px solid var(--border);border-radius:18px;overflow:hidden;margin-bottom:16px}
+.order-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.order-meta{font-size:.8rem;color:var(--text2)}
+.order-meta strong{color:var(--text);font-weight:600}
+.order-badge{font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:980px}
+.order-badge.ready{background:var(--green-dim);color:var(--green)}
+.order-badge.delivered{background:rgba(74,158,245,.1);color:var(--accent)}
+
+.items-list{padding:12px 16px;display:flex;flex-direction:column;gap:12px}
+
+.item-row{display:flex;align-items:center;gap:12px}
+.item-thumb{width:52px;height:52px;border-radius:10px;object-fit:cover;background:var(--bg2);flex-shrink:0}
+.item-thumb-placeholder{width:52px;height:52px;border-radius:10px;background:var(--bg2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.4rem}
+.item-info{flex:1;min-width:0}
+.item-name{font-size:.88rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item-desc{font-size:.75rem;color:var(--text2);margin-top:1px}
+.item-actions{display:flex;gap:6px;flex-shrink:0}
+
+.btn-icon{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text2);cursor:pointer;transition:all var(--t);text-decoration:none}
+.btn-icon:hover{border-color:var(--purple);color:var(--purple);background:var(--purple-dim)}
+.btn-icon svg{width:16px;height:16px}
+
+.video-overlay{position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .25s ease;display:none}
+.video-overlay.show{display:flex}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.video-wrap{position:relative;width:100%;max-width:480px}
+.video-wrap video{width:100%;border-radius:18px;display:block}
+.video-close{position:absolute;top:-14px;right:-14px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background var(--t)}
+.video-close:hover{background:rgba(255,255,255,.3)}
+
+.spinner{width:22px;height:22px;border:2.5px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:middle;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a href="index.html" class="header-back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 18l-6-6 6-6"/>
+    </svg>
+    Início
+  </a>
+  <span class="header-title">Meus Vídeos</span>
+  <span style="width:60px"></span>
+</header>
+
+<div class="container">
+  <div class="hero">
+    <div class="hero-emoji">🎬</div>
+    <h1>Encontre seus vídeos</h1>
+    <p>Digite o telefone ou e-mail usado no pedido para acessar seus vídeos personalizados.</p>
+  </div>
+
+  <div class="search-card">
+    <label for="phone-input">Telefone ou E-mail</label>
+    <div class="input-wrap">
+      <input type="text" id="phone-input" placeholder="Ex: 11999999999 ou email@exemplo.com" autocomplete="off" inputmode="tel">
+    </div>
+
+    <button class="btn-search" id="btn-search" onclick="buscar()">Buscar meus vídeos</button>
+
+    <div class="error-msg" id="error-msg"></div>
+  </div>
+
+  <div class="results" id="results">
+    <div class="results-title" id="results-title"></div>
+    <div id="results-list"></div>
+  </div>
+</div>
+
+<!-- Video lightbox -->
+<div class="video-overlay" id="video-overlay" onclick="fecharVideo(event)">
+  <div class="video-wrap">
+    <button class="video-close" onclick="fecharVideo()">✕</button>
+    <video id="video-player" controls playsinline></video>
+  </div>
+</div>
+
+<script>
+const API_BASE = 'https://hermes-persona-website.5tpiot.easypanel.host/api/v1';
+
+const STATUS_LABELS = {
+  READY: { label: 'Pronto', cls: 'ready' },
+  DELIVERED: { label: 'Entregue', cls: 'delivered' },
+};
+
+async function buscar() {
+  const input = document.getElementById('phone-input').value.trim();
+  const errorEl = document.getElementById('error-msg');
+  const resultsEl = document.getElementById('results');
+  const btn = document.getElementById('btn-search');
+
+  errorEl.classList.remove('show');
+  resultsEl.classList.remove('show');
+
+  if (!input) {
+    mostrarErro('Por favor, informe um telefone ou e-mail.');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Buscando…';
+
+  try {
+    const isEmail = input.includes('@');
+    const param = isEmail
+      ? `email=${encodeURIComponent(input)}`
+      : `phone=${encodeURIComponent(input)}`;
+
+    const res = await fetch(`${API_BASE}/orders/lookup?${param}`, { credentials: 'include' });
+
+    if (!res.ok) {
+      if (res.status === 422) {
+        mostrarErro('Formato inválido. Use apenas números para telefone ou um e-mail válido.');
+      } else {
+        mostrarErro('Erro ao buscar. Tente novamente em instantes.');
+      }
+      return;
+    }
+
+    const orders = await res.json();
+    renderizarResultados(orders);
+  } catch (e) {
+    mostrarErro('Não foi possível conectar ao servidor. Verifique sua conexão.');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Buscar meus vídeos';
+  }
+}
+
+function renderizarResultados(orders) {
+  const resultsEl = document.getElementById('results');
+  const titleEl = document.getElementById('results-title');
+  const listEl = document.getElementById('results-list');
+
+  // Flatten all items from all orders
+  const allItems = orders.flatMap(o =>
+    (o.items || []).map(item => ({ ...item, order: o }))
+  );
+
+  if (allItems.length === 0) {
+    titleEl.textContent = 'Nenhum vídeo encontrado';
+    listEl.innerHTML = `
+      <div class="empty-state">
+        <div class="emoji">🔍</div>
+        <p>Não encontramos vídeos prontos para esse contato.<br>Se você fez um pedido recentemente, ele pode estar em produção.</p>
+      </div>`;
+    resultsEl.classList.add('show');
+    return;
+  }
+
+  const plural = allItems.length === 1 ? '1 vídeo encontrado' : `${allItems.length} vídeos encontrados`;
+  titleEl.textContent = plural;
+
+  listEl.innerHTML = allItems.map(item => {
+    const charName = item.character?.name || item.character_slug || 'Personagem';
+    const childName = item.child_name || '';
+    const videoUrl = item.video_url || item.composite_url;
+    const badge = STATUS_LABELS[item.order.status] || { label: item.order.status, cls: 'ready' };
+
+    const thumbHtml = item.composite_url
+      ? `<img class="item-thumb" src="${escHtml(item.composite_url)}" alt="${escHtml(charName)}" onerror="this.style.display='none'">`
+      : `<div class="item-thumb-placeholder">🎭</div>`;
+
+    const playBtn = videoUrl ? `
+      <a class="btn-icon" href="#" onclick="abrirVideo(event,'${escHtml(videoUrl)}')" title="Assistir">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </a>` : '';
+
+    const downloadBtn = videoUrl ? `
+      <a class="btn-icon" href="${escHtml(videoUrl)}" download title="Baixar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+      </a>` : '';
+
+    return `
+      <div class="order-card">
+        <div class="order-header">
+          <span class="order-meta">Pedido <strong>#${item.order.id}</strong></span>
+          <span class="order-badge ${badge.cls}">${badge.label}</span>
+        </div>
+        <div class="items-list">
+          <div class="item-row">
+            ${thumbHtml}
+            <div class="item-info">
+              <div class="item-name">${escHtml(charName)}</div>
+              ${childName ? `<div class="item-desc">Para: ${escHtml(childName)}</div>` : ''}
+            </div>
+            <div class="item-actions">
+              ${playBtn}
+              ${downloadBtn}
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+
+  resultsEl.classList.add('show');
+}
+
+function abrirVideo(e, url) {
+  e.preventDefault();
+  const player = document.getElementById('video-player');
+  const overlay = document.getElementById('video-overlay');
+  player.src = url;
+  overlay.classList.add('show');
+  player.play().catch(() => {});
+}
+
+function fecharVideo(e) {
+  if (e && e.target !== document.getElementById('video-overlay') && !e.currentTarget.classList?.contains('video-close')) return;
+  const player = document.getElementById('video-player');
+  const overlay = document.getElementById('video-overlay');
+  player.pause();
+  player.src = '';
+  overlay.classList.remove('show');
+}
+
+function mostrarErro(msg) {
+  const el = document.getElementById('error-msg');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Allow pressing Enter to search
+document.getElementById('phone-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') buscar();
+});
+</script>
+</body>
+</html>
