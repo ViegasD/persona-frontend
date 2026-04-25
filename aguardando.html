@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Preparando seu vídeo | Recado Animado</title>
+<link rel="icon" type="image/png" href="img/Recado-animado-LOGO.png">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0a0e1a;--bg2:#111827;--bg3:#1a2035;--border:rgba(255,255,255,.08);--text:#f0f0f5;--text2:#8a8f9e;--text3:#555a6e;--green:#30d158;--green-dim:rgba(48,209,88,.1);--accent:#4a9ef5;--purple:#BF5AF2;--purple-dim:rgba(191,90,242,.15);--gold:#FFD700;--red:#ff453a;--t:.4s cubic-bezier(.25,.1,.25,1)}
@@ -45,6 +46,10 @@ a{color:var(--accent);text-decoration:none}
 
 .item-card-header{display:flex;align-items:center;gap:14px;padding:16px 18px}
 .char-avatar{width:56px;height:56px;border-radius:14px;object-fit:cover;background:var(--bg2);flex-shrink:0;display:block}
+/* MULTI-CHAR AVATARS */
+.char-avatars{display:flex;align-items:center;gap:-8px;flex-shrink:0}
+.char-avatars .char-avatar,.char-avatars .char-avatar-ph{width:44px;height:44px;border-radius:12px;border:2px solid var(--bg3);margin-left:-10px}
+.char-avatars .char-avatar:first-child,.char-avatars .char-avatar-ph:first-child{margin-left:0}
 .char-avatar-ph{width:56px;height:56px;border-radius:14px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0}
 .item-info{flex:1;min-width:0}
 .item-char-name{font-size:1rem;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -326,15 +331,29 @@ function renderCard(item, order) {
   card.classList.toggle('is-ready',  item.status === 'READY');
   card.classList.toggle('is-failed', item.status === 'FAILED');
 
-  const slug   = (item.character_ids || [])[0] || '';
-  const cName  = slug ? (CHAR_MAP[slug] || slug) : 'Personagem';
-  const cImg   = slug ? CHAR_IMGS[slug] : null;
+  const slugs  = item.character_ids || [];
+  const slug   = slugs[0] || '';
+  const cName  = slugs.length > 1
+    ? slugs.map(s => CHAR_MAP[s] || s).join(' + ')
+    : (slug ? (CHAR_MAP[slug] || slug) : 'Personagem');
   const child  = order.recipient_name || '';
   const badge  = BADGE[item.status] || BADGE.PENDING;
 
-  const avatarHtml = cImg
-    ? `<img class="char-avatar" src="img/${esc(cImg)}" alt="${esc(cName)}" loading="lazy" onerror="this.style.display='none'">`
-    : `<div class="char-avatar-ph">🎭</div>`;
+  let avatarHtml;
+  if (slugs.length > 1) {
+    const imgs = slugs.map(s => {
+      const img = CHAR_IMGS[s];
+      return img
+        ? `<img class="char-avatar" src="img/${esc(img)}" alt="${esc(CHAR_MAP[s] || s)}" loading="lazy" onerror="this.style.display='none'">`
+        : `<div class="char-avatar-ph" style="width:44px;height:44px;border-radius:12px;font-size:1.4rem">🎭</div>`;
+    }).join('');
+    avatarHtml = `<div class="char-avatars">${imgs}</div>`;
+  } else {
+    const cImg = slug ? CHAR_IMGS[slug] : null;
+    avatarHtml = cImg
+      ? `<img class="char-avatar" src="img/${esc(cImg)}" alt="${esc(cName)}" loading="lazy" onerror="this.style.display='none'">`
+      : `<div class="char-avatar-ph">🎭</div>`;
+  }
 
   const stepsHtml = buildSteps(item);
   const videoHtml = item.status === 'READY' && item.video_url ? buildVideoSection(item) : '';
