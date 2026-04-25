@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preparando seu vídeo | Recado Animado</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0e1a;--bg2:#111827;--bg3:#1a2035;--border:rgba(255,255,255,.08);--text:#f0f0f5;--text2:#8a8f9e;--text3:#555a6e;--green:#30d158;--green-dim:rgba(48,209,88,.1);--accent:#4a9ef5;--purple:#BF5AF2;--purple-dim:rgba(191,90,242,.15);--gold:#FFD700;--red:#ff453a;--t:.4s cubic-bezier(.25,.1,.25,1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg)}
+body{font-family:'Outfit',sans-serif;color:var(--text);min-height:100dvh;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+
+/* HEADER */
+.header{position:sticky;top:0;z-index:100;padding:12px 20px;background:rgba(0,0,0,.85);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between}
+.header-back{display:flex;align-items:center;gap:8px;font-size:.85rem;font-weight:500;color:var(--text2);transition:color var(--t)}
+.header-back:hover{color:#fff}
+.header-back svg{width:18px;height:18px}
+.header-title{font-size:.95rem;font-weight:600}
+
+/* LAYOUT */
+.container{max-width:600px;margin:0 auto;padding:32px 16px 80px}
+
+/* HERO */
+.hero{text-align:center;margin-bottom:32px;transition:all .5s ease}
+
+/* MAGIC ORB */
+.magic-orb-wrap{display:flex;justify-content:center;margin-bottom:20px}
+.magic-orb{width:80px;height:80px;border-radius:50%;background:radial-gradient(circle at 38% 38%,#d17eff,#8f2fbf);box-shadow:0 0 60px rgba(191,90,242,.5),0 0 120px rgba(191,90,242,.2);animation:orbPulse 2s ease-in-out infinite;display:flex;align-items:center;justify-content:center;font-size:2rem;transition:all .6s ease}
+.magic-orb.done{background:radial-gradient(circle at 38% 38%,#58fa7a,#1a9e3a);box-shadow:0 0 60px rgba(48,209,88,.5),0 0 120px rgba(48,209,88,.2);animation:none}
+@keyframes orbPulse{0%,100%{transform:scale(1);box-shadow:0 0 60px rgba(191,90,242,.5),0 0 120px rgba(191,90,242,.2)}50%{transform:scale(1.08);box-shadow:0 0 80px rgba(191,90,242,.7),0 0 160px rgba(191,90,242,.3)}}
+
+.hero-title{font-size:clamp(1.4rem,5vw,2rem);font-weight:800;letter-spacing:-.03em;margin-bottom:8px}
+.hero-sub{color:var(--text2);font-size:.95rem;margin-bottom:12px;line-height:1.5}
+.eta-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:980px;background:var(--purple-dim);color:var(--purple);font-size:.8rem;font-weight:600;border:1px solid rgba(191,90,242,.2);margin-bottom:8px}
+.elapsed{font-size:.72rem;color:var(--text3);margin-top:4px;min-height:1.1em}
+
+/* ITEM CARDS */
+.items-wrap{display:flex;flex-direction:column;gap:16px;margin-bottom:24px}
+
+.item-card{background:var(--bg3);border:2px solid var(--border);border-radius:20px;overflow:hidden;transition:border-color .5s ease}
+.item-card.is-ready{border-color:rgba(48,209,88,.4)}
+.item-card.is-failed{border-color:rgba(255,69,58,.3)}
+
+.item-card-header{display:flex;align-items:center;gap:14px;padding:16px 18px}
+.char-avatar{width:56px;height:56px;border-radius:14px;object-fit:cover;background:var(--bg2);flex-shrink:0;display:block}
+.char-avatar-ph{width:56px;height:56px;border-radius:14px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0}
+.item-info{flex:1;min-width:0}
+.item-char-name{font-size:1rem;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item-child{font-size:.78rem;color:var(--text2)}
+.item-badge{font-size:.7rem;font-weight:700;padding:4px 10px;border-radius:980px;white-space:nowrap;flex-shrink:0}
+.b-pending{background:rgba(255,255,255,.06);color:var(--text3)}
+.b-compositing{background:rgba(74,158,245,.1);color:var(--accent)}
+.b-rendering{background:var(--purple-dim);color:var(--purple)}
+.b-awaiting{background:rgba(255,215,0,.1);color:var(--gold)}
+.b-ready{background:var(--green-dim);color:var(--green)}
+.b-failed{background:rgba(255,69,58,.1);color:var(--red)}
+
+/* PROGRESS STEPS */
+.steps-row{display:flex;align-items:flex-start;padding:0 18px 16px}
+.step-item{display:flex;flex-direction:column;align-items:center;flex:1;position:relative}
+.step-dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:var(--text3);z-index:2;position:relative;transition:all .4s ease;flex-shrink:0}
+.step-dot.s-done{border-color:var(--green);background:var(--green);color:#fff}
+.step-dot.s-active{border-color:var(--purple);background:var(--purple);color:#fff}
+.step-lbl{font-size:.58rem;font-weight:600;color:var(--text3);margin-top:5px;text-align:center;line-height:1.3;transition:color .4s ease;max-width:48px}
+.step-lbl.s-done{color:var(--green)}
+.step-lbl.s-active{color:var(--purple)}
+.step-line{position:absolute;top:13px;left:50%;right:-50%;height:2px;background:var(--border);z-index:1;transition:background .4s ease}
+.step-item.s-done .step-line{background:var(--green)}
+.step-item:last-child .step-line{display:none}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+.step-spin{width:14px;height:14px;border:2px solid rgba(191,90,242,.35);border-top-color:var(--purple);border-radius:50%;animation:spin .7s linear infinite}
+
+/* FAILED MESSAGE */
+.item-fail-msg{padding:0 18px 16px;font-size:.8rem;color:var(--red);line-height:1.5}
+
+/* VIDEO PLAYER INLINE */
+.video-section{padding:0 18px 16px}
+.item-video{width:100%;border-radius:14px;background:#000;display:block;max-height:340px}
+.video-btns{display:flex;gap:8px;margin-top:10px}
+.btn-dl{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text2);text-decoration:none;transition:all var(--t);flex-shrink:0}
+.btn-dl:hover{border-color:var(--purple);color:var(--purple)}
+.btn-dl svg{width:18px;height:18px}
+.btn-fs{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:11px;border-radius:12px;background:var(--purple);color:#fff;border:none;font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;transition:opacity var(--t)}
+.btn-fs:hover{opacity:.85}
+
+/* WHATSAPP NOTE */
+.wa-note{background:rgba(48,209,88,.05);border:1px solid rgba(48,209,88,.12);border-radius:14px;padding:14px 18px;font-size:.82rem;color:var(--text2);line-height:1.7;margin-bottom:16px}
+.wa-note strong{color:var(--green)}
+
+/* DONE CTAs */
+.done-ctas{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:8px;display:none}
+.done-ctas.show{display:flex}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:13px 28px;border-radius:980px;background:var(--purple);color:#fff;font-weight:700;font-size:.92rem;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:opacity var(--t);text-decoration:none}
+.btn-primary:hover{opacity:.85}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;padding:11px 24px;border-radius:980px;color:var(--text2);font-weight:600;font-size:.88rem;border:1.5px solid var(--border);cursor:pointer;font-family:'Outfit',sans-serif;transition:all var(--t);text-decoration:none}
+.btn-ghost:hover{border-color:var(--text3);color:var(--text)}
+
+/* ERROR SECTION */
+#errorSection{display:none}
+.error-wrap{text-align:center;padding:60px 16px}
+.error-emoji{font-size:3rem;margin-bottom:16px}
+.error-wrap h1{font-size:1.6rem;font-weight:700;margin-bottom:10px}
+.error-wrap p{color:var(--text2);font-size:.9rem;margin-bottom:24px;line-height:1.6}
+
+/* VIDEO OVERLAY */
+.v-overlay{position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;padding:20px}
+.v-overlay.show{display:flex;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.v-inner{position:relative;width:100%;max-width:480px}
+.v-inner video{width:100%;border-radius:18px;display:block}
+.v-close{position:absolute;top:-14px;right:-14px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background var(--t)}
+.v-close:hover{background:rgba(255,255,255,.3)}
+
+/* POP ANIMATION */
+@keyframes popIn{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+.pop{animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a href="./" class="header-back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 18l-6-6 6-6"/>
+    </svg>
+    Início
+  </a>
+  <span class="header-title">Seu pedido</span>
+  <span style="width:60px"></span>
+</header>
+
+<!-- MAIN: loading + done merged in one layout -->
+<div id="mainSection" class="container">
+
+  <div class="hero" id="hero">
+    <div class="magic-orb-wrap"><div class="magic-orb" id="magicOrb">✨</div></div>
+    <h1 class="hero-title" id="heroTitle">Preparando sua magia!</h1>
+    <p class="hero-sub" id="heroSub">Seus vídeos estão sendo gerados com IA</p>
+    <div class="eta-pill" id="etaPill">⏱ Geralmente 5–15 minutos</div>
+    <div class="elapsed" id="elapsedText"></div>
+  </div>
+
+  <div class="items-wrap" id="itemsList"></div>
+
+  <div class="wa-note" id="wanote">
+    📱 <strong>Você também receberá no WhatsApp</strong> assim que o vídeo estiver pronto.<br>
+    Pode fechar esta página e aguardar a mensagem!
+  </div>
+
+  <div class="done-ctas" id="doneCtas">
+    <a href="meus-videos.html" class="btn-ghost">🎬 Ver todos os meus pedidos</a>
+    <a href="./" class="btn-ghost">🌟 Pedir mais vídeos</a>
+  </div>
+
+</div>
+
+<!-- ERROR SECTION -->
+<div id="errorSection">
+  <div class="error-wrap">
+    <div class="error-emoji">🔍</div>
+    <h1 id="errTitle">Pedido não encontrado</h1>
+    <p id="errMsg">Não foi possível localizar o seu pedido. Pesquise pelo seu telefone.</p>
+    <a href="meus-videos.html" class="btn-primary">Buscar meu pedido</a>
+  </div>
+</div>
+
+<!-- VIDEO LIGHTBOX -->
+<div class="v-overlay" id="vOverlay">
+  <div class="v-inner">
+    <button class="v-close" id="vCloseBtn">✕</button>
+    <video id="vPlayer" controls playsinline></video>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+const API_BASE = 'https://hermes-persona-website.5tpiot.easypanel.host/api/v1';
+
+// ─── Character maps ───────────────────────────────────────────────────────────
+const CHAR_MAP = {
+  'papai-noel':'Papai Noel','cr7':'Cristiano Ronaldo',
+  'chase':'Chase (Pat. Canina)','skye':'Skye (Pat. Canina)',
+  'marshall':'Marshall (Pat. Canina)','bluey':'Bluey','bingo':'Bingo',
+  'sonic':'Sonic','mickey':'Mickey','minnie':'Minnie',
+  'elsa':'Elsa (Frozen)','anna':'Anna (Frozen)','olaf':'Olaf (Frozen)',
+  'peppa':'Peppa Pig','mcqueen':'Relâmpago McQueen','homem-aranha':'Homem-Aranha',
+  'moana':'Moana','alegria':'Alegria','medo':'Medo','raiva':'Raiva',
+  'barbie':'Barbie','woody':'Woody','rapunzel':'Rapunzel',
+  'shrek':'Shrek','minion':'Minion','masha':'Masha',
+};
+const CHAR_IMGS = {
+  'papai-noel':'papai-natal.webp','cr7':'cr7.webp',
+  'chase':'chase-paw-patrol.webp','skye':'skye-paw-patrol.webp',
+  'marshall':'marshall-paw-patrol.webp','bluey':'bluey.webp','bingo':'bingo.webp',
+  'sonic':'sonic.webp','mickey':'mickey.webp','minnie':'minnie.webp',
+  'elsa':'elsa-frozen.webp','anna':'anna-frozen.webp','olaf':'olaf-frozen.webp',
+  'peppa':'peppapig.webp','mcqueen':'lightning-mcqueen.webp',
+  'homem-aranha':'homem-aranha.webp','moana':'moana.webp','alegria':'alegria.webp',
+  'medo':'medo.webp','raiva':'raiva.webp','barbie':'barbie.webp',
+  'woody':'woody.webp','rapunzel':'rapunzel-enrolados.webp',
+  'shrek':'shrek.webp','minion':'minions.webp','masha':'masha.webp',
+};
+
+// ─── Status config ────────────────────────────────────────────────────────────
+// Steps shown in the progress bar (ordered)
+const STEPS = ['PENDING','COMPOSITING','RENDERING','AWAITING_APPROVAL','READY'];
+const STEP_LABELS = {
+  PENDING:'Na fila', COMPOSITING:'Preparando', RENDERING:'Gerando',
+  AWAITING_APPROVAL:'Revisando', READY:'Pronto!',
+};
+const BADGE = {
+  PENDING:           { cls:'b-pending',      txt:'Na fila…' },
+  COMPOSITING:       { cls:'b-compositing',  txt:'Preparando cena…' },
+  RENDERING:         { cls:'b-rendering',    txt:'Gerando com IA…' },
+  AWAITING_APPROVAL: { cls:'b-awaiting',     txt:'Revisão final…' },
+  READY:             { cls:'b-ready',        txt:'✓ Pronto!' },
+  FAILED:            { cls:'b-failed',       txt:'✗ Erro' },
+};
+
+// ─── Bootstrap ────────────────────────────────────────────────────────────────
+// Restore guest token from URL hash (survives tab close/refresh)
+(function () {
+  const m = location.hash.match(/[#&]t=([^&]+)/);
+  if (m) {
+    try { sessionStorage.setItem('persona_guest_token', decodeURIComponent(m[1])); } catch (_) {}
+    history.replaceState(null, '', location.pathname + location.search);
+  }
+})();
+
+const params = new URLSearchParams(location.search);
+const ORDER_ID = params.get('oid') || params.get('order_id');
+
+if (!ORDER_ID) {
+  showErr('Link inválido', 'Este link não contém um pedido válido. Pesquise pelo seu telefone ou e-mail abaixo.');
+} else {
+  startPolling();
+}
+
+// ─── API ──────────────────────────────────────────────────────────────────────
+async function apiFetch(path) {
+  const headers = {};
+  const gt = sessionStorage.getItem('persona_guest_token');
+  if (gt) headers['X-Guest-Token'] = gt;
+  const res = await fetch(API_BASE + path, { credentials: 'include', headers });
+  if (!res.ok) { const e = new Error('HTTP ' + res.status); e.status = res.status; throw e; }
+  return res.json();
+}
+
+// ─── Polling ──────────────────────────────────────────────────────────────────
+let pollTimer = null;
+let startTime = Date.now();
+let prevStatuses = {}; // item.id → last rendered status
+let isDone = false;
+let errCount = 0;
+
+function startPolling() {
+  tick();
+  pollTimer = setInterval(tick, 5000);
+  startElapsed();
+}
+
+async function tick() {
+  try {
+    const order = await apiFetch('/orders/' + ORDER_ID);
+    errCount = 0;
+    render(order);
+    if (checkAllDone(order)) {
+      clearInterval(pollTimer);
+    }
+  } catch (e) {
+    if (e.status === 403 || e.status === 404) {
+      clearInterval(pollTimer);
+      showErr('Pedido não encontrado', 'Não foi possível acessar este pedido. Verifique o link ou pesquise pelo seu telefone.');
+    } else {
+      errCount++;
+      // after 3 consecutive network failures show a subtle warning but keep polling
+      if (errCount === 4) {
+        const sub = document.getElementById('heroSub');
+        if (sub && !isDone) sub.textContent = 'Verificando conexão…';
+      }
+    }
+  }
+}
+
+function checkAllDone(order) {
+  const items = order.items || [];
+  return items.length > 0 && items.every(i => i.status === 'READY' || i.status === 'FAILED');
+}
+
+// ─── Render ───────────────────────────────────────────────────────────────────
+function render(order) {
+  const items = order.items || [];
+  if (!items.length) return;
+
+  // Render/update each item card
+  items.forEach(item => renderCard(item, order));
+
+  // Transition to "done" state when all finished
+  if (!isDone && checkAllDone(order)) {
+    transitionDone(order);
+  }
+}
+
+function renderCard(item, order) {
+  const cardId = 'card-' + item.id;
+  let card = document.getElementById(cardId);
+
+  // Only rebuild when status changes (or card is new)
+  if (card && prevStatuses[item.id] === item.status) return;
+  prevStatuses[item.id] = item.status;
+
+  const isNew = !card;
+  if (isNew) {
+    card = document.createElement('div');
+    card.id = cardId;
+    card.className = 'item-card';
+    document.getElementById('itemsList').appendChild(card);
+  }
+
+  card.classList.toggle('is-ready',  item.status === 'READY');
+  card.classList.toggle('is-failed', item.status === 'FAILED');
+
+  const slug   = (item.character_ids || [])[0] || '';
+  const cName  = slug ? (CHAR_MAP[slug] || slug) : 'Personagem';
+  const cImg   = slug ? CHAR_IMGS[slug] : null;
+  const child  = order.recipient_name || '';
+  const badge  = BADGE[item.status] || BADGE.PENDING;
+
+  const avatarHtml = cImg
+    ? `<img class="char-avatar" src="img/${esc(cImg)}" alt="${esc(cName)}" loading="lazy" onerror="this.style.display='none'">`
+    : `<div class="char-avatar-ph">🎭</div>`;
+
+  const stepsHtml = buildSteps(item);
+  const videoHtml = item.status === 'READY' && item.video_url ? buildVideoSection(item) : '';
+  const failHtml  = item.status === 'FAILED'
+    ? `<div class="item-fail-msg">Não foi possível gerar este vídeo. Entre em contato conosco para suporte.</div>`
+    : '';
+
+  card.innerHTML = `
+    <div class="item-card-header">
+      ${avatarHtml}
+      <div class="item-info">
+        <div class="item-char-name">${esc(cName)}</div>
+        ${child ? `<div class="item-child">Para: ${esc(child)}</div>` : ''}
+      </div>
+      <span class="item-badge ${badge.cls}">${badge.txt}</span>
+    </div>
+    ${stepsHtml}
+    ${videoHtml}
+    ${failHtml}
+  `;
+}
+
+function buildSteps(item) {
+  const idx     = STEPS.indexOf(item.status);
+  const isFail  = item.status === 'FAILED';
+  const isReady = item.status === 'READY';
+
+  const dots = STEPS.map((s, i) => {
+    const done   = isReady || (!isFail && i < idx);
+    const active = !isFail && !isReady && i === idx;
+    const dotCls = done ? 's-done' : active ? 's-active' : '';
+    const lblCls = done ? 's-done' : active ? 's-active' : '';
+    const itemCls = done ? 's-done' : '';
+
+    let icon;
+    if (done)        icon = chkSvg();
+    else if (active) icon = `<div class="step-spin"></div>`;
+    else             icon = i + 1;
+
+    return `
+      <div class="step-item ${itemCls}">
+        <div class="step-dot ${dotCls}">${icon}</div>
+        <div class="step-lbl ${lblCls}">${STEP_LABELS[s]}</div>
+        <div class="step-line"></div>
+      </div>`;
+  }).join('');
+
+  return `<div class="steps-row">${dots}</div>`;
+}
+
+function buildVideoSection(item) {
+  const vUrl = esc(item.video_url);
+  return `
+    <div class="video-section">
+      <video class="item-video" src="${vUrl}" controls playsinline preload="metadata"></video>
+      <div class="video-btns">
+        <button class="btn-fs" onclick="openVideo('${vUrl}')">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M8 5v14l11-7z"/></svg>
+          Tela cheia
+        </button>
+        <a class="btn-dl" href="${vUrl}" download title="Baixar vídeo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+        </a>
+      </div>
+    </div>`;
+}
+
+// ─── Done transition ──────────────────────────────────────────────────────────
+function transitionDone(order) {
+  isDone = true;
+  const items = order.items || [];
+  const allReady = items.every(i => i.status === 'READY');
+  const anyFailed = items.some(i => i.status === 'FAILED');
+
+  // Update hero
+  const orb   = document.getElementById('magicOrb');
+  const title = document.getElementById('heroTitle');
+  const sub   = document.getElementById('heroSub');
+  const eta   = document.getElementById('etaPill');
+  const wn    = document.getElementById('wanote');
+
+  orb.classList.add('done', 'pop');
+  orb.textContent = '🎉';
+
+  if (allReady) {
+    title.textContent = 'Seus vídeos estão prontos!';
+    sub.textContent   = 'Aproveite e compartilhe a magia com quem você ama ✨';
+  } else {
+    title.textContent = 'Processamento concluído';
+    sub.textContent   = anyFailed
+      ? 'Alguns vídeos foram gerados. Veja os detalhes abaixo.'
+      : 'Seus vídeos estão prontos!';
+  }
+
+  eta.style.display = 'none';
+  wn.style.display  = 'none';
+  document.getElementById('doneCtas').classList.add('show');
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── Elapsed counter ──────────────────────────────────────────────────────────
+function startElapsed() {
+  setInterval(() => {
+    if (isDone) return;
+    const el = document.getElementById('elapsedText');
+    if (!el) return;
+    const secs = Math.floor((Date.now() - startTime) / 1000);
+    if (secs < 10) { el.textContent = ''; return; }
+    if (secs < 60) {
+      el.textContent = `Aguardando há ${secs}s`;
+    } else {
+      const m = Math.floor(secs / 60), s = secs % 60;
+      el.textContent = `Aguardando há ${m}min ${String(s).padStart(2, '0')}s`;
+    }
+  }, 1000);
+}
+
+// ─── Error display ────────────────────────────────────────────────────────────
+function showErr(title, msg) {
+  document.getElementById('mainSection').style.display = 'none';
+  document.getElementById('errorSection').style.display = 'block';
+  document.getElementById('errTitle').textContent = title;
+  document.getElementById('errMsg').textContent   = msg;
+}
+
+// ─── Video lightbox ───────────────────────────────────────────────────────────
+function openVideo(url) {
+  document.getElementById('vPlayer').src = url;
+  document.getElementById('vOverlay').classList.add('show');
+  document.getElementById('vPlayer').play().catch(() => {});
+}
+
+document.getElementById('vCloseBtn').addEventListener('click', closeVideo);
+document.getElementById('vOverlay').addEventListener('click', function (e) {
+  if (e.target === this) closeVideo();
+});
+
+function closeVideo() {
+  const p = document.getElementById('vPlayer');
+  p.pause(); p.src = '';
+  document.getElementById('vOverlay').classList.remove('show');
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function chkSvg() {
+  return `<svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>`;
+}
+</script>
+</body>
+</html>

@@ -681,14 +681,10 @@ async function pollOrder(orderId) {
 }
 
 function showSuccess(order) {
-  $('pixScreen').style.display = 'none';
-  const screen = $('successScreen');
-  screen.style.display = 'block';
-  const name = order.recipient_name || '';
-  $('successName').textContent = name
-    ? `O vídeo mágico para ${name} está sendo preparado!`
-    : 'Seu vídeo mágico está sendo preparado!';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  clearInterval(pollTimer);
+  const gt = sessionStorage.getItem('persona_guest_token') || '';
+  const hash = gt ? '#t=' + encodeURIComponent(gt) : '';
+  window.location.replace('aguardando.html?oid=' + order.id + hash);
 }
 
 // ─── Init ────────────────────────────────────────────────────────────────────
