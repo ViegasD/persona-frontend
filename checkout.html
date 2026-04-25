@@ -642,9 +642,12 @@ function showPixScreen(orderId, ck) {
   const pix = $('pixScreen');
   pix.style.display = 'block';
 
+  const img = $('qrImg');
   if (ck.qr_code_base64) {
-    const img = $('qrImg');
     img.src = 'data:image/png;base64,' + ck.qr_code_base64;
+    img.style.display = 'block';
+  } else if (ck.qr_code_url) {
+    img.src = ck.qr_code_url;
     img.style.display = 'block';
   }
   $('pixCopy').value = ck.qr_code_payload || '';
