@@ -234,6 +234,13 @@ const BADGE = {
 const params = new URLSearchParams(location.search);
 const ORDER_ID = params.get('oid') || params.get('order_id');
 
+// ─── Polling state (must be declared before startPolling is called) ───────────
+let pollTimer = null;
+let startTime = Date.now();
+let prevStatuses = {}; // item.id → last rendered status
+let isDone = false;
+let errCount = 0;
+
 if (!ORDER_ID) {
   showErr('Link inválido', 'Este link não contém um pedido válido. Pesquise pelo seu telefone ou e-mail abaixo.');
 } else {
@@ -251,11 +258,6 @@ async function apiFetch(path) {
 }
 
 // ─── Polling ──────────────────────────────────────────────────────────────────
-let pollTimer = null;
-let startTime = Date.now();
-let prevStatuses = {}; // item.id → last rendered status
-let isDone = false;
-let errCount = 0;
 
 function startPolling() {
   tick();
