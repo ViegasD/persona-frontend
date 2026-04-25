@@ -356,7 +356,7 @@ function showError(msg) {
 // ─── Static Data ────────────────────────────────────────────────────────────
 const PACKAGES = [
   { id: 'teste',    name: 'Teste',    videos: 1, maxChars: 1, price: 1990, old: 2990, icon: '⭐', feats: ['1 vídeo personalizado', 'Até 1 minuto', 'Entrega em 24h'] },
-  { id: 'surpresa', name: 'Surpresa', videos: 3, maxChars: 2, price: 2990, old: 3990, icon: '🌟', popular: true, promo: true, feats: ['3 vídeos personalizados', 'Até 2 personagens por vídeo', 'Entrega em 24h'] },
+  { id: 'surpresa', name: 'Surpresa', videos: 3, maxChars: 3, price: 2990, old: 3990, icon: '🌟', popular: true, promo: true, feats: ['3 vídeos personalizados', 'Até 3 personagens por vídeo', 'Entrega em 24h'] },
   { id: 'completo', name: 'Completo', videos: 5, maxChars: 4, price: 4990, old: 6990, icon: '💎', save: 'Economize R$20', feats: ['5 vídeos personalizados', 'Até 4 personagens por vídeo', 'Entrega prioritária 12h'] },
 ];
 
@@ -479,6 +479,8 @@ function goStep(n) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
   const formStep = state.maxVideos + 3;
   if (n === formStep) updateSummary();
+  // Render chars grid when entering a video step
+  if (n >= 3 && n <= state.maxVideos + 2) renderVideoStepChars(n - 3);
 }
 
 // ─── Step 1: Packages ───────────────────────────────────────────────────────
@@ -523,8 +525,8 @@ function initQuality() {
   const renderQuality = () => {
     const hdExtra = hdPrice();
     grid.innerHTML = [
-      { id: 'sd', icon: '📹', name: 'Normal', res: '720p HD', priceLabel: fmt(state.basePrice), extraLabel: null },
-      { id: 'hd', icon: '✨', name: 'HD Premium', res: '1080p Full HD', priceLabel: null, extraLabel: fmtShort(hdExtra) },
+      { id: 'sd', icon: '📹', name: 'Normal', res: '480p', priceLabel: fmt(state.basePrice), extraLabel: null },
+      { id: 'hd', icon: '✨', name: 'HD Premium', res: '720p HD', priceLabel: null, extraLabel: fmtShort(hdExtra) },
     ].map(q => `
       <div class="quality-card${state.quality === q.id ? ' selected' : ''}" data-quality="${q.id}">
         <div class="check-ind">${CHK('12px')}</div>
@@ -731,7 +733,7 @@ function initForm() {
 function updateSummary() {
   const pkgData = PACKAGES.find(p => p.id === state.pkg);
   $('sumPkg').textContent = pkgData ? `${pkgData.name} (${pkgData.videos} vídeo${pkgData.videos > 1 ? 's' : ''})` : '—';
-  $('sumQuality').textContent = state.quality === 'hd' ? 'HD (1080p)' : 'Normal (720p)';
+  $('sumQuality').textContent = state.quality === 'hd' ? 'HD (720p)' : 'Normal (480p)';
 
   const hdExtra = state.quality === 'hd' ? hdPrice() : 0;
   if (hdExtra > 0) {
