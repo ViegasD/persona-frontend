@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Checkout | Recado Animado</title>
+<link rel="icon" type="image/png" href="img/Recado-animado-LOGO.png">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0a0e1a;--bg2:#111827;--bg3:#1a2035;--border:rgba(255,255,255,.08);--text:#f0f0f5;--text2:#8a8f9e;--text3:#555a6e;--green:#30d158;--green-dim:rgba(48,209,88,.1);--accent:#4a9ef5;--purple:#BF5AF2;--purple-dim:rgba(191,90,242,.15);--gold:#FFD700;--red:#ff453a;--t:.4s cubic-bezier(.25,.1,.25,1)}
@@ -158,6 +159,24 @@ a{color:var(--accent);text-decoration:none}
 .msg-example p{font-size:.78rem;color:var(--text2);font-style:italic;line-height:1.5}
 
 .timer-bar{background:linear-gradient(90deg,#ff453a,#ff6b35);color:#fff;text-align:center;padding:8px;font-size:.8rem;font-weight:700}
+
+/* QUALITY STEP */
+.quality-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:500px;margin:0 auto 24px}
+.quality-card{border-radius:18px;padding:26px 20px;text-align:center;background:var(--bg3);border:2px solid var(--border);cursor:pointer;transition:all var(--t);position:relative}
+.quality-card:hover{border-color:rgba(191,90,242,.3);transform:translateY(-2px)}
+.quality-card.selected{border-color:var(--purple);box-shadow:0 0 30px rgba(191,90,242,.15)}
+.quality-card .qc-icon{font-size:2.2rem;margin-bottom:8px}
+.quality-card .qc-name{font-size:1.1rem;font-weight:800;margin-bottom:4px}
+.quality-card .qc-res{font-size:.75rem;color:var(--text3);margin-bottom:8px}
+.quality-card .qc-price{font-size:.9rem;font-weight:700;color:var(--green)}
+.quality-card .qc-price.extra{color:#FFD700}
+.quality-card .check-ind{position:absolute;top:10px;right:10px}
+
+/* VIDEO SLOT STEP */
+.video-slot-header{display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin-bottom:16px}
+.video-slot-title{font-size:.92rem;font-weight:700;color:var(--purple)}
+.video-slot-count{font-size:.8rem;color:var(--text2)}
+.extra-price-tag{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:980px;background:rgba(255,215,0,.12);color:#FFD700;font-size:.65rem;font-weight:700;margin-top:3px}
 </style>
 </head>
 <body>
@@ -175,41 +194,36 @@ Oferta expira em <span id="ckTimer">14:59</span> — Garanta seu preço!
 
 <img src="img/recado-animado-capa.jpeg" alt="Recado Animado" class="hero-banner">
 
-<div class="stepper">
-<div class="stepper-step active" data-step="1"><div class="stepper-icon">1</div><div class="stepper-label">Pacote</div><div class="stepper-line"></div></div>
-<div class="stepper-step" data-step="2"><div class="stepper-icon">2</div><div class="stepper-label">Personagens</div><div class="stepper-line"></div></div>
-<div class="stepper-step" data-step="3"><div class="stepper-icon">3</div><div class="stepper-label">Personalizar</div></div>
+<div class="stepper" id="stepperEl">
+<!-- rendered dynamically by JS -->
 </div>
 
 <div class="wizard">
 
-<!-- STEP 1 -->
+<!-- STEP 1: Package -->
 <div class="wizard-step active" id="step1">
 <h2 class="wizard-title">Escolha o seu pacote</h2>
 <p class="wizard-subtitle">Quanto mais vídeos, maior a magia!</p>
 <div class="packages-grid" id="pkgGrid"></div>
-<div class="wiz-actions"><div></div><button class="btn btn-next" id="btnS1" disabled>Escolher personagens <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button></div>
+<div class="wiz-actions"><div></div><button class="btn btn-next" id="btnS1" disabled>Próximo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button></div>
 </div>
 
-<!-- STEP 2 -->
+<!-- STEP 2: Quality -->
 <div class="wizard-step" id="step2">
-<h2 class="wizard-title">Selecione os personagens</h2>
-<p class="wizard-subtitle">Escolha <span id="charLim">1</span> personagem(ns) para enviar mensagens</p>
-<div class="chars-info"><span class="chars-counter"><span id="charCnt">0</span> / <span id="charMax">1</span></span></div>
-<div class="top-next-btn" id="topNextBtn"><button class="btn btn-next" id="btnS2Top" disabled>Personalizar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button></div>
-<div class="chars-grid2" id="charsG"></div>
-<div class="sel-panel" id="selPanel" style="display:none">
-<div class="sel-title">Selecionados <span id="selCnt" class="chars-counter" style="font-size:.72rem;padding:3px 9px;">0/1</span></div>
-<div class="sel-list" id="selList"></div>
-</div>
+<h2 class="wizard-title">Qualidade do vídeo</h2>
+<p class="wizard-subtitle">Escolha a resolução dos seus vídeos mágicos</p>
+<div class="quality-grid" id="qualityGrid"></div>
 <div class="wiz-actions">
 <button class="btn btn-back" id="btnB2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Voltar</button>
-<button class="btn btn-next" id="btnS2" disabled>Personalizar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+<button class="btn btn-next" id="btnS2">Próximo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
 </div>
 </div>
 
-<!-- STEP 3 -->
-<div class="wizard-step" id="step3">
+<!-- STEPS 3..N+2: Per-video character selection (rendered dynamically) -->
+<div id="videoStepsContainer"></div>
+
+<!-- STEP N+3: Form -->
+<div class="wizard-step" id="stepForm">
 <h2 class="wizard-title">Personalizar e pagar</h2>
 <p class="wizard-subtitle">Diga-nos como quer a mensagem personalizada</p>
 <div class="form-grid">
@@ -242,14 +256,16 @@ Oferta expira em <span id="ckTimer">14:59</span> — Garanta seu preço!
 <div class="order-sum">
 <div class="order-sum-title">Resumo do pedido</div>
 <div class="osr"><span class="lbl">Pacote</span><span class="val" id="sumPkg">—</span></div>
-<div class="osr"><span class="lbl">Personagens</span><span class="val" id="sumChars">—</span></div>
+<div class="osr"><span class="lbl">Qualidade</span><span class="val" id="sumQuality">—</span></div>
+<div class="osr" id="sumHdRow" style="display:none"><span class="lbl">HD (+20%)</span><span class="val" id="sumHd">—</span></div>
+<div class="osr" id="sumExtraRow" style="display:none"><span class="lbl">Personagens extras</span><span class="val" id="sumExtra">—</span></div>
 <div class="osr"><span class="lbl">Criança</span><span class="val" id="sumChild">—</span></div>
 <div class="osr"><span class="lbl">Ocasião</span><span class="val" id="sumOcc">—</span></div>
 <div class="osr total"><span class="lbl">Total</span><span class="val" id="sumTotal">R$ 0,00</span></div>
 </div>
 </div>
 <div class="wiz-actions">
-<button class="btn btn-back" id="btnB3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Voltar</button>
+<button class="btn btn-back" id="btnBForm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Voltar</button>
 <button class="btn btn-pay" id="btnPay" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg>Pagar agora</button>
 </div>
 <div class="secure-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Pagamento seguro · Dados criptografados</div>
@@ -304,19 +320,17 @@ Oferta expira em <span id="ckTimer">14:59</span> — Garanta seu preço!
 const $ = id => document.getElementById(id);
 const API_BASE = 'https://hermes-persona-website.5tpiot.easypanel.host/api/v1';
 const fmt = c => 'R$ ' + (c / 100).toFixed(2).replace('.', ',');
+const fmtShort = c => {
+  const v = (c / 100).toFixed(2).replace('.', ',');
+  return '+R$\u00a0' + v;
+};
 
 async function apiFetch(path, opts = {}) {
   const headers = { 'Content-Type': 'application/json', ...opts.headers };
-  // Include the guest token (returned by POST /orders) as a header so
-  // ownership is verified without relying on third-party cookies.
   const gt = sessionStorage.getItem('persona_guest_token');
   if (gt) headers['X-Guest-Token'] = gt;
   const { headers: _ignored, ...restOpts } = opts;
-  const res = await fetch(API_BASE + path, {
-    credentials: 'include',
-    ...restOpts,
-    headers,
-  });
+  const res = await fetch(API_BASE + path, { credentials: 'include', ...restOpts, headers });
   if (!res.ok) {
     let msg = `Erro ${res.status}`;
     try { const d = await res.json(); msg = d.detail || d.message || msg; } catch (_) {}
@@ -339,11 +353,11 @@ function showError(msg) {
   toast._t = setTimeout(() => { toast.style.display = 'none'; }, 4000);
 }
 
-// ─── Data ───────────────────────────────────────────────────────────────────
+// ─── Static Data ────────────────────────────────────────────────────────────
 const PACKAGES = [
-  { id: 'teste',    name: 'Teste',    chars: 1, price: 1990, old: 2990, icon: '⭐', feats: ['1 vídeo personalizado', 'Até 1 minuto', 'Entrega em 24h'] },
-  { id: 'surpresa', name: 'Surpresa', chars: 3, price: 2990, old: 3990, icon: '🌟', popular: true, promo: true, feats: ['3 vídeos personalizados', 'Até 1 min cada', 'Entrega em 24h'] },
-  { id: 'completo', name: 'Completo', chars: 5, price: 4990, old: 6990, icon: '💎', save: 'Economize R$20', feats: ['5 vídeos personalizados', 'Até 1 min cada', 'Entrega prioritária 12h'] },
+  { id: 'teste',    name: 'Teste',    videos: 1, maxChars: 1, price: 1990, old: 2990, icon: '⭐', feats: ['1 vídeo personalizado', 'Até 1 minuto', 'Entrega em 24h'] },
+  { id: 'surpresa', name: 'Surpresa', videos: 3, maxChars: 2, price: 2990, old: 3990, icon: '🌟', popular: true, promo: true, feats: ['3 vídeos personalizados', 'Até 2 personagens por vídeo', 'Entrega em 24h'] },
+  { id: 'completo', name: 'Completo', videos: 5, maxChars: 4, price: 4990, old: 6990, icon: '💎', save: 'Economize R$20', feats: ['5 vídeos personalizados', 'Até 4 personagens por vídeo', 'Entrega prioritária 12h'] },
 ];
 
 const CHARS = [
@@ -390,8 +404,25 @@ const FIELD_RULES = {
 };
 
 // ─── State ──────────────────────────────────────────────────────────────────
-const state = { step: 1, pkg: null, maxChars: 0, price: 0, selectedChars: [] };
+const state = {
+  step: 1,
+  pkg: null,        // plan slug
+  maxVideos: 0,     // plan.video_count
+  maxChars: 0,      // plan.max_characters_per_video
+  basePrice: 0,     // plan.price_cents
+  quality: 'sd',
+  videos: [],       // Array<string[]>, length = maxVideos
+};
 let pollTimer = null;
+
+// ─── Pricing ────────────────────────────────────────────────────────────────
+function calcTotal() {
+  const hdMult = state.quality === 'hd' ? 0.20 : 0;
+  const extraChars = state.videos.reduce((s, v) => s + Math.max(0, (v || []).length - 1), 0);
+  return Math.round(state.basePrice * (1 + hdMult + 0.10 * extraChars));
+}
+function extraCharPrice() { return Math.round(state.basePrice * 0.10); }
+function hdPrice() { return Math.round(state.basePrice * 0.20); }
 
 // ─── Timer ──────────────────────────────────────────────────────────────────
 function startTimer() {
@@ -407,34 +438,58 @@ function startTimer() {
 // ─── Stepper ────────────────────────────────────────────────────────────────
 const CHK = (s = '14px') => `<svg viewBox="0 0 20 20" fill="currentColor" width="${s}" height="${s}"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>`;
 
+function buildStepperLabels() {
+  const labels = ['Pacote', 'Qualidade'];
+  for (let i = 1; i <= state.maxVideos; i++) labels.push(`Vídeo ${i}`);
+  labels.push('Pagar');
+  return labels;
+}
+
+function renderStepper() {
+  const labels = buildStepperLabels();
+  const totalSteps = labels.length;
+  const el = $('stepperEl');
+  el.innerHTML = labels.map((lbl, idx) => {
+    const sn = idx + 1;
+    const isActive = sn === state.step;
+    const isDone = sn < state.step;
+    const cls = `stepper-step${isActive ? ' active' : ''}${isDone ? ' done' : ''}`;
+    const iconContent = isDone ? CHK('16px') : sn;
+    const lineHtml = sn < totalSteps ? '<div class="stepper-line"></div>' : '';
+    return `<div class="${cls}" data-step="${sn}"><div class="stepper-icon">${iconContent}</div><div class="stepper-label">${lbl}</div>${lineHtml}</div>`;
+  }).join('');
+}
+
+function stepIdForN(n) {
+  // n=1 → 'step1', n=2 → 'step2', n=3..N+2 → 'stepV{n-2}', n=N+3 → 'stepForm'
+  if (n === 1) return 'step1';
+  if (n === 2) return 'step2';
+  const formStep = state.maxVideos + 3;
+  if (n === formStep) return 'stepForm';
+  return 'stepV' + (n - 2);
+}
+
 function goStep(n) {
   state.step = n;
   document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
-  $('step' + n).classList.add('active');
-  document.querySelectorAll('.stepper-step').forEach(s => {
-    const sn = +s.dataset.step;
-    s.classList.remove('active', 'done');
-    if (sn < n) s.classList.add('done');
-    if (sn === n) s.classList.add('active');
-  });
-  document.querySelectorAll('.stepper-step.done .stepper-icon').forEach(i => i.innerHTML = CHK('16px'));
-  document.querySelectorAll('.stepper-step:not(.done) .stepper-icon').forEach(i => {
-    if (!i.closest('.stepper-step').classList.contains('done'))
-      i.textContent = i.closest('.stepper-step').dataset.step;
-  });
+  const id = stepIdForN(n);
+  const el = $(id);
+  if (el) el.classList.add('active');
+  renderStepper();
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  if (n === 3) updateSummary();
+  const formStep = state.maxVideos + 3;
+  if (n === formStep) updateSummary();
 }
 
 // ─── Step 1: Packages ───────────────────────────────────────────────────────
 function initPackages() {
   const grid = $('pkgGrid');
   grid.innerHTML = PACKAGES.map(p => `
-    <div class="package-card${p.popular ? ' popular-pkg' : ''}" data-pkg="${p.id}" data-price="${p.price}" data-chars="${p.chars}">
+    <div class="package-card${p.popular ? ' popular-pkg' : ''}" data-pkg="${p.id}" data-price="${p.price}" data-videos="${p.videos}" data-maxchars="${p.maxChars}">
       <div class="check-ind">${CHK('12px')}</div>
       <div class="pkg-icon">${p.icon}</div>
       <div class="pkg-name">${p.name}</div>
-      <div class="pkg-chars">${p.chars} ${p.chars === 1 ? 'vídeo' : 'vídeos'}</div>
+      <div class="pkg-chars">${p.videos} ${p.videos === 1 ? 'vídeo' : 'vídeos'}</div>
       ${p.old ? `<div class="pkg-old">${fmt(p.old)}</div>` : ''}
       <div class="pkg-price"><span class="cur">R$</span>${Math.floor(p.price / 100)}<span style="font-size:.9rem">,${String(p.price % 100).padStart(2, '0')}</span></div>
       ${p.promo ? '<div class="pkg-promo">🔥 Em promoção!</div>' : ''}
@@ -447,69 +502,176 @@ function initPackages() {
       grid.querySelectorAll('.package-card').forEach(x => x.classList.remove('selected'));
       card.classList.add('selected');
       state.pkg = card.dataset.pkg;
-      state.maxChars = +card.dataset.chars;
-      state.price = +card.dataset.price;
-      state.selectedChars = [];
+      state.maxVideos = +card.dataset.videos;
+      state.maxChars = +card.dataset.maxchars;
+      state.basePrice = +card.dataset.price;
+      state.videos = Array.from({ length: state.maxVideos }, () => []);
       $('btnS1').disabled = false;
+      buildVideoSteps();
     });
     const pre = new URLSearchParams(location.search).get('plan') || new URLSearchParams(location.search).get('pacote');
     if (pre && card.dataset.pkg === pre) card.click();
   });
 
   const pre = new URLSearchParams(location.search).get('plan') || new URLSearchParams(location.search).get('pacote');
-  if (pre && state.pkg) setTimeout(() => { renderChars(); goStep(2); }, 100);
+  if (pre && state.pkg) setTimeout(() => goStep(2), 100);
 }
 
-// ─── Step 2: Characters ─────────────────────────────────────────────────────
-function renderChars() {
-  const g = $('charsG');
-  $('charLim').textContent = state.maxChars;
-  g.innerHTML = CHARS.map(c => `
-    <div class="char-opt${state.selectedChars.includes(c.id) ? ' selected' : ''}" data-id="${c.id}">
-      <div class="char-chk">${CHK('11px')}</div>
-      <img class="char-opt-img" src="img/${c.img}" alt="${c.name}" loading="lazy" onerror="this.style.display='none'">
-      <div class="cn">${c.name}</div>
-      <div class="cc">${c.cat}</div>
-      ${c.pop ? '<div style="margin-top:2px"><span style="font-size:.55rem;padding:1px 5px;border-radius:980px;background:rgba(191,90,242,.15);color:#BF5AF2;font-weight:700;">Popular</span></div>' : ''}
-    </div>`).join('');
-  g.querySelectorAll('.char-opt').forEach(o => o.addEventListener('click', () => toggleChar(o.dataset.id)));
-  updateCharUI();
+// ─── Step 2: Quality ────────────────────────────────────────────────────────
+function initQuality() {
+  const grid = $('qualityGrid');
+  const renderQuality = () => {
+    const hdExtra = hdPrice();
+    grid.innerHTML = [
+      { id: 'sd', icon: '📹', name: 'Normal', res: '720p HD', priceLabel: fmt(state.basePrice), extraLabel: null },
+      { id: 'hd', icon: '✨', name: 'HD Premium', res: '1080p Full HD', priceLabel: null, extraLabel: fmtShort(hdExtra) },
+    ].map(q => `
+      <div class="quality-card${state.quality === q.id ? ' selected' : ''}" data-quality="${q.id}">
+        <div class="check-ind">${CHK('12px')}</div>
+        <div class="qc-icon">${q.icon}</div>
+        <div class="qc-name">${q.name}</div>
+        <div class="qc-res">${q.res}</div>
+        ${q.extraLabel ? `<div class="qc-price extra">${q.extraLabel}</div>` : `<div class="qc-price">Incluído</div>`}
+      </div>`).join('');
+    grid.querySelectorAll('.quality-card').forEach(card => {
+      card.addEventListener('click', () => {
+        grid.querySelectorAll('.quality-card').forEach(x => x.classList.remove('selected'));
+        card.classList.add('selected');
+        state.quality = card.dataset.quality;
+      });
+    });
+  };
+  renderQuality();
+  // Re-render when package changes (price changes)
+  $('btnB2').addEventListener('click', () => goStep(1));
+  $('btnS2').addEventListener('click', () => goStep(3));
 }
 
-function toggleChar(id) {
-  const i = state.selectedChars.indexOf(id);
-  if (i > -1) state.selectedChars.splice(i, 1);
-  else if (state.selectedChars.length < state.maxChars) state.selectedChars.push(id);
-  updateCharUI();
-}
-
-function updateCharUI() {
-  const cnt = state.selectedChars.length, max = state.maxChars;
-  $('charCnt').textContent = cnt;
-  $('charMax').textContent = max;
-  $('selCnt').textContent = cnt + '/' + max;
-  document.querySelectorAll('.char-opt').forEach(o => {
-    const sel = state.selectedChars.includes(o.dataset.id);
-    o.classList.toggle('selected', sel);
-    o.classList.toggle('disabled', !sel && cnt >= max);
-  });
-  const panel = $('selPanel'), list = $('selList');
-  if (cnt > 0) {
-    panel.style.display = 'block';
-    list.innerHTML = state.selectedChars.map(id => {
-      const c = CHARS.find(x => x.id === id);
-      return `<span class="sel-pill">${c.name}<button class="rm" onclick="toggleChar('${id}')">&times;</button></span>`;
-    }).join('');
-  } else {
-    panel.style.display = 'none';
+// ─── Video Steps ────────────────────────────────────────────────────────────
+function buildVideoSteps() {
+  const container = $('videoStepsContainer');
+  container.innerHTML = '';
+  for (let vi = 0; vi < state.maxVideos; vi++) {
+    const stepN = vi + 3; // step numbers: 3, 4, 5, ...
+    const div = document.createElement('div');
+    div.className = 'wizard-step';
+    div.id = 'stepV' + (vi + 1);
+    div.innerHTML = buildVideoStepHtml(vi);
+    container.appendChild(div);
+    attachVideoStepEvents(vi);
   }
-  $('btnS2').disabled = cnt < max;
-  const btnTop = $('btnS2Top'), topWrap = $('topNextBtn');
-  btnTop.disabled = cnt < max;
-  topWrap.classList.toggle('show', cnt >= max);
 }
 
-// ─── Step 3: Form ───────────────────────────────────────────────────────────
+function buildVideoStepHtml(vi) {
+  const stepN = vi + 3;
+  const isFirst = vi === 0;
+  const isLast = vi === state.maxVideos - 1;
+  const formStep = state.maxVideos + 3;
+  return `
+    <h2 class="wizard-title">Vídeo ${vi + 1} de ${state.maxVideos}</h2>
+    <p class="wizard-subtitle">Escolha de 1 a ${state.maxChars} personagem(ns) para este vídeo</p>
+    <div class="video-slot-header">
+      <span class="video-slot-title">🎬 Vídeo ${vi + 1}</span>
+      <span class="video-slot-count" id="vsCnt${vi}">0 / ${state.maxChars}</span>
+    </div>
+    <div class="chars-grid2" id="vsGrid${vi}"></div>
+    <div class="sel-panel" id="vsPanel${vi}" style="display:none">
+      <div class="sel-title">Selecionados <span id="vsSelCnt${vi}" class="chars-counter" style="font-size:.72rem;padding:3px 9px;">0/${state.maxChars}</span></div>
+      <div class="sel-list" id="vsSelList${vi}"></div>
+    </div>
+    <div class="wiz-actions">
+      <button class="btn btn-back" id="vsBtnBack${vi}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Voltar
+      </button>
+      <button class="btn btn-next" id="vsBtnNext${vi}" disabled>
+        ${isLast ? 'Finalizar e pagar' : 'Próximo vídeo'}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>`;
+}
+
+function attachVideoStepEvents(vi) {
+  // Buttons are rendered in the DOM now
+  document.getElementById(`vsBtnBack${vi}`).addEventListener('click', () => goStep(vi + 2));
+  document.getElementById(`vsBtnNext${vi}`).addEventListener('click', () => {
+    const formStep = state.maxVideos + 3;
+    goStep(vi === state.maxVideos - 1 ? formStep : vi + 4);
+  });
+}
+
+function renderVideoStepChars(vi) {
+  const grid = document.getElementById(`vsGrid${vi}`);
+  if (!grid) return;
+  const slot = state.videos[vi] || [];
+  const extraPriceLabel = fmtShort(extraCharPrice());
+  grid.innerHTML = CHARS.map(c => {
+    const sel = slot.includes(c.id);
+    const posInSlot = slot.indexOf(c.id);
+    const isExtra = posInSlot >= 1; // 2nd+ character is extra
+    return `
+      <div class="char-opt${sel ? ' selected' : ''}" data-id="${c.id}" data-vi="${vi}">
+        <div class="char-chk">${CHK('11px')}</div>
+        <img class="char-opt-img" src="img/${c.img}" alt="${c.name}" loading="lazy" onerror="this.style.display='none'">
+        <div class="cn">${c.name}</div>
+        <div class="cc">${c.cat}</div>
+        ${c.pop && !sel ? '<div style="margin-top:2px"><span style="font-size:.55rem;padding:1px 5px;border-radius:980px;background:rgba(191,90,242,.15);color:#BF5AF2;font-weight:700;">Popular</span></div>' : ''}
+        ${!sel && slot.length >= 1 && slot.length < state.maxChars ? `<div class="extra-price-tag">${extraPriceLabel}</div>` : ''}
+      </div>`;
+  }).join('');
+  grid.querySelectorAll('.char-opt').forEach(o => {
+    const slotSize = slot.length;
+    if (!slot.includes(o.dataset.id) && slotSize >= state.maxChars) {
+      o.classList.add('disabled');
+    }
+    o.addEventListener('click', () => toggleVideoChar(vi, o.dataset.id));
+  });
+  updateVideoStepUI(vi);
+}
+
+function toggleVideoChar(vi, id) {
+  const slot = state.videos[vi] || [];
+  const i = slot.indexOf(id);
+  if (i > -1) slot.splice(i, 1);
+  else if (slot.length < state.maxChars) slot.push(id);
+  state.videos[vi] = slot;
+  renderVideoStepChars(vi);
+}
+
+function updateVideoStepUI(vi) {
+  const slot = state.videos[vi] || [];
+  const cnt = slot.length;
+  const cntEl = document.getElementById(`vsCnt${vi}`);
+  const selCntEl = document.getElementById(`vsSelCnt${vi}`);
+  const panelEl = document.getElementById(`vsPanel${vi}`);
+  const selListEl = document.getElementById(`vsSelList${vi}`);
+  const btnNext = document.getElementById(`vsBtnNext${vi}`);
+  if (cntEl) cntEl.textContent = `${cnt} / ${state.maxChars}`;
+  if (selCntEl) selCntEl.textContent = `${cnt}/${state.maxChars}`;
+  if (panelEl) {
+    if (cnt > 0) {
+      panelEl.style.display = 'block';
+      selListEl.innerHTML = slot.map(id => {
+        const c = CHARS.find(x => x.id === id);
+        return `<span class="sel-pill">${c.name}<button class="rm" onclick="toggleVideoChar(${vi},'${id}')">&times;</button></span>`;
+      }).join('');
+    } else {
+      panelEl.style.display = 'none';
+    }
+  }
+  if (btnNext) btnNext.disabled = cnt < 1;
+}
+
+// Override goStep to also render the current video step's chars grid
+function goStepWithRender(n) {
+  goStep(n);
+  // If we're on a video step, render its chars
+  if (n >= 3 && n <= state.maxVideos + 2) {
+    const vi = n - 3;
+    renderVideoStepChars(vi);
+  }
+}
+
+// ─── Step Form ──────────────────────────────────────────────────────────────
 function initForm() {
   const fields = ['fName', 'fAge', 'fOcc', 'fWa', 'fEmail'];
 
@@ -553,24 +715,44 @@ function initForm() {
     el.addEventListener('change', () => { el.dataset.touched = '1'; validateField(id); validateForm(); });
   });
 
-  // Phone mask
   $('fWa').addEventListener('input', function (e) {
     let v = e.target.value.replace(/\D/g, '').slice(0, 11);
     if      (v.length > 6) v = v.replace(/(\d{2})(\d{5})(\d{1,4})/, '($1) $2-$3');
     else if (v.length > 2) v = v.replace(/(\d{2})(\d{1,5})/,        '($1) $2');
     e.target.value = v;
   });
+
+  $('btnBForm').addEventListener('click', () => {
+    goStepWithRender(state.maxVideos + 2);
+  });
 }
 
 // ─── Summary ────────────────────────────────────────────────────────────────
 function updateSummary() {
-  const pkgNames = { teste: 'Teste (1 vídeo)', surpresa: 'Surpresa (3 vídeos)', completo: 'Completo (5 vídeos)' };
-  $('sumPkg').textContent    = pkgNames[state.pkg] || '—';
-  $('sumChars').textContent  = state.selectedChars.map(id => CHARS.find(c => c.id === id)?.name).join(', ') || '—';
+  const pkgData = PACKAGES.find(p => p.id === state.pkg);
+  $('sumPkg').textContent = pkgData ? `${pkgData.name} (${pkgData.videos} vídeo${pkgData.videos > 1 ? 's' : ''})` : '—';
+  $('sumQuality').textContent = state.quality === 'hd' ? 'HD (1080p)' : 'Normal (720p)';
+
+  const hdExtra = state.quality === 'hd' ? hdPrice() : 0;
+  if (hdExtra > 0) {
+    $('sumHdRow').style.display = 'flex';
+    $('sumHd').textContent = fmtShort(hdExtra);
+  } else {
+    $('sumHdRow').style.display = 'none';
+  }
+
+  const extraChars = state.videos.reduce((s, v) => s + Math.max(0, (v || []).length - 1), 0);
+  if (extraChars > 0) {
+    $('sumExtraRow').style.display = 'flex';
+    $('sumExtra').textContent = fmtShort(extraCharPrice() * extraChars) + ` (${extraChars}×)`;
+  } else {
+    $('sumExtraRow').style.display = 'none';
+  }
+
   const n = $('fName').value.trim(), a = $('fAge').value.trim();
-  $('sumChild').textContent  = n && a ? `${n}, ${a} anos` : '—';
-  $('sumOcc').textContent    = OCC_LABELS[$('fOcc').value] || '—';
-  $('sumTotal').textContent  = fmt(state.price);
+  $('sumChild').textContent = n && a ? `${n}, ${a} anos` : '—';
+  $('sumOcc').textContent = OCC_LABELS[$('fOcc').value] || '—';
+  $('sumTotal').textContent = fmt(calcTotal());
 }
 
 // ─── Checkout ───────────────────────────────────────────────────────────────
@@ -607,11 +789,9 @@ async function submitCheckout() {
         guest_phone:    $('fWa').value.trim()     || null,
       }),
     });
-    // Store guest_token so subsequent requests can pass it as X-Guest-Token
-    // header, bypassing third-party cookie restrictions.
     if (order.guest_token) sessionStorage.setItem('persona_guest_token', order.guest_token);
 
-    // 2. Attach characters + message
+    // 2. Fill with video slots, quality, message
     const msgText = $('fMsg').value.trim();
     const aiOn = $('aiTog').checked;
     let customMsg = '[Gerar automaticamente com IA]';
@@ -620,10 +800,14 @@ async function submitCheckout() {
 
     await apiFetch(`/orders/${order.id}/fill`, {
       method: 'POST',
-      body: JSON.stringify({ character_slugs: state.selectedChars, custom_message: customMsg }),
+      body: JSON.stringify({
+        video_slots: state.videos,
+        quality: state.quality,
+        custom_message: customMsg,
+      }),
     });
 
-    // 3. Checkout — retry up to 3× (browser may suspend long requests if tab goes background)
+    // 3. Checkout
     setPayLabel('Gerando Pix… não feche esta aba');
     let ckData = null;
     for (let attempt = 0; attempt < 3; attempt++) {
@@ -677,7 +861,7 @@ async function pollOrder(orderId) {
       clearInterval(pollTimer);
       showSuccess(order);
     }
-  } catch (_) { /* silent — keep polling */ }
+  } catch (_) { /* silent */ }
 }
 
 function showSuccess(order) {
@@ -690,14 +874,25 @@ function showSuccess(order) {
 // ─── Init ────────────────────────────────────────────────────────────────────
 startTimer();
 initPackages();
+initQuality();
 initForm();
+renderStepper();
 
-$('btnS1').addEventListener('click',    () => { if (state.pkg) { renderChars(); goStep(2); } });
-$('btnS2').addEventListener('click',    () => { if (state.selectedChars.length === state.maxChars) goStep(3); });
-$('btnS2Top').addEventListener('click', () => { if (state.selectedChars.length === state.maxChars) goStep(3); });
-$('btnB2').addEventListener('click',    () => goStep(1));
-$('btnB3').addEventListener('click',    () => goStep(2));
-$('btnPay').addEventListener('click',   () => submitCheckout());
+$('btnS1').addEventListener('click', () => {
+  if (state.pkg) {
+    // Re-render quality step prices in case package changed
+    const hdExtra = hdPrice();
+    const grid = $('qualityGrid');
+    if (grid) {
+      grid.querySelectorAll('.quality-card').forEach(card => {
+        const q = card.dataset.quality;
+        const priceEl = card.querySelector('.qc-price');
+        if (q === 'hd' && priceEl) priceEl.textContent = fmtShort(hdExtra);
+      });
+    }
+    goStepWithRender(2);
+  }
+});
 
 $('btnCopyPix').addEventListener('click', () => {
   navigator.clipboard.writeText($('pixCopy').value).then(() => {
@@ -706,6 +901,8 @@ $('btnCopyPix').addEventListener('click', () => {
     setTimeout(() => btn.textContent = 'Copiar código', 2000);
   });
 });
+
+$('btnPay').addEventListener('click', () => submitCheckout());
 </script>
 </body>
 </html>
