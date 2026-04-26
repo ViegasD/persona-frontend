@@ -265,22 +265,7 @@ Oferta expira em <span id="ckTimer">14:59</span> — Garanta seu preço!
 <h2 class="wizard-title">Personalizar e pagar</h2>
 <p class="wizard-subtitle">Diga-nos como quer a mensagem personalizada</p>
 <div class="form-grid">
-<div class="form-row">
-<div class="fg"><label class="fl">Nome da criança <span class="req">*</span></label><input type="text" class="fi" id="fName" placeholder="Ex: João" required></div>
-<div class="fg"><label class="fl">Idade <span class="req">*</span></label><input type="number" class="fi" id="fAge" placeholder="Ex: 5" min="1" max="15" required></div>
-</div>
-<div class="fg"><label class="fl">Ocasião <span class="req">*</span></label>
-<select class="fs" id="fOcc" required>
-<option value="" disabled selected>Selecione</option>
-<option value="aniversario">Aniversário</option>
-<option value="comportamento">Bom comportamento</option>
-<option value="motivacao">Motivação escolar</option>
-<option value="natal">Natal</option>
-<option value="pascoa">Páscoa</option>
-<option value="medos">Superar medos</option>
-<option value="surpresa">Surpresa especial</option>
-<option value="outro">Outro</option>
-</select></div>
+<div class="fg"><label class="fl">Seu nome <span class="req">*</span></label><input type="text" class="fi" id="fBuyerName" placeholder="Ex: Maria Santos" autocomplete="name"></div>
 <div class="form-row">
 <div class="fg"><label class="fl">WhatsApp para entrega <span class="req">*</span></label><input type="tel" class="fi" id="fWa" placeholder="(62) 99111-8737" required><span class="fh">Número onde receberá o vídeo</span></div>
 <div class="fg"><label class="fl">Email <span class="req">*</span></label><input type="email" class="fi" id="fEmail" placeholder="seu@email.com" required><span class="fh">Para confirmação</span></div>
@@ -291,8 +276,7 @@ Oferta expira em <span id="ckTimer">14:59</span> — Garanta seu preço!
 <div class="osr"><span class="lbl">Qualidade</span><span class="val" id="sumQuality">—</span></div>
 <div class="osr" id="sumHdRow" style="display:none"><span class="lbl">HD (+20%)</span><span class="val" id="sumHd">—</span></div>
 <div class="osr" id="sumExtraRow" style="display:none"><span class="lbl">Personagens extras</span><span class="val" id="sumExtra">—</span></div>
-<div class="osr"><span class="lbl">Criança</span><span class="val" id="sumChild">—</span></div>
-<div class="osr"><span class="lbl">Ocasião</span><span class="val" id="sumOcc">—</span></div>
+<div class="osr"><span class="lbl">Comprador</span><span class="val" id="sumBuyer">—</span></div>
 <div class="osr total"><span class="lbl">Total</span><span class="val" id="sumTotal">R$ 0,00</span></div>
 </div>
 
@@ -522,11 +506,9 @@ const OCC_LABELS = {
 };
 
 const FIELD_RULES = {
-  fName:  { test: v => v.trim().length >= 2,                                              msg: 'Digite o nome da criança (mín. 2 letras)' },
-  fAge:   { test: v => { const n = parseInt(v); return !isNaN(n) && n >= 1 && n <= 15; }, msg: 'Idade deve ser entre 1 e 15 anos' },
-  fOcc:   { test: v => v !== '',                                                           msg: 'Selecione uma ocasião' },
-  fWa:    { test: v => /^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/.test(v.replace(/\s/g, '')),      msg: 'WhatsApp inválido. Ex: (47) 99999-9999' },
-  fEmail: { test: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),                      msg: 'E-mail inválido' },
+  fBuyerName: { test: v => v.trim().length >= 2,                                         msg: 'Digite seu nome (mín. 2 letras)' },
+  fWa:        { test: v => /^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/.test(v.replace(/\s/g, '')), msg: 'WhatsApp inválido. Ex: (47) 99999-9999' },
+  fEmail:     { test: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),                 msg: 'E-mail inválido' },
 };
 
 // ─── State ──────────────────────────────────────────────────────────────────
@@ -538,6 +520,7 @@ const state = {
   basePrice: 0,     // plan.price_cents
   quality: 'sd',
   videos: [],       // Array<string[]>, length = maxVideos
+  childInfos: [],   // per-video child info: [{name, age, occasion}]
 };
 let pollTimer = null;
 
@@ -647,18 +630,9 @@ function initPackages() {
       state.basePrice = +card.dataset.price;
       state.videos = Array.from({ length: state.maxVideos }, () => []);
       state.messages = Array.from({ length: state.maxVideos }, () => ({ text: '', aiEnabled: true }));
+      state.childInfos = Array.from({ length: state.maxVideos }, () => ({ name: '', age: '', occasion: '' }));
       $('btnS1').disabled = false;
       buildVideoSteps();
-      // Lead: package selected (re-fires if user changes package)
-      const pkgName = PACKAGES.find(p => p.id === state.pkg)?.name || state.pkg;
-      pixelTrack('Lead', {
-        content_name: 'package_selected',
-        content_category: 'checkout_step',
-        package_name: pkgName,
-        video_quantity: state.maxVideos,
-        value: (state.basePrice / 100).toFixed(2),
-        currency: 'BRL',
-      }, 'pkg_selected_' + state.pkg); // dedup per package — re-fires if user changes
     });
     const pre = new URLSearchParams(location.search).get('plan') || new URLSearchParams(location.search).get('pacote');
     if (pre && card.dataset.pkg === pre) card.click();
@@ -745,6 +719,28 @@ function buildVideoStepHtml(vi) {
       <div class="sel-title">Selecionados <span id="vsSelCnt${vi}" class="chars-counter" style="font-size:.72rem;padding:3px 9px;">0/${state.maxChars}</span></div>
       <div class="sel-list" id="vsSelList${vi}"></div>
     </div>
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-top:20px">
+      <div style="font-size:.88rem;font-weight:700;color:var(--purple);margin-bottom:12px">👦 Sobre a criança deste vídeo</div>
+      <div class="form-grid" style="gap:12px">
+        <div class="form-row">
+          <div class="fg"><label class="fl">Nome da criança <span class="req">*</span></label><input type="text" class="fi" id="vsChildName${vi}" placeholder="Ex: João" autocomplete="off"></div>
+          <div class="fg" id="vsChildAgeWrap${vi}" style="display:none"><label class="fl">Idade</label><input type="number" class="fi" id="vsChildAge${vi}" placeholder="Ex: 5" min="1" max="15"></div>
+        </div>
+        <div class="fg"><label class="fl">Ocasião <span class="req">*</span></label>
+          <select class="fs" id="vsChildOcc${vi}">
+            <option value="" disabled selected>Selecione</option>
+            <option value="aniversario">Aniversário</option>
+            <option value="comportamento">Bom comportamento</option>
+            <option value="motivacao">Motivação escolar</option>
+            <option value="natal">Natal</option>
+            <option value="pascoa">Páscoa</option>
+            <option value="medos">Superar medos</option>
+            <option value="surpresa">Surpresa especial</option>
+            <option value="outro">Outro</option>
+          </select>
+        </div>
+      </div>
+    </div>
     <div class="fg" style="margin-top:20px">
       <label class="fl">Mensagem deste vídeo</label>
       <div class="ai-wrap"><label class="ai-label"><input type="checkbox" id="vsAiTog${vi}" checked><span class="ai-sw"></span>Gerar com IA</label><div class="ai-desc" id="vsAiDesc${vi}">✨ <strong>Ativado</strong>. A IA cria a mensagem perfeita para este vídeo.</div></div>
@@ -792,6 +788,20 @@ function attachVideoStepEvents(vi) {
     if (!state.messages[vi]) state.messages[vi] = { text: '', aiEnabled: true };
     state.messages[vi].text = this.value;
   });
+  // Child info listeners
+  function syncChildInfo() {
+    if (!state.childInfos[vi]) state.childInfos[vi] = { name: '', age: '', occasion: '' };
+    state.childInfos[vi].name     = document.getElementById(`vsChildName${vi}`)?.value?.trim() || '';
+    state.childInfos[vi].age      = document.getElementById(`vsChildAge${vi}`)?.value?.trim()  || '';
+    state.childInfos[vi].occasion = document.getElementById(`vsChildOcc${vi}`)?.value          || '';
+    // Show age field only for birthday
+    const ageWrap = document.getElementById(`vsChildAgeWrap${vi}`);
+    if (ageWrap) ageWrap.style.display = state.childInfos[vi].occasion === 'aniversario' ? '' : 'none';
+    updateVideoStepUI(vi);
+  }
+  document.getElementById(`vsChildName${vi}`).addEventListener('input',  syncChildInfo);
+  document.getElementById(`vsChildAge${vi}`).addEventListener('input',   syncChildInfo);
+  document.getElementById(`vsChildOcc${vi}`).addEventListener('change',  syncChildInfo);
 }
 
 function renderVideoStepChars(vi) {
@@ -853,7 +863,11 @@ function updateVideoStepUI(vi) {
       panelEl.style.display = 'none';
     }
   }
-  if (btnNext) btnNext.disabled = cnt < 1;
+  if (btnNext) {
+    const childName = document.getElementById(`vsChildName${vi}`)?.value?.trim() || '';
+    const childOcc  = document.getElementById(`vsChildOcc${vi}`)?.value || '';
+    btnNext.disabled = cnt < 1 || childName.length < 2 || childOcc === '';
+  }
 }
 
 // Override goStep to also render the current video step's chars grid
@@ -868,7 +882,7 @@ function goStepWithRender(n) {
 
 // ─── Step Form ──────────────────────────────────────────────────────────────
 function initForm() {
-  const fields = ['fName', 'fAge', 'fOcc', 'fWa', 'fEmail'];
+  const fields = ['fBuyerName', 'fWa', 'fEmail'];
 
   function setFieldError(id, msg) {
     const el = $(id);
@@ -938,15 +952,14 @@ function updateSummary() {
     $('sumExtraRow').style.display = 'none';
   }
 
-  const n = $('fName').value.trim(), a = $('fAge').value.trim();
-  $('sumChild').textContent = n && a ? `${n}, ${a} anos` : '—';
-  $('sumOcc').textContent = OCC_LABELS[$('fOcc').value] || '—';
+  const buyerName = $('fBuyerName')?.value?.trim();
+  if ($('sumBuyer')) $('sumBuyer').textContent = buyerName || '—';
   $('sumTotal').textContent = fmt(calcTotal());
 }
 
 // ─── Checkout ───────────────────────────────────────────────────────────────
 async function submitCheckout() {
-  const fields = ['fName', 'fAge', 'fOcc', 'fWa', 'fEmail'];
+  const fields = ['fBuyerName', 'fWa', 'fEmail'];
   fields.forEach(id => { $(id).dataset.touched = '1'; });
   const allOk = fields.every(id => FIELD_RULES[id] ? FIELD_RULES[id].test($(id).value) : true);
   if (!allOk) return;
@@ -971,11 +984,9 @@ async function submitCheckout() {
       method: 'POST',
       body: JSON.stringify({
         plan_id:        state.pkg,
-        recipient_name: $('fName').value.trim()  || null,
-        recipient_age:  $('fAge').value.trim()   || null,
-        occasion_slug:  $('fOcc').value          || null,
-        guest_email:    $('fEmail').value.trim()  || null,
-        guest_phone:    $('fWa').value.trim()     || null,
+        recipient_name: $('fBuyerName').value.trim() || null,
+        guest_email:    $('fEmail').value.trim()     || null,
+        guest_phone:    $('fWa').value.trim()        || null,
       }),
     });
     if (order.guest_token) sessionStorage.setItem('persona_guest_token', order.guest_token);
@@ -994,6 +1005,9 @@ async function submitCheckout() {
         video_slots: state.videos,
         quality: state.quality,
         custom_messages,
+        recipient_names: state.childInfos.map(c => c?.name     || null),
+        recipient_ages:  state.childInfos.map(c => c?.age      || null),
+        occasion_slugs:  state.childInfos.map(c => c?.occasion || null),
       }),
     });
 
@@ -1288,6 +1302,16 @@ pixelTrackOnce('AddToCart', {
 
 $('btnS1').addEventListener('click', () => {
   if (state.pkg) {
+    // Lead: package confirmed
+    const pkgName = PACKAGES.find(p => p.id === state.pkg)?.name || state.pkg;
+    pixelTrack('Lead', {
+      content_name: 'package_selected',
+      content_category: 'checkout_step',
+      package_name: pkgName,
+      video_quantity: state.maxVideos,
+      value: (state.basePrice / 100).toFixed(2),
+      currency: 'BRL',
+    }, 'pkg_selected_' + state.pkg);
     // Re-render quality step prices in case package changed
     const hdExtra = hdPrice();
     const grid = $('qualityGrid');
