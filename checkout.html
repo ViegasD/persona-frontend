@@ -266,7 +266,7 @@ Oferta expira em <span id="ckTimer">14:59</span> — Garanta seu preço!
 <h2 class="wizard-title">Personalizar e pagar</h2>
 <p class="wizard-subtitle">Diga-nos como quer a mensagem personalizada</p>
 <div class="form-grid">
-<div class="fg"><label class="fl">Seu nome <span class="req">*</span></label><input type="text" class="fi" id="fBuyerName" placeholder="Ex: Maria Santos" autocomplete="name"></div>
+<div class="fg"><label class="fl">Seu nome completo <span class="req">*</span></label><input type="text" class="fi" id="fBuyerName" placeholder="Ex: Maria Santos" autocomplete="name"></div>
 <div class="form-row">
 <div class="fg"><label class="fl">WhatsApp para entrega <span class="req">*</span></label><input type="tel" class="fi" id="fWa" placeholder="(62) 99111-8737" required><span class="fh">Número onde receberá o vídeo</span></div>
 <div class="fg"><label class="fl">Email <span class="req">*</span></label><input type="email" class="fi" id="fEmail" placeholder="seu@email.com" required><span class="fh">Para confirmação</span></div>
@@ -1110,10 +1110,16 @@ async function submitCheckout() {
       return '[Gerar automaticamente com IA]';
     });
 
+    // For packages that use random characters (no selection required),
+    // fill any empty slots with a randomly picked character before submitting.
+    const video_slots = state.videos.map(slot =>
+      (slot && slot.length > 0) ? slot : [CHARS[Math.floor(Math.random() * CHARS.length)].id]
+    );
+
     await apiFetch(`/orders/${order.id}/fill`, {
       method: 'POST',
       body: JSON.stringify({
-        video_slots: state.videos,
+        video_slots,
         quality: state.quality,
         custom_messages,
         recipient_names: state.childInfos.map(c => c?.name     || null),
