@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recado Animado | Vídeos Mágicos Personalizados para Crianças</title>
+    <link rel="icon" type="image/png" href="img/Recado-animado-LOGO.png">
     <meta name="description"
         content="Vídeos personalizados com os personagens favoritos do seu filho! Papai Noel, CR7, Patrulha Canina e mais falam diretamente com a sua criança. A partir de R$ 19,90.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -949,6 +950,26 @@
         .chars-cta {
             text-align: center;
             margin-top: 40px;
+        }
+
+        .chars-show-more-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 28px auto 0;
+            padding: 12px 28px;
+            border-radius: 980px;
+            border: 2px solid var(--purple);
+            background: transparent;
+            color: var(--purple);
+            font-size: .92rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background .2s, color .2s;
+        }
+        .chars-show-more-btn:hover {
+            background: var(--purple);
+            color: #fff;
         }
 
         .char-card {
@@ -3091,7 +3112,10 @@
 
         function renderGrid(filter) {
             const filtered = filter === 'Todos' ? CHARACTERS : CHARACTERS.filter(c => c.cat === filter);
-            grid.innerHTML = filtered.map(c => `
+            const INITIAL = 4;
+            const visible = filtered.slice(0, INITIAL);
+            const hidden  = filtered.slice(INITIAL);
+            const cardHtml = chars => chars.map(c => `
                 <a class="char-card" href="${CK_URL}">
                     <div class="char-card-overflow">${c.popular ? '<span class="char-popular-badge">Popular \uD83D\uDD25</span>' : ''}<img class="char-card-img" src="img/${c.img}" alt="${c.name}" loading="lazy" width="400" height="400"></div>
                     <div class="char-card-body">
@@ -3103,6 +3127,23 @@
                     <div class="char-card-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
                 </a>
             `).join('');
+            grid.innerHTML = cardHtml(visible) +
+                (hidden.length ? `<div id="charsHidden" style="display:contents">${cardHtml(hidden)}</div>` : '');
+
+            const existingBtn = document.getElementById('charsShowMoreBtn');
+            if (existingBtn) existingBtn.remove();
+            if (hidden.length) {
+                document.getElementById('charsHidden').style.display = 'none';
+                const btn = document.createElement('button');
+                btn.id = 'charsShowMoreBtn';
+                btn.className = 'chars-show-more-btn';
+                btn.innerHTML = `Ver todos os ${filtered.length} personagens <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>`;
+                btn.addEventListener('click', () => {
+                    document.getElementById('charsHidden').style.display = 'contents';
+                    btn.remove();
+                });
+                grid.insertAdjacentElement('afterend', btn);
+            }
         }
         renderGrid('Todos');
 
