@@ -260,12 +260,6 @@ Oferta expira em <span id="ckTimer">14:59</span> — Garanta seu preço!
 <option value="surpresa">Surpresa especial</option>
 <option value="outro">Outro</option>
 </select></div>
-<div class="fg"><label class="fl">Mensagem do personagem</label>
-<div class="ai-wrap"><label class="ai-label"><input type="checkbox" id="aiTog" checked><span class="ai-sw"></span>Gerar texto com IA</label><div class="ai-desc" id="aiDesc">✨ <strong>Ativado</strong>. Usamos IA para criar a mensagem perfeita.</div></div>
-<textarea class="ft" id="fMsg" placeholder="Ex: Olá João! Aqui é o seu personagem favorito..."></textarea>
-<span class="fh">Se não escrever, geramos automaticamente com base no nome, idade e ocasião.</span>
-<div class="msg-example"><div class="msg-example-t">Exemplo</div><p>"Oi [nome]! Aqui é o [personagem]! Eu sei que você tem [idade] aninhos e estou muito feliz por você! Continue sendo incrível!"</p></div>
-</div>
 <div class="form-row">
 <div class="fg"><label class="fl">WhatsApp para entrega <span class="req">*</span></label><input type="tel" class="fi" id="fWa" placeholder="(62) 99111-8737" required><span class="fh">Número onde receberá o vídeo</span></div>
 <div class="fg"><label class="fl">Email <span class="req">*</span></label><input type="email" class="fi" id="fEmail" placeholder="seu@email.com" required><span class="fh">Para confirmação</span></div>
@@ -590,6 +584,7 @@ function initPackages() {
       state.maxChars = +card.dataset.maxchars;
       state.basePrice = +card.dataset.price;
       state.videos = Array.from({ length: state.maxVideos }, () => []);
+      state.messages = Array.from({ length: state.maxVideos }, () => ({ text: '', aiEnabled: true }));
       $('btnS1').disabled = false;
       buildVideoSteps();
     });
@@ -663,6 +658,12 @@ function buildVideoStepHtml(vi) {
       <div class="sel-title">Selecionados <span id="vsSelCnt${vi}" class="chars-counter" style="font-size:.72rem;padding:3px 9px;">0/${state.maxChars}</span></div>
       <div class="sel-list" id="vsSelList${vi}"></div>
     </div>
+    <div class="fg" style="margin-top:20px">
+      <label class="fl">Mensagem deste vídeo</label>
+      <div class="ai-wrap"><label class="ai-label"><input type="checkbox" id="vsAiTog${vi}" checked><span class="ai-sw"></span>Gerar com IA</label><div class="ai-desc" id="vsAiDesc${vi}">✨ <strong>Ativado</strong>. A IA cria a mensagem perfeita para este vídeo.</div></div>
+      <textarea class="ft" id="vsMsg${vi}" placeholder="Ex: Olá! Sabia que você é muito especial?" style="margin-top:8px"></textarea>
+      <span class="fh">Opcional. Deixe em branco para a IA gerar com base no nome, idade e ocasião.</span>
+    </div>
     <div class="wiz-actions">
       <button class="btn btn-back" id="vsBtnBack${vi}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Voltar
@@ -680,6 +681,17 @@ function attachVideoStepEvents(vi) {
   document.getElementById(`vsBtnNext${vi}`).addEventListener('click', () => {
     const formStep = state.maxVideos + 3;
     goStep(vi === state.maxVideos - 1 ? formStep : vi + 4);
+  });
+  document.getElementById(`vsAiTog${vi}`).addEventListener('change', function () {
+    if (!state.messages[vi]) state.messages[vi] = { text: '', aiEnabled: true };
+    state.messages[vi].aiEnabled = this.checked;
+    document.getElementById(`vsAiDesc${vi}`).innerHTML = this.checked
+      ? '✨ <strong>Ativado</strong>. A IA cria a mensagem perfeita para este vídeo.'
+      : '📌 <strong>Desativado</strong>. Usamos exatamente o texto que escrever.';
+  });
+  document.getElementById(`vsMsg${vi}`).addEventListener('input', function () {
+    if (!state.messages[vi]) state.messages[vi] = { text: '', aiEnabled: true };
+    state.messages[vi].text = this.value;
   });
 }
 
@@ -786,12 +798,6 @@ function initForm() {
     updateSummary();
   }
 
-  $('aiTog').addEventListener('change', function () {
-    $('aiDesc').innerHTML = this.checked
-      ? '✨ <strong>Ativado</strong>. Usamos IA para criar a mensagem perfeita.'
-      : '📌 <strong>Desativado</strong>. Usamos exatamente o texto que escrever.';
-  });
-
   fields.forEach(id => {
     const el = $(id);
     el.addEventListener('blur',   () => { el.dataset.touched = '1'; validateField(id); validateForm(); });
@@ -875,19 +881,20 @@ async function submitCheckout() {
     });
     if (order.guest_token) sessionStorage.setItem('persona_guest_token', order.guest_token);
 
-    // 2. Fill with video slots, quality, message
-    const msgText = $('fMsg').value.trim();
-    const aiOn = $('aiTog').checked;
-    let customMsg = '[Gerar automaticamente com IA]';
-    if (msgText && aiOn)  customMsg = '[IA c/ base] ' + msgText;
-    if (msgText && !aiOn) customMsg = '[Texto exato] ' + msgText;
+    // 2. Fill with video slots, quality, per-video messages
+    const custom_messages = state.videos.map((_, vi) => {
+      const m = state.messages[vi] || { text: '', aiEnabled: true };
+      if (m.text && !m.aiEnabled) return '[Texto exato] ' + m.text;
+      if (m.text && m.aiEnabled)  return '[IA c/ base] ' + m.text;
+      return '[Gerar automaticamente com IA]';
+    });
 
     await apiFetch(`/orders/${order.id}/fill`, {
       method: 'POST',
       body: JSON.stringify({
         video_slots: state.videos,
         quality: state.quality,
-        custom_message: customMsg,
+        custom_messages,
       }),
     });
 
@@ -952,6 +959,16 @@ async function submitCheckout() {
 
 // ─── Pix screen ─────────────────────────────────────────────────────────────
 function showPixScreen(orderId, ck) {
+  // Persist so a page refresh can restore this screen
+  sessionStorage.setItem('persona_pending_order', JSON.stringify({
+    orderId,
+    qr_code_payload: ck.qr_code_payload || '',
+    qr_code_url: ck.qr_code_url || '',
+    qr_code_base64: ck.qr_code_base64 || '',
+    ticket_url: ck.ticket_url || '',
+    amount_cents: ck.amount_cents || 0,
+  }));
+
   document.querySelector('.wizard').style.display = 'none';
   document.querySelector('.stepper').style.display = 'none';
   const pix = $('pixScreen');
@@ -988,6 +1005,7 @@ async function pollOrder(orderId) {
 
 function showSuccess(order) {
   clearInterval(pollTimer);
+  sessionStorage.removeItem('persona_pending_order');
   const gt = sessionStorage.getItem('persona_guest_token') || '';
   const hash = gt ? '#t=' + encodeURIComponent(gt) : '';
   window.location.replace('aguardando.html?oid=' + order.id + hash);
@@ -1120,6 +1138,24 @@ function selectCardType(type) {
 }
 
 // ─── Init ────────────────────────────────────────────────────────────────────
+// ── Restore pending order after page refresh ──────────────────────────────
+(async () => {
+  const raw = sessionStorage.getItem('persona_pending_order');
+  if (!raw) return;
+  let saved;
+  try { saved = JSON.parse(raw); } catch (_) { sessionStorage.removeItem('persona_pending_order'); return; }
+  // Quick-check if order is already paid/ready before restoring
+  try {
+    const order = await apiFetch(`/orders/${saved.orderId}`);
+    if (['PAID', 'QUEUED', 'RENDERING', 'READY', 'DELIVERED'].includes(order.status)) {
+      sessionStorage.removeItem('persona_pending_order');
+      showSuccess(order);
+      return;
+    }
+  } catch (_) { /* network error — still restore the pix screen */ }
+  showPixScreen(saved.orderId, saved);
+})();
+
 startTimer();
 initPackages();
 initQuality();
