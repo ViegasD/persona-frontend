@@ -20,6 +20,7 @@ a{color:var(--accent);text-decoration:none}
 .header-title{font-size:.95rem;font-weight:600}
 
 .hero-banner{width:100%;object-fit:contain;display:block}
+@media(min-width:769px){.hero-banner{max-height:280px;object-fit:cover;object-position:center}}
 
 .stepper{display:flex;align-items:center;justify-content:center;gap:0;padding:20px 16px 24px;max-width:600px;margin:0 auto}
 .stepper-step{display:flex;flex-direction:column;align-items:center;gap:5px;position:relative;flex:1}
@@ -747,6 +748,7 @@ function buildVideoStepHtml(vi) {
       <span class="video-slot-title">🎬 Vídeo ${vi + 1}</span>
       <span class="video-slot-count" id="vsCnt${vi}">0 / ${state.maxChars}</span>
     </div>
+    <div class="top-next-btn" id="vsTopNext${vi}"><button class="btn btn-next" onclick="document.getElementById('vsBtnNext${vi}').click()">Prosseguir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button></div>
     <div class="chars-grid2" id="vsGrid${vi}"></div>
     <div class="sel-panel" id="vsPanel${vi}" style="display:none">
       <div class="sel-title">Selecionados <span id="vsSelCnt${vi}" class="chars-counter" style="font-size:.72rem;padding:3px 9px;">0/${state.maxChars}</span></div>
@@ -777,17 +779,31 @@ function buildVideoStepHtml(vi) {
         </div>
       </div>
     </div>` : `
-    <div style="background:rgba(48,209,88,.06);border:1px solid rgba(48,209,88,.18);border-radius:12px;padding:12px 16px;margin-top:20px;display:flex;align-items:center;gap:10px">
-      <span style="font-size:1.1rem">👦</span>
-      <div>
-        <div style="font-size:.82rem;font-weight:700;color:var(--green)">Dados da criança mantidos do vídeo 1</div>
-        <div style="font-size:.72rem;color:var(--text2)" id="vsChildSummary${vi}">—</div>
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-top:20px">
+      <div style="background:rgba(48,209,88,.06);border:1px solid rgba(48,209,88,.18);border-radius:10px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:8px">
+        <span style="font-size:1rem">👦</span>
+        <div>
+          <div style="font-size:.78rem;font-weight:700;color:var(--green)">Dados da criança mantidos do vídeo 1</div>
+          <div style="font-size:.7rem;color:var(--text2)" id="vsChildSummary${vi}">—</div>
+        </div>
       </div>
-    </div>
-    <input type="hidden" id="vsChildName${vi}">
-    <input type="hidden" id="vsChildAge${vi}">
-    <input type="hidden" id="vsChildOcc${vi}">
-    <div id="vsChildAgeWrap${vi}" style="display:none"></div>`;
+      <input type="hidden" id="vsChildName${vi}">
+      <input type="hidden" id="vsChildAge${vi}">
+      <div id="vsChildAgeWrap${vi}" style="display:none"></div>
+      <div class="fg"><label class="fl">Ocasião deste vídeo <span class="req">*</span></label>
+        <select class="fs" id="vsChildOcc${vi}">
+          <option value="" disabled selected>Selecione</option>
+          <option value="aniversario">Aniversário</option>
+          <option value="comportamento">Bom comportamento</option>
+          <option value="motivacao">Motivação escolar</option>
+          <option value="natal">Natal</option>
+          <option value="pascoa">Páscoa</option>
+          <option value="medos">Superar medos</option>
+          <option value="surpresa">Surpresa especial</option>
+          <option value="outro">Outro</option>
+        </select>
+      </div>
+    </div>`;
 
   return `
     <h2 class="wizard-title">${isTeste ? 'Personalizar vídeo' : `Vídeo ${vi + 1} de ${state.maxVideos}`}</h2>
@@ -821,17 +837,16 @@ function attachVideoStepEvents(vi) {
     if (isFirst && state.maxVideos > 1) {
       const src = state.childInfos[0] || {};
       for (let j = 1; j < state.maxVideos; j++) {
-        state.childInfos[j] = { name: src.name || '', age: src.age || '', occasion: src.occasion || '' };
+        if (!state.childInfos[j]) state.childInfos[j] = { name: '', age: '', occasion: '' };
+        state.childInfos[j].name = src.name || '';
+        state.childInfos[j].age = src.age || '';
         const nameEl = document.getElementById(`vsChildName${j}`);
         const ageEl = document.getElementById(`vsChildAge${j}`);
-        const occEl = document.getElementById(`vsChildOcc${j}`);
         if (nameEl) nameEl.value = src.name || '';
         if (ageEl) ageEl.value = src.age || '';
-        if (occEl) occEl.value = src.occasion || '';
         const summaryEl = document.getElementById(`vsChildSummary${j}`);
         if (summaryEl) {
-          const occLabel = OCC_LABELS[src.occasion] || src.occasion || '';
-          summaryEl.textContent = `${src.name || '—'}${src.age ? ', ' + src.age + ' anos' : ''} — ${occLabel}`;
+          summaryEl.textContent = `${src.name || '—'}${src.age ? ', ' + src.age + ' anos' : ''}`;
         }
       }
     }
@@ -860,7 +875,7 @@ function attachVideoStepEvents(vi) {
     if (!state.messages[vi]) state.messages[vi] = { text: '', aiEnabled: true };
     state.messages[vi].text = this.value;
   });
-  // Child info listeners — only first video has editable fields
+  // Child info listeners — only first video has all editable fields
   if (isFirst) {
     function syncChildInfo() {
       if (!state.childInfos[vi]) state.childInfos[vi] = { name: '', age: '', occasion: '' };
@@ -874,6 +889,16 @@ function attachVideoStepEvents(vi) {
     document.getElementById(`vsChildName${vi}`).addEventListener('input',  syncChildInfo);
     document.getElementById(`vsChildAge${vi}`).addEventListener('input',   syncChildInfo);
     document.getElementById(`vsChildOcc${vi}`).addEventListener('change',  syncChildInfo);
+  } else {
+    // Non-first videos: occasion is editable
+    const occEl = document.getElementById(`vsChildOcc${vi}`);
+    if (occEl) {
+      occEl.addEventListener('change', function() {
+        if (!state.childInfos[vi]) state.childInfos[vi] = { name: '', age: '', occasion: '' };
+        state.childInfos[vi].occasion = this.value;
+        updateVideoStepUI(vi);
+      });
+    }
   }
 }
 
@@ -939,17 +964,20 @@ function updateVideoStepUI(vi) {
     }
   }
   if (btnNext) {
+    const childOcc = document.getElementById(`vsChildOcc${vi}`)?.value || '';
     if (isFirst) {
       // First video: require child name + occasion + (character unless teste)
       const childName = document.getElementById(`vsChildName${vi}`)?.value?.trim() || '';
-      const childOcc  = document.getElementById(`vsChildOcc${vi}`)?.value || '';
       const charOk = isTeste || cnt >= 1;
       btnNext.disabled = !charOk || childName.length < 2 || childOcc === '';
     } else {
-      // Subsequent videos: child data inherited, only require character (unless teste)
+      // Subsequent videos: child data inherited, require occasion + character (unless teste)
       const charOk = isTeste || cnt >= 1;
-      btnNext.disabled = !charOk;
+      btnNext.disabled = !charOk || childOcc === '';
     }
+    // Show/hide top next button
+    const topNext = document.getElementById(`vsTopNext${vi}`);
+    if (topNext) topNext.classList.toggle('show', !btnNext.disabled && !isTeste);
   }
 }
 

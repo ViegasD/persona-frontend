@@ -3371,6 +3371,26 @@ src="https://www.facebook.com/tr?id=2206392786857309&ev=PageView&noscript=1"/></
         })();
     </script>
 
+    <!-- CART RESUME BANNER -->
+    <script>
+    (function() {
+        const raw = sessionStorage.getItem('persona_cart');
+        if (!raw) return;
+        let cart;
+        try { cart = JSON.parse(raw); } catch(_) { return; }
+        if (Date.now() - (cart.ts || 0) > 30 * 60 * 1000) { sessionStorage.removeItem('persona_cart'); return; }
+        const plans = { teste: 'Teste', surpresa: 'Surpresa', completo: 'Completo' };
+        const name = plans[cart.pkg] || cart.pkg || '';
+        const banner = document.createElement('div');
+        banner.id = 'cartResumeBanner';
+        banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:linear-gradient(135deg,rgba(191,90,242,.95),rgba(74,158,245,.9));padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;backdrop-filter:blur(10px);box-shadow:0 2px 16px rgba(0,0,0,.3);';
+        banner.innerHTML = '<div style="font-size:.82rem;font-weight:600;color:#fff">🛒 Você tem um pedido em andamento — <strong>Pacote ' + name + '</strong></div>' +
+            '<a href="checkout.html" style="padding:6px 16px;border-radius:980px;background:#fff;color:#7c3aed;font-size:.78rem;font-weight:700;text-decoration:none;white-space:nowrap">Continuar pedido →</a>' +
+            '<button onclick="sessionStorage.removeItem(\'persona_cart\');this.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,.7);font-size:1rem;cursor:pointer;padding:4px">✕</button>';
+        document.body.prepend(banner);
+    })();
+    </script>
+
     <!-- WHATSAPP CHATBOT BIA -->
     <div class="wa-chat-widget" id="waChatWidget">
         <div class="wa-chat-popup" id="waChatPopup">
