@@ -366,7 +366,6 @@ Oferta expira em <span id="ckTimer">14:59</span> — Garanta seu preço!
     <button id="btnCopyPix" style="background:var(--green);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.78rem;font-weight:700;cursor:pointer;flex-shrink:0;font-family:inherit">Copiar código</button>
   </div>
   <p style="margin-top:16px;font-size:.8rem;color:var(--text2)">Total: <strong id="pixTotal" style="color:var(--green)">R$ 0,00</strong></p>
-  <a id="pixTicketLink" href="#" target="_blank" style="display:inline-block;margin-top:10px;font-size:.78rem;color:var(--accent)">Abrir página de pagamento ↗</a>
 </div>
 <div style="background:rgba(74,158,245,.07);border:1px solid rgba(74,158,245,.15);border-radius:12px;padding:14px 16px;font-size:.8rem;color:var(--text2);line-height:1.6">
   <strong style="color:var(--text)">Como pagar:</strong><br>
@@ -1214,10 +1213,6 @@ function showPixScreen(orderId, ck) {
   }
   $('pixCopy').value = ck.qr_code_payload || '';
   $('pixTotal').textContent = fmt(ck.amount_cents || 0);
-
-  const ticketLink = $('pixTicketLink');
-  if (ck.ticket_url) ticketLink.href = ck.ticket_url;
-  else ticketLink.style.display = 'none';
 
   pollTimer = setInterval(() => pollOrder(orderId), 3000);
   window.scrollTo({ top: 0, behavior: 'smooth' });
