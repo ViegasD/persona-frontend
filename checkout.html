@@ -670,6 +670,19 @@ function initQuality() {
   // Re-render when package changes (price changes)
   $('btnB2').addEventListener('click', () => goStep(1));
   $('btnS2').addEventListener('click', () => {
+    // Lead: quality selected
+    const pkgName = PACKAGES.find(p => p.id === state.pkg)?.name || state.pkg || '';
+    const qualityLabel = state.quality === 'hd' ? 'HD Premium' : 'Normal';
+    const qKey = 'quality_selected_' + state.pkg + '_' + state.quality;
+    pixelTrack('Lead', {
+      content_name: 'quality_selected',
+      content_category: 'checkout_step',
+      quality: qualityLabel,
+      package_name: pkgName,
+      video_quantity: state.maxVideos,
+      value: (calcTotal() / 100).toFixed(2),
+      currency: 'BRL',
+    }, qKey);
     goStep(3);
   });
 }
@@ -750,6 +763,18 @@ function attachVideoStepEvents(vi) {
   document.getElementById(`vsBtnBack${vi}`).addEventListener('click', () => goStep(vi + 2));
   document.getElementById(`vsBtnNext${vi}`).addEventListener('click', () => {
     const formStep = state.maxVideos + 3;
+    // Lead: video step completed
+    const pkgName = PACKAGES.find(p => p.id === state.pkg)?.name || state.pkg || '';
+    const vKey = 'video_step_' + state.pkg + '_v' + (vi + 1);
+    pixelTrack('Lead', {
+      content_name: 'video_step_completed',
+      content_category: 'video_creation_step',
+      package_name: pkgName,
+      video_quantity: state.maxVideos,
+      video_index: vi + 1,
+      value: (calcTotal() / 100).toFixed(2),
+      currency: 'BRL',
+    }, vKey); // dedup per package+video index; re-fires if package changes
     goStep(vi === state.maxVideos - 1 ? formStep : vi + 4);
   });
   document.getElementById(`vsAiTog${vi}`).addEventListener('change', function () {
