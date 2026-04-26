@@ -590,7 +590,7 @@ function goStep(n) {
   if (n === formStep) {
     updateSummary();
     // InitiateCheckout — user arrived at PAGAR step
-    pixelTrackOnce('InitiateCheckout', {
+    pixelTrack('InitiateCheckout', {
       content_name: 'payment_step_started',
       content_category: 'payment',
       package_name: state.pkg || '',
