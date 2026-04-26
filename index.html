@@ -2290,7 +2290,7 @@
             .bridge-btn { font-size: 0.92rem; padding: 14px 24px; }
         }
 
-        /* ===== SPIN WHEEL / ROULETTE ===== */
+        /* ===== SPIN WHEEL / ROULETTE ===== (commented out)
         .wheel-overlay {
             position: fixed;
             inset: 0;
@@ -2391,6 +2391,7 @@
             display: none;
         }
         .wheel-close-btn.visible { display: block; animation: proof-pop 0.5s ease; }
+        === end roulette === */
 
         /* ===== HERO CHAR RANKING PROMINENCE ===== */
         .hero-char:nth-child(1) {
@@ -2458,7 +2459,7 @@ src="https://www.facebook.com/tr?id=2206392786857309&ev=PageView&noscript=1"/></
 <body>
 
 
-    <!-- SPIN WHEEL OVERLAY -->
+    <!-- SPIN WHEEL OVERLAY (commented out)
     <div class="wheel-overlay" id="wheelOverlay">
         <div class="wheel-title" style="font-size:1.8rem;animation:char-jiggle 1s ease infinite;">Gire e ganhe um <span style="color:#ff9f0a;">presente!</span></div>
         <div class="wheel-subtitle">Toque na roleta ou no botão para girar!</div>
@@ -2478,6 +2479,7 @@ src="https://www.facebook.com/tr?id=2206392786857309&ev=PageView&noscript=1"/></
             <div id="couponCopied" style="display:none;color:var(--green);font-size:0.85rem;margin-top:8px;font-weight:600;">Cupom copiado!</div>
         </div>
     </div>
+    end roulette overlay -->
 
     <!-- URGENCY TOP BANNER -->
     <div class="urgency-banner" id="urgencyBanner">
@@ -2824,7 +2826,7 @@ src="https://www.facebook.com/tr?id=2206392786857309&ev=PageView&noscript=1"/></
                     <div class="price-card-per">personagem aleatório • pagamento único</div>
                     <div class="price-card-features">
                         <div class="price-feature"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>1 vídeo personalizado</div>
-                        <div class="price-feature"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>1 personagem (entre 5 opções)</div>
+                        <div class="price-feature"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>1 Personagem Aleatório</div>
                         <div class="price-feature"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>Alta qualidade + sem marca d'água</div>
                         <div class="price-feature"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>Entrega via WhatsApp</div>
                     </div>
@@ -3688,7 +3690,7 @@ src="https://www.facebook.com/tr?id=2206392786857309&ev=PageView&noscript=1"/></
             obs.observe(fb);
         })();
 
-        /* ===== SPIN WHEEL ===== */
+        /* ===== SPIN WHEEL ===== (commented out)
         (function() {
             if (sessionStorage.getItem('wheelSpun')) {
                 const wo = document.getElementById('wheelOverlay');
@@ -3789,8 +3791,9 @@ src="https://www.facebook.com/tr?id=2206392786857309&ev=PageView&noscript=1"/></
             if (copyBtn) copyBtn.addEventListener('click', copyCoupon);
             if (useBtn) useBtn.addEventListener('click', copyCoupon);
         })();
+        === end spin wheel === */
 
-        function activatePromo() {
+        /* function activatePromo() {
             document.querySelectorAll('.plan-card').forEach(card => {
                 const priceEl = card.querySelector('.plan-price');
                 if (!priceEl || priceEl.querySelector('.price-promo-badge')) return;
@@ -3799,7 +3802,7 @@ src="https://www.facebook.com/tr?id=2206392786857309&ev=PageView&noscript=1"/></
                 badge.textContent = 'PROMO ESPECIAL';
                 priceEl.parentNode.insertBefore(badge, priceEl);
             });
-        }
+        } */
 
         /* ===== VIDEOS PROGRESS ↔ COUNT ===== */
         (function() {
