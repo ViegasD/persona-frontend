@@ -225,7 +225,7 @@ Oferta expira em <span id="ckTimer">14:59</span> — Garanta seu preço!
 </div>
 
 <div class="header">
-<a href="./" class="header-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Voltar</a>
+<a href="javascript:void(0)" class="header-back" id="headerBackBtn" onclick="headerGoBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Voltar</a>
 <div class="header-title">Encomendar vídeo mágico</div>
 <div style="width:56px;"></div>
 </div>
@@ -497,6 +497,32 @@ const CHARS = [
   { id: 'shrek',         name: 'Shrek',                img: 'shrek.webp',              cat: 'Clássico'               },
   { id: 'minion',        name: 'Minion',               img: 'minions.webp',            cat: 'Clássico'               },
   { id: 'masha',         name: 'Masha',                img: 'masha.webp',              cat: 'Clássico'               },
+  { id: 'rocky',         name: 'Rocky',                img: 'rocky-patrulha.webp',     cat: 'Patrulha Canina'        },
+  { id: 'rubble',        name: 'Rubble',               img: 'rubble-patrulha.webp',    cat: 'Patrulha Canina'        },
+  { id: 'everest',       name: 'Everest',              img: 'everest-patrulha.webp',   cat: 'Patrulha Canina'        },
+  { id: 'ryder',         name: 'Ryder',                img: 'ryder-patrulha.webp',     cat: 'Patrulha Canina'        },
+  { id: 'zuma',          name: 'Zuma',                 img: 'zuma-patrulha.webp',      cat: 'Patrulha Canina'        },
+  { id: 'liberty',       name: 'Liberty',              img: 'liberty-patrulha.webp',   cat: 'Patrulha Canina'        },
+  { id: 'knuckles',      name: 'Knuckles',             img: 'knuckles.webp',           cat: 'Sonic'                  },
+  { id: 'shadow',        name: 'Shadow',               img: 'shadow.webp',             cat: 'Sonic'                  },
+  { id: 'amy-rose',      name: 'Amy Rose',             img: 'amy-rose.webp',           cat: 'Sonic'                  },
+  { id: 'maui',          name: 'Maui',                 img: 'maui.webp',               cat: 'Disney'                 },
+  { id: 'mate',          name: 'Mate',                 img: 'mate-cars.webp',          cat: 'Disney'                 },
+  { id: 'menino-gato',   name: 'Menino Gato',          img: 'menino-gato.webp',        cat: 'PJ Masks'               },
+  { id: 'corujita',      name: 'Corujita',             img: 'corujita-pjmasks.webp',   cat: 'PJ Masks'               },
+  { id: 'thomas',        name: 'Thomas',               img: 'thomas-trem.webp',        cat: 'Clássico'               },
+  { id: 'burro',         name: 'Burro',                img: 'burro-shrek.webp',        cat: 'Clássico'               },
+  { id: 'galinha',       name: 'Galinha Pintadinha',    img: 'galinha-pintadinha.webp', cat: 'Clássico BR',    pop: 1 },
+  { id: 'chico-bento',   name: 'Chico Bento',          img: 'chico-bento.webp',        cat: 'Clássico BR'            },
+  { id: 'tristeza',      name: 'Tristeza',             img: 'tristeza.webp',           cat: 'Divertidamente'         },
+  { id: 'nojinho',       name: 'Nojinho',              img: 'nojinho.webp',            cat: 'Divertidamente'         },
+  { id: 'ansiedade',     name: 'Ansiedade',            img: 'ansiedade.webp',          cat: 'Divertidamente'         },
+  { id: 'inveja',        name: 'Inveja',               img: 'inveja.webp',             cat: 'Divertidamente'         },
+  { id: 'tedio',         name: 'Tédio',                img: 'tedio.webp',              cat: 'Divertidamente'         },
+  { id: 'vergonha',      name: 'Vergonha',             img: 'vergonha.webp',           cat: 'Divertidamente'         },
+  { id: 'mira',          name: 'Mira',                 img: 'mira-kpop.png',           cat: 'K-Pop',          pop: 1 },
+  { id: 'zoey',          name: 'Zoey',                 img: 'zoey-kpop.jpg',           cat: 'K-Pop',          pop: 1 },
+  { id: 'rumi',          name: 'Rumi',                 img: 'rumi-kpop.jpg',           cat: 'K-Pop',          pop: 1 },
 ];
 
 const OCC_LABELS = {
@@ -707,9 +733,16 @@ function buildVideoStepHtml(vi) {
   const isFirst = vi === 0;
   const isLast = vi === state.maxVideos - 1;
   const formStep = state.maxVideos + 3;
-  return `
-    <h2 class="wizard-title">Vídeo ${vi + 1} de ${state.maxVideos}</h2>
-    <p class="wizard-subtitle">Escolha de 1 a ${state.maxChars} personagem(ns) para este vídeo</p>
+  const isTeste = state.pkg === 'teste';
+  const showChildFields = isFirst; // only first video gets editable child fields
+
+  // Character selection section (hidden for Plano Teste)
+  const charSection = isTeste ? `
+    <div style="background:rgba(191,90,242,.06);border:1px solid rgba(191,90,242,.18);border-radius:12px;padding:14px 16px;margin-bottom:16px;text-align:center">
+      <div style="font-size:1.4rem;margin-bottom:6px">🎲</div>
+      <div style="font-size:.88rem;font-weight:700;color:var(--purple);margin-bottom:4px">Personagem aleatório</div>
+      <div style="font-size:.75rem;color:var(--text2)">No Plano Teste, um personagem será escolhido aleatoriamente para o seu vídeo.</div>
+    </div>` : `
     <div class="video-slot-header">
       <span class="video-slot-title">🎬 Vídeo ${vi + 1}</span>
       <span class="video-slot-count" id="vsCnt${vi}">0 / ${state.maxChars}</span>
@@ -718,9 +751,12 @@ function buildVideoStepHtml(vi) {
     <div class="sel-panel" id="vsPanel${vi}" style="display:none">
       <div class="sel-title">Selecionados <span id="vsSelCnt${vi}" class="chars-counter" style="font-size:.72rem;padding:3px 9px;">0/${state.maxChars}</span></div>
       <div class="sel-list" id="vsSelList${vi}"></div>
-    </div>
+    </div>`;
+
+  // Child info section
+  const childSection = showChildFields ? `
     <div style="background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-top:20px">
-      <div style="font-size:.88rem;font-weight:700;color:var(--purple);margin-bottom:12px">👦 Sobre a criança deste vídeo</div>
+      <div style="font-size:.88rem;font-weight:700;color:var(--purple);margin-bottom:12px">👦 Sobre a criança</div>
       <div class="form-grid" style="gap:12px">
         <div class="form-row">
           <div class="fg"><label class="fl">Nome da criança <span class="req">*</span></label><input type="text" class="fi" id="vsChildName${vi}" placeholder="Ex: João" autocomplete="off"></div>
@@ -740,7 +776,24 @@ function buildVideoStepHtml(vi) {
           </select>
         </div>
       </div>
+    </div>` : `
+    <div style="background:rgba(48,209,88,.06);border:1px solid rgba(48,209,88,.18);border-radius:12px;padding:12px 16px;margin-top:20px;display:flex;align-items:center;gap:10px">
+      <span style="font-size:1.1rem">👦</span>
+      <div>
+        <div style="font-size:.82rem;font-weight:700;color:var(--green)">Dados da criança mantidos do vídeo 1</div>
+        <div style="font-size:.72rem;color:var(--text2)" id="vsChildSummary${vi}">—</div>
+      </div>
     </div>
+    <input type="hidden" id="vsChildName${vi}">
+    <input type="hidden" id="vsChildAge${vi}">
+    <input type="hidden" id="vsChildOcc${vi}">
+    <div id="vsChildAgeWrap${vi}" style="display:none"></div>`;
+
+  return `
+    <h2 class="wizard-title">${isTeste ? 'Personalizar vídeo' : `Vídeo ${vi + 1} de ${state.maxVideos}`}</h2>
+    <p class="wizard-subtitle">${isTeste ? 'Preencha os dados da criança e a mensagem' : `Escolha de 1 a ${state.maxChars} personagem(ns) para este vídeo`}</p>
+    ${charSection}
+    ${childSection}
     <div class="fg" style="margin-top:20px">
       <label class="fl">Mensagem deste vídeo</label>
       <div class="ai-wrap"><label class="ai-label"><input type="checkbox" id="vsAiTog${vi}" checked><span class="ai-sw"></span>Gerar com IA</label><div class="ai-desc" id="vsAiDesc${vi}">✨ <strong>Ativado</strong>. A IA cria a mensagem perfeita para este vídeo.</div></div>
@@ -759,10 +812,29 @@ function buildVideoStepHtml(vi) {
 }
 
 function attachVideoStepEvents(vi) {
+  const isFirst = vi === 0;
   // Buttons are rendered in the DOM now
   document.getElementById(`vsBtnBack${vi}`).addEventListener('click', () => goStep(vi + 2));
   document.getElementById(`vsBtnNext${vi}`).addEventListener('click', () => {
     const formStep = state.maxVideos + 3;
+    // Propagate child data from video 1 to all subsequent videos
+    if (isFirst && state.maxVideos > 1) {
+      const src = state.childInfos[0] || {};
+      for (let j = 1; j < state.maxVideos; j++) {
+        state.childInfos[j] = { name: src.name || '', age: src.age || '', occasion: src.occasion || '' };
+        const nameEl = document.getElementById(`vsChildName${j}`);
+        const ageEl = document.getElementById(`vsChildAge${j}`);
+        const occEl = document.getElementById(`vsChildOcc${j}`);
+        if (nameEl) nameEl.value = src.name || '';
+        if (ageEl) ageEl.value = src.age || '';
+        if (occEl) occEl.value = src.occasion || '';
+        const summaryEl = document.getElementById(`vsChildSummary${j}`);
+        if (summaryEl) {
+          const occLabel = OCC_LABELS[src.occasion] || src.occasion || '';
+          summaryEl.textContent = `${src.name || '—'}${src.age ? ', ' + src.age + ' anos' : ''} — ${occLabel}`;
+        }
+      }
+    }
     // Lead: video step completed
     const pkgName = PACKAGES.find(p => p.id === state.pkg)?.name || state.pkg || '';
     const vKey = 'video_step_' + state.pkg + '_v' + (vi + 1);
@@ -774,7 +846,7 @@ function attachVideoStepEvents(vi) {
       video_index: vi + 1,
       value: (calcTotal() / 100).toFixed(2),
       currency: 'BRL',
-    }, vKey); // dedup per package+video index; re-fires if package changes
+    }, vKey);
     goStep(vi === state.maxVideos - 1 ? formStep : vi + 4);
   });
   document.getElementById(`vsAiTog${vi}`).addEventListener('change', function () {
@@ -788,20 +860,21 @@ function attachVideoStepEvents(vi) {
     if (!state.messages[vi]) state.messages[vi] = { text: '', aiEnabled: true };
     state.messages[vi].text = this.value;
   });
-  // Child info listeners
-  function syncChildInfo() {
-    if (!state.childInfos[vi]) state.childInfos[vi] = { name: '', age: '', occasion: '' };
-    state.childInfos[vi].name     = document.getElementById(`vsChildName${vi}`)?.value?.trim() || '';
-    state.childInfos[vi].age      = document.getElementById(`vsChildAge${vi}`)?.value?.trim()  || '';
-    state.childInfos[vi].occasion = document.getElementById(`vsChildOcc${vi}`)?.value          || '';
-    // Show age field only for birthday
-    const ageWrap = document.getElementById(`vsChildAgeWrap${vi}`);
-    if (ageWrap) ageWrap.style.display = state.childInfos[vi].occasion === 'aniversario' ? '' : 'none';
-    updateVideoStepUI(vi);
+  // Child info listeners — only first video has editable fields
+  if (isFirst) {
+    function syncChildInfo() {
+      if (!state.childInfos[vi]) state.childInfos[vi] = { name: '', age: '', occasion: '' };
+      state.childInfos[vi].name     = document.getElementById(`vsChildName${vi}`)?.value?.trim() || '';
+      state.childInfos[vi].age      = document.getElementById(`vsChildAge${vi}`)?.value?.trim()  || '';
+      state.childInfos[vi].occasion = document.getElementById(`vsChildOcc${vi}`)?.value          || '';
+      const ageWrap = document.getElementById(`vsChildAgeWrap${vi}`);
+      if (ageWrap) ageWrap.style.display = state.childInfos[vi].occasion === 'aniversario' ? '' : 'none';
+      updateVideoStepUI(vi);
+    }
+    document.getElementById(`vsChildName${vi}`).addEventListener('input',  syncChildInfo);
+    document.getElementById(`vsChildAge${vi}`).addEventListener('input',   syncChildInfo);
+    document.getElementById(`vsChildOcc${vi}`).addEventListener('change',  syncChildInfo);
   }
-  document.getElementById(`vsChildName${vi}`).addEventListener('input',  syncChildInfo);
-  document.getElementById(`vsChildAge${vi}`).addEventListener('input',   syncChildInfo);
-  document.getElementById(`vsChildOcc${vi}`).addEventListener('change',  syncChildInfo);
 }
 
 function renderVideoStepChars(vi) {
@@ -845,6 +918,8 @@ function toggleVideoChar(vi, id) {
 function updateVideoStepUI(vi) {
   const slot = state.videos[vi] || [];
   const cnt = slot.length;
+  const isTeste = state.pkg === 'teste';
+  const isFirst = vi === 0;
   const cntEl = document.getElementById(`vsCnt${vi}`);
   const selCntEl = document.getElementById(`vsSelCnt${vi}`);
   const panelEl = document.getElementById(`vsPanel${vi}`);
@@ -864,9 +939,17 @@ function updateVideoStepUI(vi) {
     }
   }
   if (btnNext) {
-    const childName = document.getElementById(`vsChildName${vi}`)?.value?.trim() || '';
-    const childOcc  = document.getElementById(`vsChildOcc${vi}`)?.value || '';
-    btnNext.disabled = cnt < 1 || childName.length < 2 || childOcc === '';
+    if (isFirst) {
+      // First video: require child name + occasion + (character unless teste)
+      const childName = document.getElementById(`vsChildName${vi}`)?.value?.trim() || '';
+      const childOcc  = document.getElementById(`vsChildOcc${vi}`)?.value || '';
+      const charOk = isTeste || cnt >= 1;
+      btnNext.disabled = !charOk || childName.length < 2 || childOcc === '';
+    } else {
+      // Subsequent videos: child data inherited, only require character (unless teste)
+      const charOk = isTeste || cnt >= 1;
+      btnNext.disabled = !charOk;
+    }
   }
 }
 
@@ -1266,6 +1349,95 @@ function selectCardType(type) {
   if (type === 'debit') wrap.style.display = 'none';
   // Re-init form with new type if needed (MP doesn't have a simple mode switch, so we just hide installments)
 }
+// ─── Header Back: step-by-step navigation ───────────────────────────────────
+function headerGoBack() {
+  if (state.step <= 1) {
+    // Save cart state before leaving
+    saveCartState();
+    window.location.href = './';
+    return;
+  }
+  // Navigate back one step in the wizard
+  if (state.step === 2) {
+    goStep(1);
+  } else if (state.step >= 3 && state.step <= state.maxVideos + 2) {
+    goStepWithRender(state.step - 1);
+  } else {
+    // On payment step, go back to last video step
+    goStepWithRender(state.maxVideos + 2);
+  }
+}
+
+// ─── Cart persistence ────────────────────────────────────────────────────────
+function saveCartState() {
+  if (!state.pkg) return;
+  const cart = {
+    pkg: state.pkg,
+    step: state.step,
+    quality: state.quality,
+    videos: state.videos,
+    childInfos: state.childInfos,
+    messages: state.messages,
+    basePrice: state.basePrice,
+    maxVideos: state.maxVideos,
+    maxChars: state.maxChars,
+    ts: Date.now(),
+  };
+  sessionStorage.setItem('persona_cart', JSON.stringify(cart));
+}
+
+function restoreCartState() {
+  const raw = sessionStorage.getItem('persona_cart');
+  if (!raw) return false;
+  let cart;
+  try { cart = JSON.parse(raw); } catch (_) { sessionStorage.removeItem('persona_cart'); return false; }
+  // Expire after 30 min
+  if (Date.now() - (cart.ts || 0) > 30 * 60 * 1000) { sessionStorage.removeItem('persona_cart'); return false; }
+  return cart;
+}
+
+function showCartResumeBanner() {
+  const cart = restoreCartState();
+  if (!cart) return;
+  const pkgData = PACKAGES.find(p => p.id === cart.pkg);
+  if (!pkgData) return;
+  const banner = document.createElement('div');
+  banner.id = 'cartResumeBanner';
+  banner.style.cssText = 'background:rgba(191,90,242,.08);border:1px solid rgba(191,90,242,.2);border-radius:14px;padding:16px;margin:12px 16px 0;max-width:900px;margin-left:auto;margin-right:auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap;';
+  banner.innerHTML = `
+    <div style="flex:1;min-width:160px">
+      <div style="font-size:.88rem;font-weight:700;color:var(--purple);margin-bottom:2px">🛒 Você tem um pedido em andamento</div>
+      <div style="font-size:.75rem;color:var(--text2)">Pacote ${pkgData.name} — ${pkgData.videos} vídeo${pkgData.videos > 1 ? 's' : ''}</div>
+    </div>
+    <button onclick="applyCartRestore()" style="padding:8px 16px;border-radius:980px;background:var(--purple);color:#fff;border:none;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer">Continuar</button>
+    <button onclick="dismissCartBanner()" style="padding:8px 16px;border-radius:980px;background:transparent;color:var(--text3);border:1px solid var(--border);font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer">Novo pedido</button>`;
+  const wizard = document.querySelector('.wizard');
+  wizard.parentNode.insertBefore(banner, wizard);
+}
+
+function applyCartRestore() {
+  const cart = restoreCartState();
+  if (!cart) return;
+  // Simulate package selection
+  const pkgCard = document.querySelector(`.package-card[data-pkg="${cart.pkg}"]`);
+  if (pkgCard) pkgCard.click();
+  // Restore state
+  state.quality = cart.quality || 'sd';
+  state.videos = cart.videos || [];
+  state.childInfos = cart.childInfos || [];
+  state.messages = cart.messages || [];
+  // Remove banner and go to saved step
+  const banner = $('cartResumeBanner');
+  if (banner) banner.remove();
+  sessionStorage.removeItem('persona_cart');
+  setTimeout(() => goStepWithRender(Math.min(cart.step, state.maxVideos + 3)), 200);
+}
+
+function dismissCartBanner() {
+  sessionStorage.removeItem('persona_cart');
+  const banner = $('cartResumeBanner');
+  if (banner) banner.remove();
+}
 
 // ─── Init ────────────────────────────────────────────────────────────────────
 // ── Restore pending order after page refresh ──────────────────────────────
@@ -1291,6 +1463,7 @@ initPackages();
 initQuality();
 initForm();
 renderStepper();
+showCartResumeBanner();
 
 // AddToCart: user arrived at the package selection step
 pixelTrackOnce('AddToCart', {
