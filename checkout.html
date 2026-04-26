@@ -177,7 +177,24 @@ a{color:var(--accent);text-decoration:none}
 .video-slot-title{font-size:.92rem;font-weight:700;color:var(--purple)}
 .video-slot-count{font-size:.8rem;color:var(--text2)}
 .extra-price-tag{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:980px;background:rgba(255,215,0,.12);color:#FFD700;font-size:.65rem;font-weight:700;margin-top:3px}
+
+/* PAYMENT METHOD TABS */
+.pay-tabs{display:flex;gap:0;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:20px}
+.pay-tab{flex:1;padding:10px;border:none;border-radius:9px;background:transparent;color:var(--text2);font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;transition:all var(--t);display:flex;align-items:center;justify-content:center;gap:6px}
+.pay-tab.active{background:var(--purple);color:#fff;box-shadow:0 0 16px rgba(191,90,242,.25)}
+.pay-tab-content{display:none}
+.pay-tab-content.active{display:block}
+/* CREDIT/DEBIT TOGGLE */
+.card-type-row{display:flex;gap:6px;margin-bottom:14px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:5px}
+.ctt-btn{flex:1;padding:8px;border:none;border-radius:7px;background:transparent;color:var(--text2);font-family:'Outfit',sans-serif;font-size:.82rem;font-weight:600;cursor:pointer;transition:all var(--t)}
+.ctt-btn.active{background:var(--accent);color:#fff}
+/* CARD FORM */
+.mp-field-wrap{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.mp-field-wrap .fl{font-size:.78rem;font-weight:600;color:var(--text2)}
+.mp-field{height:44px;border-radius:10px;border:1px solid var(--border);background:var(--bg3);transition:border-color var(--t);overflow:hidden}
+.card-form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 </style>
+<script src="https://sdk.mercadopago.com/js/v2"></script>
 </head>
 <body>
 
@@ -262,6 +279,71 @@ Oferta expira em <span id="ckTimer">14:59</span> — Garanta seu preço!
 <div class="osr"><span class="lbl">Criança</span><span class="val" id="sumChild">—</span></div>
 <div class="osr"><span class="lbl">Ocasião</span><span class="val" id="sumOcc">—</span></div>
 <div class="osr total"><span class="lbl">Total</span><span class="val" id="sumTotal">R$ 0,00</span></div>
+</div>
+
+<!-- PAYMENT METHOD SELECTOR -->
+<div class="order-sum" style="margin-top:14px">
+<div class="order-sum-title">Forma de pagamento</div>
+<div class="pay-tabs" style="margin-top:10px">
+  <button class="pay-tab active" id="tabPix" onclick="selectPayTab('pix')">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M11.9 4.5L4.5 11.9a.5.5 0 0 0 0 .7l7.4 7.4a.5.5 0 0 0 .7 0l7.4-7.4a.5.5 0 0 0 0-.7l-7.4-7.4a.5.5 0 0 0-.7 0z"/></svg>
+    PIX
+  </button>
+  <button class="pay-tab" id="tabCard" onclick="selectPayTab('card')">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg>
+    Cartão
+  </button>
+</div>
+
+<!-- PIX tab -->
+<div class="pay-tab-content active" id="payTabPix">
+  <p style="font-size:.82rem;color:var(--text2);line-height:1.6;padding:4px 0">
+    ✅ Ao clicar em <strong style="color:var(--text)">Pagar agora</strong>, você receberá o QR code Pix para efetuar o pagamento.<br>
+    <span style="color:var(--green)">✓ Confirmação automática em segundos</span>
+  </p>
+</div>
+
+<!-- Card tab -->
+<div class="pay-tab-content" id="payTabCard">
+  <div class="card-type-row">
+    <button class="ctt-btn active" id="cttCredit" onclick="selectCardType('credit')">💳 Crédito</button>
+    <button class="ctt-btn" id="cttDebit" onclick="selectCardType('debit')">🏧 Débito</button>
+  </div>
+  <form id="form-checkout" onsubmit="return false">
+    <div class="mp-field-wrap">
+      <label class="fl">Número do cartão</label>
+      <div id="form-checkout__cardNumber" class="mp-field"></div>
+    </div>
+    <div class="card-form-row">
+      <div class="mp-field-wrap">
+        <label class="fl">Validade (MM/AA)</label>
+        <div id="form-checkout__expirationDate" class="mp-field"></div>
+      </div>
+      <div class="mp-field-wrap">
+        <label class="fl">CVV</label>
+        <div id="form-checkout__securityCode" class="mp-field"></div>
+      </div>
+    </div>
+    <div class="mp-field-wrap">
+      <label class="fl">Nome no cartão</label>
+      <input id="form-checkout__cardholderName" class="fi" placeholder="Como escrito no cartão" autocomplete="cc-name">
+    </div>
+    <div class="mp-field-wrap">
+      <label class="fl">CPF do titular</label>
+      <input id="form-checkout__identificationNumber" class="fi" placeholder="000.000.000-00" inputmode="numeric" autocomplete="off">
+    </div>
+    <div class="mp-field-wrap" id="installmentsWrap" style="display:none">
+      <label class="fl">Parcelas</label>
+      <select id="form-checkout__installments" class="fs"><option value="1">1x sem juros</option></select>
+    </div>
+    <!-- Hidden fields required by MP -->
+    <select id="form-checkout__issuer" style="display:none"></select>
+    <select id="form-checkout__identificationType" style="display:none">
+      <option value="CPF" selected>CPF</option>
+    </select>
+  </form>
+  <p id="cardError" style="color:var(--red);font-size:.78rem;margin-top:4px;display:none"></p>
+</div>
 </div>
 </div>
 <div class="wiz-actions">
@@ -810,20 +892,58 @@ async function submitCheckout() {
     });
 
     // 3. Checkout
-    setPayLabel('Gerando Pix… não feche esta aba');
-    let ckData = null;
-    for (let attempt = 0; attempt < 3; attempt++) {
+    if (state.payMethod === 'card') {
+      // ── Card payment ────────────────────────────────────────────────────
+      setPayLabel('Tokenizando cartão…');
+      let cardData;
       try {
-        ckData = await apiFetch(`/orders/${order.id}/checkout`, { method: 'POST' });
-        break;
-      } catch (e) {
-        if (attempt === 2) throw e;
-        setPayLabel('Tentando novamente… não feche esta aba');
-        await new Promise(r => setTimeout(r, 2000));
+        cardData = await mpGetCardData();
+      } catch (cardErr) {
+        const el = $('cardError');
+        el.textContent = cardErr.message || 'Dados do cartão inválidos.';
+        el.style.display = 'block';
+        throw new Error('Verifique os dados do cartão e tente novamente.');
       }
+      setPayLabel('Processando pagamento…');
+      const ckData = await apiFetch(`/orders/${order.id}/checkout`, {
+        method: 'POST',
+        body: JSON.stringify(cardData),
+      });
+      if (ckData.card_status === 'rejected') {
+        throw new Error('Cartão recusado: ' + (ckData.card_status_detail || 'tente outro cartão'));
+      }
+      if (ckData.card_status === 'approved') {
+        showSuccess({ id: order.id, status: 'PAID' });
+      } else {
+        // in_process: poll for approval
+        pollTimer = setInterval(() => pollOrder(order.id), 3000);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        document.querySelector('.wizard').style.display = 'none';
+        document.querySelector('.stepper').style.display = 'none';
+        $('pixScreen').innerHTML = `
+          <div style="text-align:center;padding:60px 16px">
+            <div style="font-size:3rem;margin-bottom:16px">⏳</div>
+            <h2 style="font-size:1.4rem;font-weight:700;margin-bottom:8px">Aguardando confirmação</h2>
+            <p style="color:var(--text2);font-size:.9rem">Seu pagamento está sendo processado. Isso pode levar alguns instantes.</p>
+          </div>`;
+        $('pixScreen').style.display = 'block';
+      }
+    } else {
+      // ── PIX payment ─────────────────────────────────────────────────────
+      setPayLabel('Gerando Pix… não feche esta aba');
+      let ckData = null;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          ckData = await apiFetch(`/orders/${order.id}/checkout`, { method: 'POST' });
+          break;
+        } catch (e) {
+          if (attempt === 2) throw e;
+          setPayLabel('Tentando novamente… não feche esta aba');
+          await new Promise(r => setTimeout(r, 2000));
+        }
+      }
+      showPixScreen(order.id, ckData);
     }
-
-    showPixScreen(order.id, ckData);
   } catch (err) {
     showError(err.message || 'Erro ao processar pedido. Tente novamente.');
     resetPayBtn();
@@ -871,6 +991,132 @@ function showSuccess(order) {
   const gt = sessionStorage.getItem('persona_guest_token') || '';
   const hash = gt ? '#t=' + encodeURIComponent(gt) : '';
   window.location.replace('aguardando.html?oid=' + order.id + hash);
+}
+
+// ─── Payment method state & MercadoPago ──────────────────────────────────────
+state.payMethod = 'pix'; // 'pix' | 'card'
+state.cardType  = 'credit'; // 'credit' | 'debit'
+const totalCents = () => calcTotal();
+
+let _mp = null;
+let _mpCardForm = null;
+let _mpPublicKey = '';
+let _mpCardFormReady = false;
+let _mpCardFormResolve = null;
+let _mpCardFormReject = null;
+
+async function initMpCardForm() {
+  if (_mpCardFormReady) return;
+  if (!_mpPublicKey) {
+    try {
+      const cfg = await apiFetch('/config');
+      _mpPublicKey = cfg.mp_public_key || '';
+    } catch (_) {}
+  }
+  if (!_mpPublicKey) throw new Error('Chave MP não configurada.');
+  if (!window.MercadoPago) throw new Error('SDK MercadoPago não carregado.');
+
+  _mp = new window.MercadoPago(_mpPublicKey, { locale: 'pt-BR' });
+  const isDebit = state.cardType === 'debit';
+  const totalReais = String((totalCents() / 100).toFixed(2));
+
+  _mpCardForm = _mp.cardForm({
+    amount: totalReais,
+    iframe: true,
+    form: {
+      id: 'form-checkout',
+      cardNumber:           { id: 'form-checkout__cardNumber',         placeholder: '0000 0000 0000 0000' },
+      expirationDate:       { id: 'form-checkout__expirationDate',     placeholder: 'MM/AA' },
+      securityCode:         { id: 'form-checkout__securityCode',       placeholder: 'CVV' },
+      cardholderName:       { id: 'form-checkout__cardholderName',     placeholder: 'Nome no cartão' },
+      issuer:               { id: 'form-checkout__issuer' },
+      installments:         { id: 'form-checkout__installments' },
+      identificationType:   { id: 'form-checkout__identificationType' },
+      identificationNumber: { id: 'form-checkout__identificationNumber', placeholder: '000.000.000-00' },
+    },
+    callbacks: {
+      onFormMounted: err => {
+        if (err) console.warn('[MP] form mount error', err);
+        else _mpCardFormReady = true;
+      },
+      onInstallmentsReceived: (err, data) => {
+        const wrap = $('installmentsWrap');
+        if (err || !data || isDebit) { wrap.style.display = 'none'; return; }
+        const sel = $('form-checkout__installments');
+        sel.innerHTML = '';
+        (data.payer_costs || []).forEach(c => {
+          const o = document.createElement('option');
+          o.value = c.installments;
+          o.textContent = c.recommended_message || `${c.installments}x`;
+          sel.appendChild(o);
+        });
+        if (sel.options.length > 1) wrap.style.display = 'block';
+        else { sel.value = '1'; wrap.style.display = 'none'; }
+      },
+      onSubmit: event => {
+        event.preventDefault();
+        const d = _mpCardForm.getCardFormData();
+        if (_mpCardFormResolve) {
+          _mpCardFormResolve(d);
+          _mpCardFormResolve = null; _mpCardFormReject = null;
+        }
+      },
+      onError: errors => {
+        if (_mpCardFormReject) {
+          _mpCardFormReject(new Error(errors.map(e => e.message || e.cause).join('; ')));
+          _mpCardFormResolve = null; _mpCardFormReject = null;
+        }
+      },
+    },
+  });
+}
+
+async function mpGetCardData() {
+  return new Promise((resolve, reject) => {
+    _mpCardFormResolve = resolve;
+    _mpCardFormReject = reject;
+    // Trigger MP tokenization by submitting the form
+    document.getElementById('form-checkout').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    // Fallback timeout
+    setTimeout(() => {
+      if (_mpCardFormReject) {
+        _mpCardFormReject(new Error('Tempo limite ao tokenizar cartão'));
+        _mpCardFormResolve = null; _mpCardFormReject = null;
+      }
+    }, 15000);
+  }).then(d => {
+    if (!d.token) throw new Error('Não foi possível tokenizar o cartão.');
+    return {
+      card_token: d.token,
+      payment_method_id: d.paymentMethodId,
+      installments: parseInt(d.installments || '1', 10),
+      payer_doc_type: d.identificationType || 'CPF',
+      payer_doc_number: (d.identificationNumber || '').replace(/\D/g, ''),
+    };
+  });
+}
+
+function selectPayTab(tab) {
+  state.payMethod = tab;
+  $('tabPix').classList.toggle('active', tab === 'pix');
+  $('tabCard').classList.toggle('active', tab === 'card');
+  $('payTabPix').classList.toggle('active', tab === 'pix');
+  $('payTabCard').classList.toggle('active', tab === 'card');
+  if (tab === 'card' && !_mpCardFormReady) {
+    initMpCardForm().catch(err => {
+      showError('Erro ao carregar formulário de cartão: ' + err.message);
+      selectPayTab('pix');
+    });
+  }
+}
+
+function selectCardType(type) {
+  state.cardType = type;
+  $('cttCredit').classList.toggle('active', type === 'credit');
+  $('cttDebit').classList.toggle('active', type === 'debit');
+  const wrap = $('installmentsWrap');
+  if (type === 'debit') wrap.style.display = 'none';
+  // Re-init form with new type if needed (MP doesn't have a simple mode switch, so we just hide installments)
 }
 
 // ─── Init ────────────────────────────────────────────────────────────────────
