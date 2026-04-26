@@ -195,6 +195,27 @@ a{color:var(--accent);text-decoration:none}
 .card-form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 </style>
 <script src="https://sdk.mercadopago.com/js/v2"></script>
+<!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window,document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '2206392786857309');
+fbq('track', 'PageView');
+fbq('track', 'Lead', {
+  content_name: 'checkout_page',
+  content_category: 'checkout',
+  page_url: location.href,
+});
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=2206392786857309&ev=PageView&noscript=1"/></noscript>
+<!-- End Meta Pixel -->
 </head>
 <body>
 
@@ -392,6 +413,35 @@ Oferta expira em <span id="ckTimer">14:59</span> — Garanta seu preço!
 <script>
 'use strict';
 
+// ─── Meta Pixel helpers ─────────────────────────────────────────────────────
+// Deduplication: track which events have already fired this session
+const _pixelFired = new Set();
+function _pixelEventId(key) {
+  // Stable event_id: session_id + key (for step events)
+  const sid = sessionStorage.getItem('_px_sid') || (() => {
+    const id = Math.random().toString(36).slice(2) + Date.now().toString(36);
+    sessionStorage.setItem('_px_sid', id);
+    return id;
+  })();
+  return sid + '_' + key;
+}
+function pixelTrack(eventName, params, dedupKey) {
+  if (!window.fbq) return;
+  if (dedupKey) {
+    if (_pixelFired.has(dedupKey)) return; // already fired
+    _pixelFired.add(dedupKey);
+  }
+  const eventId = dedupKey ? _pixelEventId(dedupKey) : _pixelEventId(eventName + '_' + Date.now());
+  fbq('track', eventName, params, { eventID: eventId });
+}
+function pixelTrackOnce(eventName, params, key) {
+  // Fires at most once per session regardless of refreshes
+  const ssKey = '_px_once_' + key;
+  if (sessionStorage.getItem(ssKey)) return;
+  sessionStorage.setItem(ssKey, '1');
+  pixelTrack(eventName, params, key);
+}
+
 // ─── Helpers ────────────────────────────────────────────────────────────────
 const $ = id => document.getElementById(id);
 const API_BASE = 'https://hermes-persona-website.5tpiot.easypanel.host/api/v1';
@@ -554,7 +604,18 @@ function goStep(n) {
   renderStepper();
   window.scrollTo({ top: 0, behavior: 'smooth' });
   const formStep = state.maxVideos + 3;
-  if (n === formStep) updateSummary();
+  if (n === formStep) {
+    updateSummary();
+    // InitiateCheckout — user arrived at PAGAR step
+    pixelTrackOnce('InitiateCheckout', {
+      content_name: 'payment_step_started',
+      content_category: 'payment',
+      package_name: state.pkg || '',
+      video_quantity: state.maxVideos,
+      value: (calcTotal() / 100).toFixed(2),
+      currency: 'BRL',
+    }, 'initiate_checkout_' + (state.pkg || 'none'));
+  }
   // Render chars grid when entering a video step
   if (n >= 3 && n <= state.maxVideos + 2) renderVideoStepChars(n - 3);
 }
@@ -579,6 +640,7 @@ function initPackages() {
     card.addEventListener('click', () => {
       grid.querySelectorAll('.package-card').forEach(x => x.classList.remove('selected'));
       card.classList.add('selected');
+      const prevPkg = state.pkg;
       state.pkg = card.dataset.pkg;
       state.maxVideos = +card.dataset.videos;
       state.maxChars = +card.dataset.maxchars;
@@ -587,6 +649,16 @@ function initPackages() {
       state.messages = Array.from({ length: state.maxVideos }, () => ({ text: '', aiEnabled: true }));
       $('btnS1').disabled = false;
       buildVideoSteps();
+      // Lead: package selected (re-fires if user changes package)
+      const pkgName = PACKAGES.find(p => p.id === state.pkg)?.name || state.pkg;
+      pixelTrack('Lead', {
+        content_name: 'package_selected',
+        content_category: 'checkout_step',
+        package_name: pkgName,
+        video_quantity: state.maxVideos,
+        value: (state.basePrice / 100).toFixed(2),
+        currency: 'BRL',
+      }, 'pkg_selected_' + state.pkg); // dedup per package — re-fires if user changes
     });
     const pre = new URLSearchParams(location.search).get('plan') || new URLSearchParams(location.search).get('pacote');
     if (pre && card.dataset.pkg === pre) card.click();
@@ -623,7 +695,22 @@ function initQuality() {
   renderQuality();
   // Re-render when package changes (price changes)
   $('btnB2').addEventListener('click', () => goStep(1));
-  $('btnS2').addEventListener('click', () => goStep(3));
+  $('btnS2').addEventListener('click', () => {
+    // Lead: quality selected
+    const pkgName = PACKAGES.find(p => p.id === state.pkg)?.name || state.pkg || '';
+    const qualityLabel = state.quality === 'hd' ? 'HD Premium' : 'Normal';
+    const qKey = 'quality_selected_' + state.pkg + '_' + state.quality;
+    pixelTrack('Lead', {
+      content_name: 'quality_selected',
+      content_category: 'checkout_step',
+      quality: qualityLabel,
+      package_name: pkgName,
+      video_quantity: state.maxVideos,
+      value: (calcTotal() / 100).toFixed(2),
+      currency: 'BRL',
+    }, qKey);
+    goStep(3);
+  });
 }
 
 // ─── Video Steps ────────────────────────────────────────────────────────────
@@ -680,6 +767,18 @@ function attachVideoStepEvents(vi) {
   document.getElementById(`vsBtnBack${vi}`).addEventListener('click', () => goStep(vi + 2));
   document.getElementById(`vsBtnNext${vi}`).addEventListener('click', () => {
     const formStep = state.maxVideos + 3;
+    // Lead: video step completed
+    const pkgName = PACKAGES.find(p => p.id === state.pkg)?.name || state.pkg || '';
+    const vKey = 'video_step_' + state.pkg + '_v' + (vi + 1);
+    pixelTrack('Lead', {
+      content_name: 'video_step_completed',
+      content_category: 'video_creation_step',
+      package_name: pkgName,
+      video_quantity: state.maxVideos,
+      video_index: vi + 1,
+      value: (calcTotal() / 100).toFixed(2),
+      currency: 'BRL',
+    }, vKey); // dedup per package+video index; re-fires if package changes
     goStep(vi === state.maxVideos - 1 ? formStep : vi + 4);
   });
   document.getElementById(`vsAiTog${vi}`).addEventListener('change', function () {
@@ -1006,6 +1105,23 @@ async function pollOrder(orderId) {
 function showSuccess(order) {
   clearInterval(pollTimer);
   sessionStorage.removeItem('persona_pending_order');
+
+  // Purchase: fired once per order ID after backend confirms payment
+  const purchaseKey = 'purchase_' + order.id;
+  if (!sessionStorage.getItem('_px_purchase_' + order.id)) {
+    sessionStorage.setItem('_px_purchase_' + order.id, '1');
+    const pkgName = PACKAGES.find(p => p.id === state.pkg)?.name || state.pkg || order.plan_id || '';
+    if (window.fbq) {
+      fbq('track', 'Purchase', {
+        content_name: 'purchase_confirmed',
+        package_name: pkgName,
+        video_quantity: state.maxVideos || (order.items ? order.items.length : 0),
+        value: ((order.total_cents || calcTotal()) / 100).toFixed(2),
+        currency: 'BRL',
+      }, { eventID: _pixelEventId('purchase_' + order.id) });
+    }
+  }
+
   const gt = sessionStorage.getItem('persona_guest_token') || '';
   const hash = gt ? '#t=' + encodeURIComponent(gt) : '';
   window.location.replace('aguardando.html?oid=' + order.id + hash);
@@ -1161,6 +1277,14 @@ initPackages();
 initQuality();
 initForm();
 renderStepper();
+
+// AddToCart: user arrived at the package selection step
+pixelTrackOnce('AddToCart', {
+  content_name: 'package_selection_started',
+  content_category: 'checkout_package_step',
+  content_type: 'product',
+  currency: 'BRL',
+}, 'add_to_cart_package_step');
 
 $('btnS1').addEventListener('click', () => {
   if (state.pkg) {

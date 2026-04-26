@@ -2435,6 +2435,23 @@
         }
     </style>
 
+<!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window,document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '2206392786857309');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=2206392786857309&ev=PageView&noscript=1"/></noscript>
+<!-- End Meta Pixel -->
+
 
 <body>
 
@@ -3186,6 +3203,29 @@
 
         const obs = new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } }); }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
         document.querySelectorAll('.reveal:not(.visible)').forEach(el => obs.observe(el));
+
+        /* ===== META PIXEL: ViewContent when #precos enters viewport ===== */
+        (function () {
+            var _vcFired = false;
+            var precosEl = document.getElementById('precos');
+            if (precosEl && window.fbq) {
+                var vcObs = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting && !_vcFired) {
+                            _vcFired = true;
+                            fbq('track', 'ViewContent', {
+                                content_name: 'Planos',
+                                content_category: 'offer',
+                                content_type: 'product',
+                                currency: 'BRL',
+                            });
+                            vcObs.disconnect();
+                        }
+                    });
+                }, { threshold: 0.15 });
+                vcObs.observe(precosEl);
+            }
+        })();
 
         /* Hero video sound toggle + visibility-based audio */
         const heroVideo = document.getElementById('heroVideo');
