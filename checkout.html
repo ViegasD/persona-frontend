@@ -221,7 +221,7 @@ n.queue=[];t=b.createElement(e);t.async=!0;
 t.src=v;s=b.getElementsByTagName(e)[0];
 s.parentNode.insertBefore(t,s)}(window,document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '2217081389052066');
+fbq('init', '1493963685734167');
 fbq('track', 'PageView');
 fbq('track', 'Lead', {
   content_name: 'checkout_page',
@@ -230,7 +230,7 @@ fbq('track', 'Lead', {
 });
 </script>
 <noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=2217081389052066&ev=PageView&noscript=1"/></noscript>
+src="https://www.facebook.com/tr?id=1493963685734167&ev=PageView&noscript=1"/></noscript>
 <!-- End Meta Pixel -->
 </head>
 <body>
@@ -1287,17 +1287,7 @@ function showSuccess(order) {
         video_quantity: state.maxVideos || (order.items ? order.items.length : 0),
         value: ((order.total_cents || calcTotal()) / 100).toFixed(2),
         currency: 'BRL',
-      }, { eventID: _pixelEventId('purchase_' + order.id) });
-    }
-  }
-
-  const gt = sessionStorage.getItem('persona_guest_token') || '';
-  const hash = gt ? '#t=' + encodeURIComponent(gt) : '';
-  window.location.replace('aguardando.html?oid=' + order.id + hash);
-}
-
-// ─── Payment method state & MercadoPago ──────────────────────────────────────
-state.payMethod = 'pix'; // 'pix' | 'card'
+      }, { eventID: 'purchase_' + order.id });
 state.cardType  = 'credit'; // 'credit' | 'debit'
 const totalCents = () => calcTotal();
 
