@@ -1288,6 +1288,14 @@ function showSuccess(order) {
         value: ((order.total_cents || calcTotal()) / 100).toFixed(2),
         currency: 'BRL',
       }, { eventID: 'purchase_' + order.id });
+    }
+  }
+
+  const gt = sessionStorage.getItem('persona_guest_token') || '';
+  const hash = gt ? '#t=' + encodeURIComponent(gt) : '';
+  window.location.replace('aguardando.html?oid=' + order.id + hash);
+}
+
 state.cardType  = 'credit'; // 'credit' | 'debit'
 const totalCents = () => calcTotal();
 
