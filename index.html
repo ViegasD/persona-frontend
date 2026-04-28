@@ -3803,6 +3803,10 @@ src="https://www.facebook.com/tr?id=1493963685734167&ev=PageView&noscript=1"/></
             document.querySelectorAll('.report-card').forEach(function(card) {
                 var video = card.querySelector('video');
                 var btn = card.querySelector('.report-play');
+                // Force first frame to render on all devices
+                video.addEventListener('loadedmetadata', function() {
+                    video.currentTime = 0.1;
+                });
                 btn.addEventListener('click', function() {
                     if (video.paused) {
                         document.querySelectorAll('.report-card video').forEach(function(v) {
