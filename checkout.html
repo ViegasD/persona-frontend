@@ -281,8 +281,25 @@ Oferta expira em <span id="ckTimer">14:59</span> — Garanta seu preço!
 </div>
 </div>
 
-<!-- STEPS 3..N+2: Per-video character selection (rendered dynamically) -->
-<div id="videoStepsContainer"></div>
+<!-- STEP 3: Personagens + dados da criança -->
+<div class="wizard-step" id="step3">
+<h2 class="wizard-title">Escolha os personagens</h2>
+<p class="wizard-subtitle">Selecione um personagem para cada vídeo</p>
+<div style="background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:24px">
+  <div style="font-size:.88rem;font-weight:700;color:var(--purple);margin-bottom:12px">👦 Sobre a criança</div>
+  <div class="form-grid" style="gap:12px">
+    <div class="form-row">
+      <div class="fg"><label class="fl">Nome da criança <span class="req">*</span></label><input type="text" class="fi" id="csChildName" placeholder="Ex: João" autocomplete="off"></div>
+      <div class="fg" id="csChildAgeWrap" style="display:none"><label class="fl">Idade</label><input type="number" class="fi" id="csChildAge" placeholder="Ex: 5" min="1" max="15"></div>
+    </div>
+  </div>
+</div>
+<div id="csSlots"></div>
+<div class="wiz-actions">
+  <button class="btn btn-back" id="csBtnBack"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Voltar</button>
+  <button class="btn btn-next" id="csBtnNext" disabled>Próximo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+</div>
+</div>
 
 <!-- STEP N+3: Form -->
 <div class="wizard-step" id="stepForm">
@@ -299,7 +316,6 @@ Oferta expira em <span id="ckTimer">14:59</span> — Garanta seu preço!
 <div class="osr"><span class="lbl">Pacote</span><span class="val" id="sumPkg">—</span></div>
 <div class="osr"><span class="lbl">Qualidade</span><span class="val" id="sumQuality">—</span></div>
 <div class="osr" id="sumHdRow" style="display:none"><span class="lbl">Ultra (+20%)</span><span class="val" id="sumHd">—</span></div>
-<div class="osr" id="sumExtraRow" style="display:none"><span class="lbl">Personagens extras</span><span class="val" id="sumExtra">—</span></div>
 <div class="osr"><span class="lbl">Comprador</span><span class="val" id="sumBuyer">—</span></div>
 <div class="osr total"><span class="lbl">Total</span><span class="val" id="sumTotal">R$ 0,00</span></div>
 </div>
@@ -620,10 +636,9 @@ const state = {
   step: 1,
   pkg: null,        // plan slug
   maxVideos: 0,     // plan.video_count
-  maxChars: 0,      // plan.max_characters_per_video
   basePrice: 0,     // plan.price_cents
   quality: 'sd',
-  videos: [],       // Array<string[]>, length = maxVideos
+  videos: [],       // Array<string[]>, one entry per video, each holds [charId]
   childInfos: [],   // per-video child info: [{name, age, occasion}]
 };
 let pollTimer = null;
@@ -631,10 +646,8 @@ let pollTimer = null;
 // ─── Pricing ────────────────────────────────────────────────────────────────
 function calcTotal() {
   const hdMult = state.quality === 'hd' ? 0.20 : 0;
-  const extraChars = state.videos.reduce((s, v) => s + Math.max(0, (v || []).length - 1), 0);
-  return Math.round(state.basePrice * (1 + hdMult + 0.10 * extraChars));
+  return Math.round(state.basePrice * (1 + hdMult));
 }
-function extraCharPrice() { return Math.round(state.basePrice * 0.10); }
 function hdPrice() { return Math.round(state.basePrice * 0.20); }
 
 // ─── Timer ──────────────────────────────────────────────────────────────────
@@ -652,10 +665,7 @@ function startTimer() {
 const CHK = (s = '14px') => `<svg viewBox="0 0 20 20" fill="currentColor" width="${s}" height="${s}"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>`;
 
 function buildStepperLabels() {
-  const labels = ['Pacote', 'Qualidade'];
-  for (let i = 1; i <= state.maxVideos; i++) labels.push(`Vídeo ${i}`);
-  labels.push('Pagar');
-  return labels;
+  return ['Pacote', 'Qualidade', 'Personagens', 'Pagar'];
 }
 
 function renderStepper() {
@@ -674,12 +684,10 @@ function renderStepper() {
 }
 
 function stepIdForN(n) {
-  // n=1 → 'step1', n=2 → 'step2', n=3..N+2 → 'stepV{n-2}', n=N+3 → 'stepForm'
   if (n === 1) return 'step1';
   if (n === 2) return 'step2';
-  const formStep = state.maxVideos + 3;
-  if (n === formStep) return 'stepForm';
-  return 'stepV' + (n - 2);
+  if (n === 3) return 'step3';
+  return 'stepForm';
 }
 
 function goStep(n) {
@@ -690,8 +698,7 @@ function goStep(n) {
   if (el) el.classList.add('active');
   renderStepper();
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  const formStep = state.maxVideos + 3;
-  if (n === formStep) {
+  if (n === 4) {
     updateSummary();
     // InitiateCheckout — user arrived at PAGAR step
     pixelTrack('InitiateCheckout', {
@@ -703,8 +710,7 @@ function goStep(n) {
       currency: 'BRL',
     }, 'initiate_checkout_' + (state.pkg || 'none'));
   }
-  // Render chars grid when entering a video step
-  if (n >= 3 && n <= state.maxVideos + 2) renderVideoStepChars(n - 3);
+  if (n === 3) buildCharSlots();
 }
 
 // ─── Step 1: Packages ───────────────────────────────────────────────────────
@@ -730,13 +736,11 @@ function initPackages() {
       const prevPkg = state.pkg;
       state.pkg = card.dataset.pkg;
       state.maxVideos = +card.dataset.videos;
-      state.maxChars = +card.dataset.maxchars;
       state.basePrice = +card.dataset.price;
       state.videos = Array.from({ length: state.maxVideos }, () => []);
       state.messages = Array.from({ length: state.maxVideos }, () => ({ text: '', aiEnabled: true }));
       state.childInfos = Array.from({ length: state.maxVideos }, () => ({ name: '', age: '', occasion: '' }));
       $('btnS1').disabled = false;
-      buildVideoSteps();
     });
     const pre = new URLSearchParams(location.search).get('plan') || new URLSearchParams(location.search).get('pacote');
     if (pre && card.dataset.pkg === pre) card.click();
@@ -791,19 +795,119 @@ function initQuality() {
   });
 }
 
-// ─── Video Steps ────────────────────────────────────────────────────────────
-function buildVideoSteps() {
-  const container = $('videoStepsContainer');
-  container.innerHTML = '';
+// ─── Step 3: Combined character + child step ─────────────────────────────────
+function buildCharSlots() {
+  const container = $('csSlots');
+  if (!container) return;
+  const isTeste = state.pkg === 'teste';
+  let html = '';
   for (let vi = 0; vi < state.maxVideos; vi++) {
-    const stepN = vi + 3; // step numbers: 3, 4, 5, ...
-    const div = document.createElement('div');
-    div.className = 'wizard-step';
-    div.id = 'stepV' + (vi + 1);
-    div.innerHTML = buildVideoStepHtml(vi);
-    container.appendChild(div);
-    attachVideoStepEvents(vi);
+    const slotLabel = state.maxVideos > 1
+      ? `<div class="video-slot-header" style="margin-bottom:12px"><span class="video-slot-title">🎬 Vídeo ${vi + 1}</span></div>`
+      : '';
+    const charSection = isTeste
+      ? `<div style="background:rgba(191,90,242,.06);border:1px solid rgba(191,90,242,.18);border-radius:12px;padding:14px 16px;margin-bottom:12px;text-align:center"><div style="font-size:1.4rem;margin-bottom:6px">🎲</div><div style="font-size:.88rem;font-weight:700;color:var(--purple);margin-bottom:4px">Personagem aleatório</div><div style="font-size:.75rem;color:var(--text2)">Um personagem será escolhido aleatoriamente.</div></div>`
+      : `<div class="chars-grid2" id="csGrid${vi}" style="margin-bottom:12px"></div>`;
+    html += `
+      <div style="margin-bottom:28px" id="csSlot${vi}">
+        ${slotLabel}
+        <div class="fg" style="margin-bottom:12px">
+          <label class="fl">Ocasião <span class="req">*</span></label>
+          <select class="fs" id="csOcc${vi}">
+            <option value="" disabled selected>Selecione</option>
+            <option value="aniversario">Aniversário</option>
+            <option value="comportamento">Bom comportamento</option>
+            <option value="motivacao">Motivação escolar</option>
+            <option value="natal">Natal</option>
+            <option value="pascoa">Páscoa</option>
+            <option value="medos">Superar medos</option>
+            <option value="surpresa">Surpresa especial</option>
+            <option value="outro">Outro</option>
+          </select>
+        </div>
+        ${charSection}
+      </div>`;
   }
+  container.innerHTML = html;
+  for (let vi = 0; vi < state.maxVideos; vi++) {
+    const occEl = document.getElementById('csOcc' + vi);
+    if (occEl) {
+      occEl.addEventListener('change', () => {
+        const anyBday = Array.from({ length: state.maxVideos }, (_, i) => document.getElementById('csOcc' + i)?.value).includes('aniversario');
+        const ageWrap = $('csChildAgeWrap');
+        if (ageWrap) ageWrap.style.display = anyBday ? '' : 'none';
+        updateCharStepUI();
+      });
+    }
+    if (!isTeste) renderCharGrid(vi);
+  }
+  updateCharStepUI();
+}
+
+function renderCharGrid(vi) {
+  const grid = document.getElementById('csGrid' + vi);
+  if (!grid) return;
+  const selected = state.videos[vi]?.[0] || null;
+  grid.innerHTML = CHARS.map(c => {
+    const sel = c.id === selected;
+    return `
+      <div class="char-opt${sel ? ' selected' : ''}" data-id="${c.id}" data-vi="${vi}">
+        <div class="char-chk">${CHK('11px')}</div>
+        <img class="char-opt-img" src="img/${c.img}" alt="${c.name}" loading="lazy" onerror="this.style.display='none'">
+        <div class="cn">${c.name}</div>
+        <div class="cc">${c.cat}</div>
+        ${c.pop && !sel ? '<div style="margin-top:2px"><span style="font-size:.55rem;padding:1px 5px;border-radius:980px;background:rgba(191,90,242,.15);color:#BF5AF2;font-weight:700;">Popular</span></div>' : ''}
+      </div>`;
+  }).join('');
+  grid.querySelectorAll('.char-opt').forEach(o => {
+    o.addEventListener('click', () => {
+      state.videos[vi] = [o.dataset.id];
+      renderCharGrid(vi);
+      updateCharStepUI();
+    });
+  });
+}
+
+function updateCharStepUI() {
+  const name = $('csChildName')?.value?.trim() || '';
+  const isTeste = state.pkg === 'teste';
+  let allOk = name.length >= 2;
+  if (allOk) {
+    for (let vi = 0; vi < state.maxVideos; vi++) {
+      const occ = document.getElementById('csOcc' + vi)?.value || '';
+      if (!occ) { allOk = false; break; }
+      if (!isTeste && (!state.videos[vi] || state.videos[vi].length === 0)) { allOk = false; break; }
+    }
+  }
+  const btn = $('csBtnNext');
+  if (btn) btn.disabled = !allOk;
+}
+
+function initCharStep() {
+  $('csBtnBack').addEventListener('click', () => goStep(2));
+  $('csBtnNext').addEventListener('click', () => {
+    const name = $('csChildName').value.trim();
+    const age = $('csChildAge').value.trim();
+    for (let vi = 0; vi < state.maxVideos; vi++) {
+      if (!state.childInfos[vi]) state.childInfos[vi] = {};
+      state.childInfos[vi].name = name;
+      state.childInfos[vi].age = age;
+      state.childInfos[vi].occasion = document.getElementById('csOcc' + vi)?.value || '';
+      if (!state.messages[vi]) state.messages[vi] = { text: '', aiEnabled: true };
+    }
+    const pkgName = PACKAGES.find(p => p.id === state.pkg)?.name || state.pkg || '';
+    pixelTrack('Lead', {
+      content_name: 'chars_step_completed',
+      content_category: 'checkout_step',
+      package_name: pkgName,
+      video_quantity: state.maxVideos,
+      value: (calcTotal() / 100).toFixed(2),
+      currency: 'BRL',
+    }, 'chars_step_' + state.pkg);
+    goStep(4);
+  });
+  $('csChildName').addEventListener('input', updateCharStepUI);
+  $('csChildAge').addEventListener('input', updateCharStepUI);
 }
 
 function buildVideoStepHtml(vi) {
@@ -1058,15 +1162,8 @@ function updateVideoStepUI(vi) {
   }
 }
 
-// Override goStep to also render the current video step's chars grid
-function goStepWithRender(n) {
-  goStep(n);
-  // If we're on a video step, render its chars
-  if (n >= 3 && n <= state.maxVideos + 2) {
-    const vi = n - 3;
-    renderVideoStepChars(vi);
-  }
-}
+// (deprecated wrapper — kept for safety)
+function goStepWithRender(n) { goStep(n); }
 
 // ─── Step Form ──────────────────────────────────────────────────────────────
 function initForm() {
@@ -1114,7 +1211,7 @@ function initForm() {
   });
 
   $('btnBForm').addEventListener('click', () => {
-    goStepWithRender(state.maxVideos + 2);
+    goStep(3);
   });
 }
 
@@ -1130,14 +1227,6 @@ function updateSummary() {
     $('sumHd').textContent = fmtShort(hdExtra);
   } else {
     $('sumHdRow').style.display = 'none';
-  }
-
-  const extraChars = state.videos.reduce((s, v) => s + Math.max(0, (v || []).length - 1), 0);
-  if (extraChars > 0) {
-    $('sumExtraRow').style.display = 'flex';
-    $('sumExtra').textContent = fmtShort(extraCharPrice() * extraChars) + ` (${extraChars}×)`;
-  } else {
-    $('sumExtraRow').style.display = 'none';
   }
 
   const buyerName = $('fBuyerName')?.value?.trim();
@@ -1464,14 +1553,7 @@ function headerGoBack() {
     return;
   }
   // Navigate back one step in the wizard
-  if (state.step === 2) {
-    goStep(1);
-  } else if (state.step >= 3 && state.step <= state.maxVideos + 2) {
-    goStepWithRender(state.step - 1);
-  } else {
-    // On payment step, go back to last video step
-    goStepWithRender(state.maxVideos + 2);
-  }
+  goStep(state.step - 1);
 }
 
 // ─── Cart persistence ────────────────────────────────────────────────────────
@@ -1486,7 +1568,6 @@ function saveCartState() {
     messages: state.messages,
     basePrice: state.basePrice,
     maxVideos: state.maxVideos,
-    maxChars: state.maxChars,
     ts: Date.now(),
   };
   sessionStorage.setItem('persona_cart', JSON.stringify(cart));
@@ -1536,7 +1617,7 @@ function applyCartRestore() {
   const banner = $('cartResumeBanner');
   if (banner) banner.remove();
   sessionStorage.removeItem('persona_cart');
-  setTimeout(() => goStepWithRender(Math.min(cart.step, state.maxVideos + 3)), 200);
+  setTimeout(() => goStep(Math.min(cart.step, 4)), 200);
 }
 
 function dismissCartBanner() {
@@ -1567,6 +1648,7 @@ function dismissCartBanner() {
 startTimer();
 initPackages();
 initQuality();
+initCharStep();
 initForm();
 renderStepper();
 showCartResumeBanner();
@@ -1601,7 +1683,7 @@ $('btnS1').addEventListener('click', () => {
         if (q === 'hd' && priceEl) priceEl.textContent = fmtShort(hdExtra);
       });
     }
-    goStepWithRender(2);
+    goStep(2);
   }
 });
 
