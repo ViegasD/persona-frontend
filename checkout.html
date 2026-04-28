@@ -298,7 +298,7 @@ Oferta expira em <span id="ckTimer">14:59</span> — Garanta seu preço!
 <div class="order-sum-title">Resumo do pedido</div>
 <div class="osr"><span class="lbl">Pacote</span><span class="val" id="sumPkg">—</span></div>
 <div class="osr"><span class="lbl">Qualidade</span><span class="val" id="sumQuality">—</span></div>
-<div class="osr" id="sumHdRow" style="display:none"><span class="lbl">HD (+20%)</span><span class="val" id="sumHd">—</span></div>
+<div class="osr" id="sumHdRow" style="display:none"><span class="lbl">Ultra (+20%)</span><span class="val" id="sumHd">—</span></div>
 <div class="osr" id="sumExtraRow" style="display:none"><span class="lbl">Personagens extras</span><span class="val" id="sumExtra">—</span></div>
 <div class="osr"><span class="lbl">Comprador</span><span class="val" id="sumBuyer">—</span></div>
 <div class="osr total"><span class="lbl">Total</span><span class="val" id="sumTotal">R$ 0,00</span></div>
@@ -752,8 +752,8 @@ function initQuality() {
   const renderQuality = () => {
     const hdExtra = hdPrice();
     grid.innerHTML = [
-      { id: 'sd', icon: '📹', name: 'Normal', res: '480p', priceLabel: fmt(state.basePrice), extraLabel: null },
-      { id: 'hd', icon: '✨', name: 'HD Premium', res: '720p HD', priceLabel: null, extraLabel: fmtShort(hdExtra) },
+      { id: 'sd', icon: '📹', name: 'Qualidade Normal', res: 'Padrão', priceLabel: fmt(state.basePrice), extraLabel: null },
+      { id: 'hd', icon: '✨', name: 'Qualidade Ultra', res: 'Alta definição', priceLabel: null, extraLabel: fmtShort(hdExtra) },
     ].map(q => `
       <div class="quality-card${state.quality === q.id ? ' selected' : ''}" data-quality="${q.id}">
         <div class="check-ind">${CHK('12px')}</div>
@@ -776,7 +776,7 @@ function initQuality() {
   $('btnS2').addEventListener('click', () => {
     // Lead: quality selected
     const pkgName = PACKAGES.find(p => p.id === state.pkg)?.name || state.pkg || '';
-    const qualityLabel = state.quality === 'hd' ? 'HD Premium' : 'Normal';
+    const qualityLabel = state.quality === 'hd' ? 'Qualidade Ultra' : 'Qualidade Normal';
     const qKey = 'quality_selected_' + state.pkg + '_' + state.quality;
     pixelTrack('Lead', {
       content_name: 'quality_selected',
@@ -1122,7 +1122,7 @@ function initForm() {
 function updateSummary() {
   const pkgData = PACKAGES.find(p => p.id === state.pkg);
   $('sumPkg').textContent = pkgData ? `${pkgData.name} (${pkgData.videos} vídeo${pkgData.videos > 1 ? 's' : ''})` : '—';
-  $('sumQuality').textContent = state.quality === 'hd' ? 'HD (720p)' : 'Normal (480p)';
+  $('sumQuality').textContent = state.quality === 'hd' ? 'Qualidade Ultra' : 'Qualidade Normal';
 
   const hdExtra = state.quality === 'hd' ? hdPrice() : 0;
   if (hdExtra > 0) {
