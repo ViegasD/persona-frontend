@@ -73,6 +73,7 @@ a{color:var(--accent);text-decoration:none}
 .pkg-price .cur{font-size:.8rem;vertical-align:super}
 .pkg-promo{display:inline-block;padding:2px 8px;border-radius:980px;background:rgba(255,69,58,.12);color:var(--red);font-size:.6rem;font-weight:700;margin-bottom:8px;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 rgba(255,69,58,0)}50%{box-shadow:0 0 12px rgba(255,69,58,.2)}}
+@keyframes fieldHighlight{0%{border-color:var(--border);box-shadow:none}30%{border-color:var(--purple);box-shadow:0 0 0 3px rgba(191,90,242,.25)}70%{border-color:var(--purple);box-shadow:0 0 0 3px rgba(191,90,242,.25)}100%{border-color:var(--border);box-shadow:none}}
 .pkg-save{display:inline-block;padding:2px 8px;border-radius:980px;background:rgba(48,209,88,.1);color:var(--green);font-size:.6rem;font-weight:700;margin-bottom:8px}
 .pkg-feats{text-align:left;display:flex;flex-direction:column;gap:6px}
 .pkg-feat{display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--text2)}
@@ -283,17 +284,11 @@ Oferta expira em <span id="ckTimer">14:59</span> — Garanta seu preço!
 
 <!-- STEP 3: Personagens + dados da criança -->
 <div class="wizard-step" id="step3">
-<h2 class="wizard-title">Escolha os personagens</h2>
-<p class="wizard-subtitle">Selecione um personagem para cada vídeo</p>
-<div style="background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:24px">
-  <div style="font-size:.88rem;font-weight:700;color:var(--purple);margin-bottom:12px">👦 Sobre a criança</div>
-  <div class="form-grid" style="gap:12px">
-    <div class="form-row">
-      <div class="fg"><label class="fl">Nome da criança <span class="req">*</span></label><input type="text" class="fi" id="csChildName" placeholder="Ex: João" autocomplete="off"></div>
-      <div class="fg" id="csChildAgeWrap" style="display:none"><label class="fl">Idade</label><input type="number" class="fi" id="csChildAge" placeholder="Ex: 5" min="1" max="15"></div>
-    </div>
-  </div>
-</div>
+<h2 class="wizard-title">Personagens e crianças</h2>
+<p class="wizard-subtitle" id="csSubtitle">Escolha os personagens e preencha os dados</p>
+<!-- unified char grid -->
+<div id="csCharSection"></div>
+<!-- per-video info sections -->
 <div id="csSlots"></div>
 <div class="wiz-actions">
   <button class="btn btn-back" id="csBtnBack"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Voltar</button>
@@ -795,23 +790,42 @@ function initQuality() {
   });
 }
 
-// ─── Step 3: Combined character + child step ─────────────────────────────────
+// ─── Step 3: Unified character selection + per-video info ────────────────────
 function buildCharSlots() {
-  const container = $('csSlots');
-  if (!container) return;
   const isTeste = state.pkg === 'teste';
+
+  // ── Unified character section ──
+  const charSection = $('csCharSection');
+  if (isTeste) {
+    charSection.innerHTML = `<div style="background:rgba(191,90,242,.06);border:1px solid rgba(191,90,242,.18);border-radius:12px;padding:14px 16px;margin-bottom:24px;text-align:center"><div style="font-size:1.4rem;margin-bottom:6px">🎲</div><div style="font-size:.88rem;font-weight:700;color:var(--purple);margin-bottom:4px">Personagem aleatório</div><div style="font-size:.75rem;color:var(--text2)">Um personagem será escolhido aleatoriamente para o seu vídeo.</div></div>`;
+  } else {
+    const label = state.maxVideos === 1
+      ? 'Selecione 1 personagem'
+      : `Selecione ${state.maxVideos} personagens (um por vídeo, em ordem)`;
+    charSection.innerHTML = `
+      <p style="font-size:.82rem;color:var(--text2);margin-bottom:10px">${label}</p>
+      <div class="chars-info" style="margin-bottom:10px">
+        <span class="chars-counter" id="csCounterBadge">0 / ${state.maxVideos}</span>
+      </div>
+      <div class="chars-grid2" id="csCharGrid" style="margin-bottom:24px"></div>`;
+    renderUnifiedCharGrid();
+  }
+
+  // ── Per-video info sections ──
+  const container = $('csSlots');
   let html = '';
   for (let vi = 0; vi < state.maxVideos; vi++) {
-    const slotLabel = state.maxVideos > 1
-      ? `<div class="video-slot-header" style="margin-bottom:12px"><span class="video-slot-title">🎬 Vídeo ${vi + 1}</span></div>`
+    const header = state.maxVideos > 1
+      ? `<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span style="font-size:.92rem;font-weight:700;color:var(--purple)">🎬 Vídeo ${vi + 1}</span><span id="csSlotChar${vi}" style="font-size:.75rem;color:var(--text3)"></span></div>`
       : '';
-    const charSection = isTeste
-      ? `<div style="background:rgba(191,90,242,.06);border:1px solid rgba(191,90,242,.18);border-radius:12px;padding:14px 16px;margin-bottom:12px;text-align:center"><div style="font-size:1.4rem;margin-bottom:6px">🎲</div><div style="font-size:.88rem;font-weight:700;color:var(--purple);margin-bottom:4px">Personagem aleatório</div><div style="font-size:.75rem;color:var(--text2)">Um personagem será escolhido aleatoriamente.</div></div>`
-      : `<div class="chars-grid2" id="csGrid${vi}" style="margin-bottom:12px"></div>`;
     html += `
-      <div style="margin-bottom:28px" id="csSlot${vi}">
-        ${slotLabel}
-        <div class="fg" style="margin-bottom:12px">
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:16px">
+        ${header}
+        <div class="form-row">
+          <div class="fg"><label class="fl">Nome da criança <span class="req">*</span></label><input type="text" class="fi" id="csName${vi}" placeholder="Ex: João" autocomplete="off"></div>
+          <div class="fg" id="csAgeWrap${vi}" style="display:none"><label class="fl">Idade</label><input type="number" class="fi" id="csAge${vi}" placeholder="Ex: 5" min="1" max="15"></div>
+        </div>
+        <div class="fg" style="margin-top:12px">
           <label class="fl">Ocasião <span class="req">*</span></label>
           <select class="fs" id="csOcc${vi}">
             <option value="" disabled selected>Selecione</option>
@@ -825,33 +839,57 @@ function buildCharSlots() {
             <option value="outro">Outro</option>
           </select>
         </div>
-        ${charSection}
+        <div class="fg" style="margin-top:12px">
+          <label class="fl">Mensagem (opcional)</label>
+          <div class="ai-wrap"><label class="ai-label"><input type="checkbox" id="csAiTog${vi}" checked><span class="ai-sw"></span>Gerar com IA</label><div class="ai-desc" id="csAiDesc${vi}">✨ <strong>Ativado</strong>. A IA cria a mensagem perfeita.</div></div>
+          <textarea class="ft" id="csMsg${vi}" placeholder="Ex: Olá! Você é muito especial!" style="margin-top:8px"></textarea>
+        </div>
       </div>`;
   }
   container.innerHTML = html;
+
+  // Attach per-video listeners
   for (let vi = 0; vi < state.maxVideos; vi++) {
-    const occEl = document.getElementById('csOcc' + vi);
-    if (occEl) {
-      occEl.addEventListener('change', () => {
-        const anyBday = Array.from({ length: state.maxVideos }, (_, i) => document.getElementById('csOcc' + i)?.value).includes('aniversario');
-        const ageWrap = $('csChildAgeWrap');
-        if (ageWrap) ageWrap.style.display = anyBday ? '' : 'none';
-        updateCharStepUI();
-      });
-    }
-    if (!isTeste) renderCharGrid(vi);
+    document.getElementById('csName' + vi)?.addEventListener('input', updateCharStepUI);
+    document.getElementById('csAge' + vi)?.addEventListener('input', updateCharStepUI);
+    document.getElementById('csOcc' + vi)?.addEventListener('change', function () {
+      const ageWrap = document.getElementById('csAgeWrap' + vi);
+      if (ageWrap) ageWrap.style.display = this.value === 'aniversario' ? '' : 'none';
+      updateCharStepUI();
+    });
+    document.getElementById('csAiTog' + vi)?.addEventListener('change', function () {
+      if (!state.messages[vi]) state.messages[vi] = { text: '', aiEnabled: true };
+      state.messages[vi].aiEnabled = this.checked;
+      const desc = document.getElementById('csAiDesc' + vi);
+      if (desc) desc.innerHTML = this.checked
+        ? '✨ <strong>Ativado</strong>. A IA cria a mensagem perfeita.'
+        : '📌 <strong>Desativado</strong>. Usamos exatamente o texto que escrever.';
+    });
+    document.getElementById('csMsg' + vi)?.addEventListener('input', function () {
+      if (!state.messages[vi]) state.messages[vi] = { text: '', aiEnabled: true };
+      state.messages[vi].text = this.value;
+    });
   }
   updateCharStepUI();
 }
 
-function renderCharGrid(vi) {
-  const grid = document.getElementById('csGrid' + vi);
+function renderUnifiedCharGrid() {
+  const grid = $('csCharGrid');
   if (!grid) return;
-  const selected = state.videos[vi]?.[0] || null;
+  const allSelected = state.videos.map(v => v?.[0] || null);
+  const totalSelected = allSelected.filter(Boolean).length;
+  const counterEl = $('csCounterBadge');
+  if (counterEl) counterEl.textContent = `${totalSelected} / ${state.maxVideos}`;
+
   grid.innerHTML = CHARS.map(c => {
-    const sel = c.id === selected;
+    const slotIdx = allSelected.indexOf(c.id);
+    const sel = slotIdx !== -1;
+    const numBadge = sel && state.maxVideos > 1
+      ? `<div style="position:absolute;top:2px;left:2px;width:17px;height:17px;border-radius:50%;background:var(--purple);color:#fff;font-size:.6rem;font-weight:800;display:flex;align-items:center;justify-content:center;z-index:2">${slotIdx + 1}</div>`
+      : '';
     return `
-      <div class="char-opt${sel ? ' selected' : ''}" data-id="${c.id}" data-vi="${vi}">
+      <div class="char-opt${sel ? ' selected' : ''}${!sel && totalSelected >= state.maxVideos ? ' disabled' : ''}" data-id="${c.id}" style="position:relative">
+        ${numBadge}
         <div class="char-chk">${CHK('11px')}</div>
         <img class="char-opt-img" src="img/${c.img}" alt="${c.name}" loading="lazy" onerror="this.style.display='none'">
         <div class="cn">${c.name}</div>
@@ -859,25 +897,67 @@ function renderCharGrid(vi) {
         ${c.pop && !sel ? '<div style="margin-top:2px"><span style="font-size:.55rem;padding:1px 5px;border-radius:980px;background:rgba(191,90,242,.15);color:#BF5AF2;font-weight:700;">Popular</span></div>' : ''}
       </div>`;
   }).join('');
-  grid.querySelectorAll('.char-opt').forEach(o => {
+
+  grid.querySelectorAll('.char-opt:not(.disabled)').forEach(o => {
     o.addEventListener('click', () => {
-      state.videos[vi] = [o.dataset.id];
-      renderCharGrid(vi);
+      const id = o.dataset.id;
+      const allSel = state.videos.map(v => v?.[0] || null);
+      const existingSlot = allSel.indexOf(id);
+      if (existingSlot !== -1) {
+        // Deselect and compact remaining up
+        const remaining = allSel.filter((v, i) => i !== existingSlot && v !== null);
+        for (let i = 0; i < state.maxVideos; i++) state.videos[i] = remaining[i] ? [remaining[i]] : [];
+      } else {
+        const emptySlot = allSel.findIndex(v => !v);
+        if (emptySlot !== -1) state.videos[emptySlot] = [id];
+      }
+      renderUnifiedCharGrid();
+      updateSlotCharLabels();
       updateCharStepUI();
+      // Scroll to first child name input when all slots filled
+      const allNowFilled = state.videos.filter(v => v?.[0]).length === state.maxVideos;
+      if (allNowFilled) {
+        const firstInput = document.getElementById('csName0');
+        if (firstInput) {
+          const y = firstInput.getBoundingClientRect().top + window.scrollY - 80;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+          setTimeout(() => {
+            firstInput.style.animation = 'none';
+            firstInput.offsetHeight;
+            firstInput.style.animation = 'fieldHighlight 1.2s ease forwards';
+            firstInput.focus();
+          }, 500);
+        }
+      }
     });
   });
+  updateSlotCharLabels();
+}
+
+function updateSlotCharLabels() {
+  for (let vi = 0; vi < state.maxVideos; vi++) {
+    const el = document.getElementById('csSlotChar' + vi);
+    if (!el) continue;
+    const charId = state.videos[vi]?.[0];
+    if (charId) {
+      const c = CHARS.find(x => x.id === charId);
+      el.textContent = c ? `(${c.name})` : '';
+      el.style.color = 'var(--purple)';
+    } else {
+      el.textContent = '(nenhum selecionado)';
+      el.style.color = 'var(--text3)';
+    }
+  }
 }
 
 function updateCharStepUI() {
-  const name = $('csChildName')?.value?.trim() || '';
   const isTeste = state.pkg === 'teste';
-  let allOk = name.length >= 2;
-  if (allOk) {
-    for (let vi = 0; vi < state.maxVideos; vi++) {
-      const occ = document.getElementById('csOcc' + vi)?.value || '';
-      if (!occ) { allOk = false; break; }
-      if (!isTeste && (!state.videos[vi] || state.videos[vi].length === 0)) { allOk = false; break; }
-    }
+  let allOk = true;
+  for (let vi = 0; vi < state.maxVideos; vi++) {
+    const name = document.getElementById('csName' + vi)?.value?.trim() || '';
+    const occ = document.getElementById('csOcc' + vi)?.value || '';
+    if (name.length < 2 || !occ) { allOk = false; break; }
+    if (!isTeste && (!state.videos[vi] || state.videos[vi].length === 0)) { allOk = false; break; }
   }
   const btn = $('csBtnNext');
   if (btn) btn.disabled = !allOk;
@@ -886,12 +966,10 @@ function updateCharStepUI() {
 function initCharStep() {
   $('csBtnBack').addEventListener('click', () => goStep(2));
   $('csBtnNext').addEventListener('click', () => {
-    const name = $('csChildName').value.trim();
-    const age = $('csChildAge').value.trim();
     for (let vi = 0; vi < state.maxVideos; vi++) {
       if (!state.childInfos[vi]) state.childInfos[vi] = {};
-      state.childInfos[vi].name = name;
-      state.childInfos[vi].age = age;
+      state.childInfos[vi].name = document.getElementById('csName' + vi)?.value?.trim() || '';
+      state.childInfos[vi].age = document.getElementById('csAge' + vi)?.value?.trim() || '';
       state.childInfos[vi].occasion = document.getElementById('csOcc' + vi)?.value || '';
       if (!state.messages[vi]) state.messages[vi] = { text: '', aiEnabled: true };
     }
@@ -906,8 +984,6 @@ function initCharStep() {
     }, 'chars_step_' + state.pkg);
     goStep(4);
   });
-  $('csChildName').addEventListener('input', updateCharStepUI);
-  $('csChildAge').addEventListener('input', updateCharStepUI);
 }
 
 function buildVideoStepHtml(vi) {
