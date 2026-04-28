@@ -6,12 +6,14 @@
 <title>Preparando seu vídeo | Recado Animado</title>
 <link rel="icon" type="image/png" href="img/Recado-animado-LOGO.png">
 <script>
-  window.pixelId = "69eeb094ff23cf797f17969b";
-  var a = document.createElement("script");
-  a.setAttribute("async", "");
-  a.setAttribute("defer", "");
-  a.setAttribute("src", "https://cdn.utmify.com.br/scripts/pixel/pixel.js");
-  document.head.appendChild(a);
+  if (!['localhost','127.0.0.1'].includes(location.hostname)) {
+    window.pixelId = "69eeb094ff23cf797f17969b";
+    var a = document.createElement("script");
+    a.setAttribute("async", "");
+    a.setAttribute("defer", "");
+    a.setAttribute("src", "https://cdn.utmify.com.br/scripts/pixel/pixel.js");
+    document.head.appendChild(a);
+  }
 </script>
 <script
   src="https://cdn.utmify.com.br/scripts/utms/latest.js"

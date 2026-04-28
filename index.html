@@ -7,12 +7,14 @@
     <title>Recado Animado | Vídeos Mágicos Personalizados para Crianças</title>
     <link rel="icon" type="image/png" href="img/Recado-animado-LOGO.png">
     <script>
-      window.pixelId = "69eeb094ff23cf797f17969b";
-      var a = document.createElement("script");
-      a.setAttribute("async", "");
-      a.setAttribute("defer", "");
-      a.setAttribute("src", "https://cdn.utmify.com.br/scripts/pixel/pixel.js");
-      document.head.appendChild(a);
+      if (!['localhost','127.0.0.1'].includes(location.hostname)) {
+        window.pixelId = "69eeb094ff23cf797f17969b";
+        var a = document.createElement("script");
+        a.setAttribute("async", "");
+        a.setAttribute("defer", "");
+        a.setAttribute("src", "https://cdn.utmify.com.br/scripts/pixel/pixel.js");
+        document.head.appendChild(a);
+      }
     </script>
     <script
       src="https://cdn.utmify.com.br/scripts/utms/latest.js"
@@ -891,6 +893,49 @@
             letter-spacing: 0.05em;
             font-weight: 600;
         }
+
+        /* ===== DEPOIMENTOS EM VÍDEO ===== */
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 40px;
+        }
+        @media (max-width: 768px) {
+            .reports-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 480px) {
+            .reports-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+        }
+        .report-card {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #000;
+            aspect-ratio: 9/16;
+            cursor: pointer;
+        }
+        .report-card video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .report-play {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,.3);
+            border: none;
+            cursor: pointer;
+            transition: background .2s;
+        }
+        .report-play svg { width: 48px; height: 48px; filter: drop-shadow(0 2px 6px rgba(0,0,0,.5)); }
+        .report-play.playing { background: rgba(0,0,0,0); }
+        .report-play.playing svg { opacity: 0; }
+        .report-card:hover .report-play { background: rgba(0,0,0,.15); }
 
         /* ===== HOW IT WORKS ===== */
         .steps-grid {
@@ -2455,6 +2500,7 @@
 
 <!-- Meta Pixel -->
 <script>
+if (!['localhost','127.0.0.1'].includes(location.hostname)) {
 !function(f,b,e,v,n,t,s)
 {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -2465,6 +2511,7 @@ s.parentNode.insertBefore(t,s)}(window,document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
 fbq('init', '1493963685734167');
 fbq('track', 'PageView');
+}
 </script>
 <noscript><img height="1" width="1" style="display:none"
 src="https://www.facebook.com/tr?id=1493963685734167&ev=PageView&noscript=1"/></noscript>
@@ -2697,6 +2744,52 @@ src="https://www.facebook.com/tr?id=1493963685734167&ev=PageView&noscript=1"/></
     <!-- SCROLLING NAMES TICKER -->
     <section class="ticker-section" aria-label="Compras recentes">
         <div class="ticker-track" id="tickerTrack"></div>
+    </section>
+
+    <!-- DEPOIMENTOS EM VÍDEO -->
+    <section class="section" id="depoimentos">
+        <div class="container">
+            <p class="section-tag reveal">Quem já recebeu</p>
+            <h2 class="headline-big reveal">Veja a reação das crianças 🥹</h2>
+            <div class="reports-grid">
+                <div class="report-card reveal">
+                    <video src="img/reports/EncantaKids - Vídeos Mágicos Personalizados para Crianças (2).mp4" playsinline muted loop preload="metadata"></video>
+                    <button class="report-play" aria-label="Reproduzir">
+                        <svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+                    </button>
+                </div>
+                <div class="report-card reveal">
+                    <video src="img/reports/EncantaKids - Vídeos Mágicos Personalizados para Crianças (3).mp4" playsinline muted loop preload="metadata"></video>
+                    <button class="report-play" aria-label="Reproduzir">
+                        <svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+                    </button>
+                </div>
+                <div class="report-card reveal">
+                    <video src="img/reports/EncantaKids - Vídeos Mágicos Personalizados para Crianças (4).mp4" playsinline muted loop preload="metadata"></video>
+                    <button class="report-play" aria-label="Reproduzir">
+                        <svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+                    </button>
+                </div>
+                <div class="report-card reveal">
+                    <video src="img/reports/WhatsApp Video 2026-04-27 at 23.23.01.mp4" playsinline muted loop preload="metadata"></video>
+                    <button class="report-play" aria-label="Reproduzir">
+                        <svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+                    </button>
+                </div>
+                <div class="report-card reveal">
+                    <video src="img/reports/EncantaKids - Vídeos Mágicos Personalizados para Crianças (6).mp4" playsinline muted loop preload="metadata"></video>
+                    <button class="report-play" aria-label="Reproduzir">
+                        <svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+                    </button>
+                </div>
+                <div class="report-card reveal">
+                    <video src="img/reports/Portal Polo Norte.mp4" playsinline muted loop preload="metadata"></video>
+                    <button class="report-play" aria-label="Reproduzir">
+                        <svg viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- COMO FUNCIONA -->
@@ -3703,6 +3796,28 @@ src="https://www.facebook.com/tr?id=1493963685734167&ev=PageView&noscript=1"/></
                 fb.classList.toggle('stuck', e.intersectionRatio < 1);
             }, { threshold: [1], rootMargin: '-65px 0px 0px 0px' });
             obs.observe(fb);
+        })();
+
+        /* ===== REPORT VIDEOS ===== */
+        (function() {
+            document.querySelectorAll('.report-card').forEach(function(card) {
+                var video = card.querySelector('video');
+                var btn = card.querySelector('.report-play');
+                btn.addEventListener('click', function() {
+                    if (video.paused) {
+                        document.querySelectorAll('.report-card video').forEach(function(v) {
+                            if (v !== video) { v.pause(); v.closest('.report-card').querySelector('.report-play').classList.remove('playing'); }
+                        });
+                        video.muted = false;
+                        video.play();
+                        btn.classList.add('playing');
+                    } else {
+                        video.pause();
+                        btn.classList.remove('playing');
+                    }
+                });
+                video.addEventListener('ended', function() { btn.classList.remove('playing'); });
+            });
         })();
 
         /* ===== SPIN WHEEL ===== (commented out)

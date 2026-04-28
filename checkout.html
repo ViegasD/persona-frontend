@@ -6,12 +6,14 @@
 <title>Checkout | Recado Animado</title>
 <link rel="icon" type="image/png" href="img/Recado-animado-LOGO.png">
 <script>
-  window.pixelId = "69eeb094ff23cf797f17969b";
-  var a = document.createElement("script");
-  a.setAttribute("async", "");
-  a.setAttribute("defer", "");
-  a.setAttribute("src", "https://cdn.utmify.com.br/scripts/pixel/pixel.js");
-  document.head.appendChild(a);
+  if (!['localhost','127.0.0.1'].includes(location.hostname)) {
+    window.pixelId = "69eeb094ff23cf797f17969b";
+    var a = document.createElement("script");
+    a.setAttribute("async", "");
+    a.setAttribute("defer", "");
+    a.setAttribute("src", "https://cdn.utmify.com.br/scripts/pixel/pixel.js");
+    document.head.appendChild(a);
+  }
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script
@@ -217,6 +219,7 @@ a{color:var(--accent);text-decoration:none}
 <script src="https://sdk.mercadopago.com/js/v2"></script>
 <!-- Meta Pixel -->
 <script>
+if (!['localhost','127.0.0.1'].includes(location.hostname)) {
 !function(f,b,e,v,n,t,s)
 {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -232,6 +235,7 @@ fbq('track', 'Lead', {
   content_category: 'checkout',
   page_url: location.href,
 });
+}
 </script>
 <noscript><img height="1" width="1" style="display:none"
 src="https://www.facebook.com/tr?id=1493963685734167&ev=PageView&noscript=1"/></noscript>
