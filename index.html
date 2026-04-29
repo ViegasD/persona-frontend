@@ -3534,6 +3534,14 @@ src="https://www.facebook.com/tr?id=1493963685734167&ev=PageView&noscript=1"/></
             const now = new Date();
             const timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
 
+            function renderMd(text) {
+                // Bold: **text** → <strong>text</strong>
+                return text
+                    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+                    .replace(/\n/g, '<br>');
+            }
+
             function addMsg(text, type, delay) {
                 return new Promise(resolve => {
                     if (type === 'in') {
@@ -3547,7 +3555,7 @@ src="https://www.facebook.com/tr?id=1493963685734167&ev=PageView&noscript=1"/></
                             typingEl.remove();
                             const msg = document.createElement('div');
                             msg.className = 'wa-msg wa-msg-in';
-                            msg.innerHTML = text + '<div class="wa-msg-time">' + timeStr + '</div>';
+                            msg.innerHTML = renderMd(text) + '<div class="wa-msg-time">' + timeStr + '</div>';
                             chatBody.appendChild(msg);
                             chatBody.scrollTop = chatBody.scrollHeight;
                             resolve();
@@ -3555,7 +3563,7 @@ src="https://www.facebook.com/tr?id=1493963685734167&ev=PageView&noscript=1"/></
                     } else {
                         const msg = document.createElement('div');
                         msg.className = 'wa-msg wa-msg-out';
-                        msg.innerHTML = text + '<div class="wa-msg-time">' + timeStr + ' <span class="wa-check">✓✓</span></div>';
+                        msg.innerHTML = renderMd(text) + '<div class="wa-msg-time">' + timeStr + ' <span class="wa-check">✓✓</span></div>';
                         chatBody.appendChild(msg);
                         chatBody.scrollTop = chatBody.scrollHeight;
                         resolve();
@@ -3622,6 +3630,29 @@ src="https://www.facebook.com/tr?id=1493963685734167&ev=PageView&noscript=1"/></
                         }
                         if (data.payment) {
                             addPixCard(data.payment);
+                        }
+                        // Detect plan/pricing mentions → checkout button
+                        const _planRe = /plano|teste|surpresa|completo|anivers|preco|preço|valor|quanto custa|r\$|comprar|pedido|encomendar|checkout|escolher/i;
+                        if (_planRe.test(data.messages.join(' '))) {
+                            await addMsg(
+                                '👉 Escolha seu plano e monte o vídeo agora:<br><br>' +
+                                '<a href="#precos" onclick="document.getElementById(\'waChatPopup\').classList.remove(\'open\');" ' +
+                                'style="display:inline-block;background:var(--purple);color:#fff;padding:8px 18px;border-radius:20px;text-decoration:none;font-weight:700;font-size:.85rem;margin-top:4px">' +
+                                '✨ Ver planos e preços</a>',
+                                'in', 800
+                            );
+                        }
+                        const _supportRe = /humano|atendente|suporte|falar com algu|pessoa real|contato|reclamaç|cancelar|reembolso|devoluç|não funciona|nao funciona|deu erro|problema|tive um|tenho um|preciso de ajuda|ajuda|help|nao recebi|não recebi|cadê|cadê o|nao chegou|não chegou|errou|bugou|travou|quebrou|parou|falhou|erro|falha/i;
+                        const _botReply = data.messages.join(' ');
+                        if (_supportRe.test(text) || _supportRe.test(_botReply)) {
+                            await addMsg(
+                                'Você também pode falar direto com nossa equipe 😊<br><br>' +
+                                '<a href="https://wa.me/5562991118737?text=Ol%C3%A1%2C%20preciso%20de%20ajuda." ' +
+                                'target="_blank" rel="noopener" ' +
+                                'style="display:inline-block;background:#25D366;color:#fff;padding:8px 18px;border-radius:20px;text-decoration:none;font-weight:700;font-size:.85rem;margin-top:6px">' +
+                                '💬 Falar com atendente</a>',
+                                'in', 1000
+                            );
                         }
                     } else {
                         throw new Error();
