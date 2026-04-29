@@ -1,0 +1,71 @@
+Persona Storefront API — Endpoint Reference
+Base URL: http://localhost:8001 (dev) — production set via STOREFRONT_API_BASE_URL
+API prefix: /api/v1
+Auth:
+
+User: Authorization: Bearer <jwt> (issued by /auth/login or /auth/register)
+Guest: signed storefront_guest cookie (HttpOnly, set automatically when an anonymous user creates an order)
+Admin: X-Api-Key: <STOREFRONT_ADMIN_API_KEY>
+Health
+Method	Path	Auth	Notes
+GET	/healthz	—	Liveness, returns {status: "ok"}
+GET	/readyz	—	DB ping
+Catalog — /api/v1
+Method	Path	Auth	Purpose
+GET	/plans	—	List active plans (sorted)
+GET	/plans/{plan_id}	—	Single plan
+GET	/characters	—	List characters from Node catalog (read-only view). Query: ?gender=, ?limit=, ?offset=
+GET	/occasions	—	List occasion presets
+Plan shape
+
+Auth — /api/v1/auth
+Method	Path	Auth	Body	Returns
+POST	/auth/register	—	{email, password, name?, phone?}	{token, user}
+POST	/auth/login	—	{email, password}	{token, user}
+POST	/auth/guest/claim	Bearer	{order_id, code?}	Attaches a guest order to the logged-in user (v1 placeholder code validation)
+GET	/auth/me	Bearer	—	Current user profile
+Orders — /api/v1/orders
+All routes accept either a Bearer token (owner) or the guest cookie set on creation.
+
+Method	Path	Body	Notes
+POST	/orders	{plan_id, recipient_name?, recipient_age?, occasion_slug?, guest_email?, guest_phone?}	Creates DRAFT order; sets guest cookie if anonymous
+GET	/orders/{id}	—	Full order with items + presigned video/thumb URLs
+PUT	/orders/{id}	partial order fields	DRAFT only
+POST	/orders/{id}/items	{character_ids: number[], custom_message?}	Adds an item; enforces plan limits
+PUT	/orders/{id}/items/{item_id}	{character_ids?, custom_message?}	DRAFT only
+DELETE	/orders/{id}/items/{item_id}	—	Re-sequences remaining items
+POST	/orders/{id}/checkout	—	Validates item count == plan.video_count, creates Pix, returns QR. Idempotent: reuses pending Pix
+GET	/orders/{id}/items/{item_id}/download	—	{url} 1-hour presigned video URL
+Order status values: DRAFT → AWAITING_PAYMENT → PAID → QUEUED → RENDERING → READY → DELIVERED (or CANCELLED/REFUNDED/FAILED)
+
+Item status values: PENDING → COMPOSITING → RENDERING → READY (or FAILED)
+
+Checkout response
+
+The frontend should poll GET /orders/{id} (or GET /payments/{payment_id}) every ~3s after checkout until status advances past AWAITING_PAYMENT.
+
+Payments — /api/v1/payments
+Method	Path	Auth	Notes
+POST	/payments/mercadopago/webhook	(Mercado Pago signature)	Internal — do not call from frontend
+GET	/payments/{payment_id}	—	{id, order_id, status, amount_cents, expires_at, paid_at}
+Admin — /api/v1/admin (header X-Api-Key)
+Method	Path	Notes
+GET	/admin/plans	Includes inactive
+POST	/admin/plans	Create
+PUT	/admin/plans/{id}	Partial update
+DELETE	/admin/plans/{id}	Soft-deactivate
+GET	/admin/orders?status=&limit=&offset=	List with filter
+POST	/admin/orders/{id}/refund	Marks REFUNDED
+GET	/admin/batches?limit=	List recent batches
+POST	/admin/batches/{id}/run	Force-trigger a batch (calls worker)
+POST	/admin/batches/{id}/cancel	Mark FAILED
+GET	/admin/pod/status?pod_id=	RunPod state
+POST	/admin/pod/start	Start a pod manually
+POST	/admin/pod/stop?pod_id=	Stop a pod
+Frontend integration notes
+Anonymous flow works end-to-end: create order → add items → checkout → poll → download. The storefront_guest cookie is httpOnly and set on the first POST /orders, so subsequent requests must include credentials (fetch(url, { credentials: 'include' })).
+CORS: STOREFRONT_WEB_BASE_URL must match your dev/prod origin (in dev, all origins are allowed).
+Polling cadence: 3–5 s for payment status, 10 s after PAID while waiting for READY.
+Plan limits: enforce client-side too — max items = plan.video_count, max characters per item = plan.max_characters_per_video.
+Image URLs: character/thumb/video URLs returned by the API are presigned and short-lived (1–24 h). Don't cache them across sessions.
+Error format: standard FastAPI — {"detail": "..."} with proper HTTP status (409 = wrong state, 422 = plan-rule violation, 403 = wrong owner, 404 = missing).
