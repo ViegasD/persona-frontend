@@ -514,6 +514,15 @@ const fmtShort = c => {
   return '+R$\u00a0' + v;
 };
 
+// Affiliate ref capture: persist ?ref=CODE to localStorage
+(function() {
+  try {
+    var ref = new URLSearchParams(window.location.search).get('ref');
+    if (ref) localStorage.setItem('affiliate_ref', ref.trim().slice(0, 32));
+  } catch (_) {}
+})();
+
+
 async function apiFetch(path, opts = {}) {
   const headers = { 'Content-Type': 'application/json', ...opts.headers };
   const gt = sessionStorage.getItem('persona_guest_token');
@@ -1330,6 +1339,7 @@ async function submitCheckout() {
         recipient_name: $('fBuyerName').value.trim() || null,
         guest_email:    $('fEmail').value.trim()     || null,
         guest_phone:    $('fWa').value.trim()        || null,
+        affiliate_code: localStorage.getItem('affiliate_ref') || null,
       }),
     });
     if (order.guest_token) sessionStorage.setItem('persona_guest_token', order.guest_token);

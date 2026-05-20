@@ -3156,6 +3156,14 @@ src="https://www.facebook.com/tr?id=1493963685734167&ev=PageView&noscript=1"/></
     </footer>
 
     <script>
+        // Affiliate ref capture: persist ?ref=CODE to localStorage
+        (function() {
+          try {
+            var ref = new URLSearchParams(window.location.search).get('ref');
+            if (ref) localStorage.setItem('affiliate_ref', ref.trim().slice(0, 32));
+          } catch (_) {}
+        })();
+
         /* ===== CHARACTERS DATABASE ===== */
         const CHARACTERS = [
             { name: 'Papai Noel', img: 'papai-natal.webp', cat: 'Clássico', rating: '5.00', reviews: 412 },
