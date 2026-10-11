@@ -204,7 +204,7 @@
         .logo:hover .logo-text span:nth-child(2n) { animation-delay: .05s; }
         .logo:hover .logo-text span:nth-child(3n) { animation-delay: .1s; }
         @keyframes logo-hop { 50% { transform: translateY(-3px); } }
-        .nav { display: flex; align-items: center; gap: 28px; }
+        .nav { display: flex; align-items: center; gap: 20px; }
         .nav a:not(.btn) { font-size: .98rem; font-weight: 500; color: var(--muted); transition: color .2s; }
         .nav a:not(.btn):hover { color: var(--ink); }
         .nav .btn { min-height: 44px; padding: 10px 20px; font-size: .96rem; }
@@ -225,10 +225,12 @@
             transition: opacity .25s var(--ease);
         }
         .mobile-nav.open { opacity: 1; pointer-events: auto; }
-        .mobile-nav a:not(.btn) { font-family: 'Outfit', sans-serif; font-size: 1.7rem; font-weight: 600; }
+        .mobile-nav a:not(.btn) { font-family: 'Outfit', sans-serif; font-size: 1.35rem; font-weight: 600; }
+        [hidden] { display: none !important; }
+        .mobile-nav { overflow-y: auto; gap: 16px; justify-content: safe center; padding-top: 64px; }
         .mobile-nav .btn { margin-top: 12px; width: 100%; }
         .mobile-nav-close { position: absolute; top: 20px; right: 16px; background: none; border: 0; padding: 8px; cursor: pointer; color: var(--ink); }
-        @media (max-width: 960px) {
+        @media (max-width: 1200px) {
             .nav { display: none; }
             .menu-toggle { display: block; }
         }
@@ -820,10 +822,10 @@ src="https://www.facebook.com/tr?id=1493963685734167&ev=PageView&noscript=1"/></
             <nav class="nav">
                 <a href="#personagens">Personagens</a>
                 <a href="#como-funciona">Como funciona</a>
-                <a href="#ocasioes">Ocasiões</a>
                 <a href="#precos">Preços</a>
-                <a href="#faq">FAQ</a>
                 <a href="meus-videos.html">Meus vídeos</a>
+                <a href="conta.html#login" data-account-link>Entrar</a>
+                <a href="conta.html#signup" data-signup-link>Criar conta</a>
                 <a href="checkout.html" class="btn btn-whatsapp">Pedir agora</a>
             </nav>
             <button class="menu-toggle" onclick="toggleMobileNav()" aria-label="Menu">
@@ -846,6 +848,8 @@ src="https://www.facebook.com/tr?id=1493963685734167&ev=PageView&noscript=1"/></
         <a href="#precos" onclick="toggleMobileNav()">Preços</a>
         <a href="#faq" onclick="toggleMobileNav()">FAQ</a>
         <a href="meus-videos.html" onclick="toggleMobileNav()">Meus vídeos</a>
+        <a href="conta.html#login" data-account-link onclick="toggleMobileNav()">Entrar</a>
+        <a href="conta.html#signup" data-signup-link onclick="toggleMobileNav()">Criar conta</a>
         <a href="checkout.html" class="btn btn-whatsapp btn-large" onclick="toggleMobileNav()">Pedir agora</a>
     </div>
 
@@ -1312,6 +1316,8 @@ src="https://www.facebook.com/tr?id=1493963685734167&ev=PageView&noscript=1"/></
                     <a href="#precos">Preços</a>
                     <a href="#faq">FAQ</a>
                     <a href="meus-videos.html">Meus vídeos</a>
+                    <a href="conta.html" data-account-link>Minha conta e créditos</a>
+                    <a href="conta.html#signup" data-signup-link>Criar conta</a>
                 </div>
                 <div class="footer-col">
                     <h4>Social</h4>
@@ -1334,6 +1340,19 @@ src="https://www.facebook.com/tr?id=1493963685734167&ev=PageView&noscript=1"/></
         </div>
     </footer>
 
+    <script src="storefront-config.js"></script>
+    <script>
+        function updateAccountNavigation() {
+            const signedIn = !!window.PersonaSession.getToken();
+            document.querySelectorAll('[data-account-link]').forEach(link => {
+                link.href = signedIn ? 'conta.html' : 'conta.html#login';
+                link.textContent = signedIn ? 'Minha conta e créditos' : 'Entrar';
+            });
+            document.querySelectorAll('[data-signup-link]').forEach(link => { link.hidden = signedIn; });
+        }
+        updateAccountNavigation();
+        window.addEventListener('persona-session-change', updateAccountNavigation);
+    </script>
     <script>
         // Affiliate ref capture: persist ?ref=CODE to localStorage
         (function() {

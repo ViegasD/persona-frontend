@@ -263,6 +263,7 @@ src="https://www.facebook.com/tr?id=1493963685734167&ev=PageView&noscript=1"/></
 <h2 class="wizard-title">Escolha o seu pacote</h2>
 <p class="wizard-subtitle">Quanto mais vídeos, maior a magia!</p>
 <div class="packages-grid" id="pkgGrid"></div>
+<p id="checkoutAvailability" role="status" hidden style="color:#9a5a00;padding:16px 0">Novas gerações e pagamentos estão temporariamente pausados. Seus créditos não serão usados. <a href="conta.html">Minha conta</a></p>
 <div id="catalogStatus" role="status" aria-live="polite">
   <p id="catalogMessage">Carregando pacotes e personagens...</p>
   <button class="btn btn-back" id="catalogRetry" type="button" hidden>Tentar novamente</button>
@@ -422,6 +423,7 @@ src="https://www.facebook.com/tr?id=1493963685734167&ev=PageView&noscript=1"/></
     <button type="button" class="btn btn-back" id="btnAccountLogout" hidden>Sair da conta</button>
     <a href="conta.html" id="accountManage" hidden>Gerenciar conta</a>
     <a href="conta.html#forgot">Esqueci minha senha</a>
+    <a href="conta.html#signup">Cadastro completo</a>
   </div>
   <div class="account-status" id="accountStatus" role="status">Use o e-mail do pedido para criar sua conta ou entrar.</div>
 </div>
@@ -552,6 +554,8 @@ function pixelTrackOnce(eventName, params, key) {
 // ─── Helpers ────────────────────────────────────────────────────────────────
 const $ = id => document.getElementById(id);
 const API_BASE = window.PersonaConfig.apiBaseUrl;
+let checkoutAvailability = {};
+let accountAuthBusy = false;
 
 
 
@@ -667,7 +671,11 @@ window.addEventListener('persona-google-auth', () => {
 });
 
 async function accountAuth(mode) {
-  if (state.checkoutBusy) return;
+  if (state.checkoutBusy || accountAuthBusy) return;
+  if (mode === 'register' && checkoutAvailability.account_email_enabled === false) {
+    setAccountStatus('Novos cadastros estão temporariamente indisponíveis. Contas existentes podem entrar.', true);
+    return;
+  }
   const email = $('fEmail')?.value.trim();
   const password = $('accountPassword')?.value || '';
   if (!email || !FIELD_RULES.fEmail.test(email)) {
@@ -679,7 +687,7 @@ async function accountAuth(mode) {
     return;
   }
   const buttons = [$('btnAccountRegister'), $('btnAccountLogin')];
-  if (buttons.some(button => button.disabled)) return;
+  accountAuthBusy = true;
   window.PersonaGoogle?.invalidate();
   const session = window.PersonaSession.snapshot();
   buttons.forEach(button => { button.disabled = true; });
@@ -701,7 +709,9 @@ async function accountAuth(mode) {
   } catch (err) {
     setAccountStatus(err.message || 'Não foi possível entrar na conta.', true);
   } finally {
-    buttons.forEach(button => { button.disabled = state.checkoutBusy; });
+    accountAuthBusy = false;
+    $('btnAccountLogin').disabled = state.checkoutBusy;
+    $('btnAccountRegister').disabled = state.checkoutBusy || checkoutAvailability.account_email_enabled === false;
     if (!state.account && !state.checkoutBusy) window.PersonaGoogle?.refresh();
   }
 }
@@ -1430,7 +1440,7 @@ function initForm() {
 
   function validateForm() {
     const allOk = fields.every(id => FIELD_RULES[id] ? FIELD_RULES[id].test($(id).value) : true);
-    $('btnPay').disabled = state.checkoutBusy || !allOk;
+    $('btnPay').disabled = state.checkoutBusy || !allOk || checkoutAvailability.video_processing_enabled === false;
     updateSummary();
   }
 
@@ -1488,6 +1498,10 @@ function updateSummary() {
 
 // ─── Checkout ───────────────────────────────────────────────────────────────
 async function submitCheckout() {
+  if (checkoutAvailability.video_processing_enabled === false) {
+    showError('Novas gerações estão temporariamente pausadas. Nenhum pagamento ou crédito será utilizado.');
+    return;
+  }
   if (state.checkoutBusy) return;
   const fields = ['fBuyerName', 'fWa', 'fEmail'];
   fields.forEach(id => { $(id).dataset.touched = '1'; });
@@ -1984,6 +1998,10 @@ async function bootCheckout() {
   $('catalogRetry').hidden = true;
   $('catalogMessage').textContent = 'Carregando pacotes e personagens...';
   try {
+    checkoutAvailability = await apiFetch('/config').catch(() => ({}));
+    $('checkoutAvailability').hidden = checkoutAvailability.video_processing_enabled !== false;
+    $('btnAccountRegister').disabled = checkoutAvailability.account_email_enabled === false;
+    if (checkoutAvailability.account_email_enabled === false) setAccountStatus('Novos cadastros estão temporariamente indisponíveis. Contas existentes podem entrar.', true);
     await loadCatalog();
   } catch (_) {
     PACKAGES = [];

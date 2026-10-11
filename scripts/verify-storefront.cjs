@@ -33,6 +33,7 @@ async function verifyCatalogBoot(browser) {
     await page.route('https://**/*', async route => {
       const url = new URL(route.request().url());
       const endpoint = url.pathname;
+      if (endpoint.endsWith('/config')) return route.fulfill({ json: { account_email_enabled: true, video_processing_enabled: true } });
       if (endpoint.endsWith('/auth/google/config')) return route.fulfill({ json: { enabled: false } });
       if (url.hostname === 'images.test') {
         return route.fulfill({ contentType: 'image/webp', body: fs.readFileSync(path.resolve(__dirname, '..', 'img/bluey.webp')) });
@@ -138,6 +139,7 @@ async function main() {
     await page.route('https://**/*', async route => {
       const url = route.request().url();
       if (!url.includes('/api/v1/')) return route.abort();
+      if (url.endsWith('/config')) return route.fulfill({ json: { account_email_enabled: true, video_processing_enabled: true } });
       if (url.endsWith('/auth/google/config')) return route.fulfill({ json: { enabled: false } });
       assert.equal(route.request().headers().authorization, 'Bearer test-token');
       let data;

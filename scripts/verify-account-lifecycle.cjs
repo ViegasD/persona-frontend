@@ -22,6 +22,9 @@ async function main() {
       if (url.protocol === 'file:') return route.continue();
       if (!url.pathname.startsWith('/api/v1/')) return route.abort();
       const endpoint = url.pathname.slice('/api/v1'.length);
+      if (endpoint === '/config') {
+        return overrides[endpoint] ? overrides[endpoint](route, requests) : route.fulfill({ json: { account_email_enabled: true, video_processing_enabled: true } });
+      }
       requests.push({ endpoint, method: request.method(), body: request.postDataJSON(), auth: request.headers().authorization });
       if (overrides[endpoint]) return overrides[endpoint](route, requests);
       const data = {
@@ -32,6 +35,8 @@ async function main() {
           { id: 2, kind: 'redeem', amount: -2, balance_after: 0, debt_after: 1, order_id: 123, created_at: '2026-10-11T12:00:00Z' },
         ] },
         '/auth/verify-email': { access_token: 'verified-token', user_id: 1 },
+        '/auth/login': { access_token: 'login-token', user_id: 1 },
+        '/auth/register': { access_token: 'signup-token', user_id: 1 },
         '/auth/reset-password': { message: 'Senha alterada.' },
         '/auth/forgot-password': { message: 'generic' },
         '/auth/resend-verification': { message: 'generic' },
@@ -56,6 +61,52 @@ async function main() {
     }
   }
   try {
+    await run('signup', null, async (page, requests) => {
+      await page.locator('#auth-name').fill('Cliente');
+      await page.locator('#auth-email').fill('cliente@example.com');
+      await page.locator('#auth-password').fill('senha-segura');
+      await page.locator('#auth-confirm').fill('outra-senha');
+      await page.locator('#auth-button').click();
+      await page.locator('#message').filter({ hasText: 'coincidem' }).waitFor();
+      assert.equal(requests.length, 0);
+      await page.locator('#auth-confirm').fill('senha-segura');
+      await screenshot(page, 'signup');
+      await page.locator('#auth-button').click();
+      await page.locator('#account-details').waitFor();
+      assert.deepEqual(requests.find(r => r.endpoint === '/auth/register').body, { name: 'Cliente', email: 'cliente@example.com', password: 'senha-segura' });
+      assert.equal(await page.evaluate(() => localStorage.getItem('persona_access_token')), 'signup-token');
+      await page.locator('#logout-button').click();
+      await page.locator('#signed-out').waitFor();
+      assert.equal(await page.evaluate(() => localStorage.getItem('persona_access_token')), null);
+    });
+    await run('login', null, async page => {
+      await page.locator('#auth-email').fill('cliente@example.com');
+      await page.locator('#auth-password').fill('senha-segura');
+      await screenshot(page, 'login');
+      await page.locator('#auth-button').click();
+      await page.locator('#account-details').waitFor();
+      assert.equal(await page.evaluate(() => localStorage.getItem('persona_access_token')), 'login-token');
+    });
+    await run('signup', null, async (page, requests) => {
+      await page.locator('#auth-availability').waitFor();
+      assert.equal(await page.locator('#auth-button').isEnabled(), false);
+      await page.locator('#login-tab').click();
+      await page.locator('#auth-heading').filter({ hasText: 'Entrar' }).waitFor();
+      assert.equal(await page.locator('#auth-button').isEnabled(), true);
+      assert.equal(requests.length, 0);
+    }, { '/config': route => route.fulfill({ json: { account_email_enabled: false, video_processing_enabled: false } }) });
+    await run('', 'token', async page => {
+      await page.locator('#processing-availability').waitFor();
+      await page.locator('#mail-availability').waitFor();
+      assert.equal(await page.locator('#resend-button').isEnabled(), false);
+    }, { '/config': route => route.fulfill({ json: { account_email_enabled: false, video_processing_enabled: false } }) });
+    await run('login', null, async page => {
+      await page.locator('#auth-email').fill('cliente@example.com');
+      await page.locator('#auth-password').fill('senha-segura');
+      await page.locator('#auth-button').click();
+      await page.locator('#message').filter({ hasText: 'incorretos' }).waitFor();
+      assert.equal(await page.locator('#auth-button').isEnabled(), true);
+    }, { '/auth/login': route => route.fulfill({ status: 401, json: { detail: 'invalid credentials' } }) });
     await run('library', null, async page => {
       assert.equal(await page.locator('#login-form a[href="conta.html#forgot"]').count(), 1);
     });

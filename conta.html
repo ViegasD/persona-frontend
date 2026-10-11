@@ -10,7 +10,7 @@
 let linkToken = '', accountMode = 'account';
 function consumeFragment() {
   const fragment = new URLSearchParams(location.hash.slice(1));
-  accountMode = fragment.has('verify') ? 'verify' : fragment.has('reset') ? 'reset' : fragment.has('forgot') ? 'forgot' : 'account';
+  accountMode = fragment.has('verify') ? 'verify' : fragment.has('reset') ? 'reset' : fragment.has('forgot') ? 'forgot' : fragment.has('signup') ? 'signup' : fragment.has('login') ? 'login' : 'account';
   linkToken = fragment.get(accountMode) || '';
   if (location.hash) history.replaceState(null, '', location.pathname + location.search);
 }
@@ -29,11 +29,11 @@ body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-
 [hidden]{display:none!important}
 a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 header{padding:12px 20px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
-header a{font-size:.85rem;color:var(--muted)}header span{font-weight:600}
+header a{font-size:.85rem;color:var(--text2)}header span{font-weight:600}
 main{max-width:640px;margin:auto;padding:32px 16px 80px;overflow-wrap:anywhere}
 .brand{display:flex;align-items:center;gap:12px;margin-bottom:24px}.brand img{width:56px;height:56px;object-fit:contain}.brand p{font-size:.85rem}
 h1{font-size:1.75rem;line-height:1.2}h2{font-size:1.1rem;margin-bottom:12px}
-p{color:var(--muted)}section{border-top:1px solid var(--border);padding:24px 0}
+p{color:var(--text2)}section{border-top:1px solid var(--border);padding:24px 0}
 label{display:block;font-size:.9rem;font-weight:600;margin:16px 0 6px}
 input{display:block;width:100%;min-width:0;background:var(--bg2);color:var(--text);border:1.5px solid var(--border);border-radius:8px;padding:14px 16px;font:inherit}
 input:focus{outline:2px solid var(--purple);outline-offset:2px}
@@ -42,8 +42,9 @@ button:disabled{opacity:.55;cursor:wait}button:focus-visible,a:focus-visible{out
 form button{width:100%}.links{display:flex;gap:12px 24px;flex-wrap:wrap;margin-top:18px}
 #message{border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:20px;color:var(--green);background:var(--bg2)}#message.error{color:var(--red);border-color:var(--red)}
 #verification-status{font-weight:600;color:var(--green)}#verification-status.pending{color:#9a5a00}
-.balances{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin:20px 0}.balances dt{color:var(--muted);font-size:.85rem}.balances dd{font-size:1.25rem;font-weight:700;color:var(--green)}#debt{color:#9a5a00}
-#history{list-style:none}#history li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;border-bottom:1px solid var(--border);padding:16px 0}#history small{display:block;color:var(--muted);font-size:.8rem}#history strong{color:var(--green)}#history strong.negative{color:#9a5a00}
+.balances{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin:20px 0}.balances dt{color:var(--text2);font-size:.85rem}.balances dd{font-size:1.25rem;font-weight:700;color:var(--green)}#debt{color:#9a5a00}
+#history{list-style:none}#history li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;border-bottom:1px solid var(--border);padding:16px 0}#history small{display:block;color:var(--text2);font-size:.8rem}#history strong{color:var(--green)}#history strong.negative{color:#9a5a00}
+.auth-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px}.auth-tabs a{flex:1;padding:12px;text-align:center;color:var(--text2)}.auth-tabs a[aria-current=page]{border-bottom:3px solid var(--accent);color:var(--accent);font-weight:700}.availability{color:#9a5a00;margin-top:12px}.secondary{background:transparent;color:var(--text2);border:1px solid var(--border)}
 @media(max-width:420px){header{padding:12px 16px}h1{font-size:1.5rem}.balances{gap:12px}}
 
 body{font-family:'DM Sans',sans-serif!important}
@@ -74,10 +75,24 @@ h1,h2,h3,.header-title,.wizard-title,.btn,.pkg-name,.pkg-price,.qc-name{font-fam
   <section id="reset-success" hidden><h2>Senha alterada</h2><p>Entre na sua conta com a nova senha.</p><div class="links"><a href="meus-videos.html">Entrar em Meus vídeos</a></div></section>
   <section id="forgot-section" hidden>
     <h2>Recuperar senha</h2>
+    <p id="forgot-availability" class="availability" hidden>O envio de e-mails está temporariamente indisponível. Tente novamente mais tarde.</p>
     <form id="forgot-form"><label for="recovery-email">E-mail da conta</label><input id="recovery-email" type="email" autocomplete="email" required><button id="forgot-button" type="submit">Enviar link de recuperação</button></form>
     <div class="links"><a href="meus-videos.html">Voltar para entrar</a></div>
   </section>
-  <section id="signed-out" hidden><h2>Entre na sua conta</h2><p>Acesse seus créditos e a confirmação de e-mail.</p><div class="links"><a href="meus-videos.html">Entrar em Meus vídeos</a><a href="conta.html#forgot">Esqueci minha senha</a></div></section>
+  <section id="signed-out" hidden>
+    <nav class="auth-tabs" aria-label="Acesso à conta"><a id="login-tab" href="conta.html#login">Entrar</a><a id="signup-tab" href="conta.html#signup">Criar conta</a></nav>
+    <h2 id="auth-heading">Entrar na minha conta</h2>
+    <form id="auth-form">
+      <div id="signup-name" hidden><label for="auth-name">Seu nome</label><input id="auth-name" autocomplete="name" maxlength="255"></div>
+      <label for="auth-email">E-mail</label><input id="auth-email" type="email" autocomplete="username" required maxlength="254">
+      <label for="auth-password">Senha</label><input id="auth-password" type="password" autocomplete="current-password" required maxlength="128">
+      <div id="signup-confirm" hidden><label for="auth-confirm">Confirmar senha</label><input id="auth-confirm" type="password" autocomplete="new-password" maxlength="128"></div>
+      <button id="auth-button" type="submit">Entrar</button>
+    </form>
+    <p id="signup-note" hidden style="margin-top:16px">Confirme seu e-mail para receber 1 crédito de boas-vindas. Cada vídeo usa 1 crédito.</p>
+    <p id="auth-availability" class="availability" role="status" hidden></p>
+    <div class="links"><a href="conta.html#forgot">Esqueci minha senha</a><a href="meus-videos.html">Meus vídeos</a></div>
+  </section>
   <section id="google-section" hidden><h2 id="google-heading">Entrar com Google</h2><p id="google-linked" hidden>Google vinculado</p><div class="google-auth" data-google-mode="login" hidden></div></section>
   <section id="loading" hidden><p>Carregando sua conta…</p></section>
   <button id="account-retry" type="button" hidden>Tentar carregar conta novamente</button>
@@ -85,15 +100,22 @@ h1,h2,h3,.header-title,.wizard-title,.btn,.pkg-name,.pkg-price,.qc-name{font-fam
     <h2 id="account-email"></h2><p id="verification-status"></p>
     <p id="welcome-note" hidden>O crédito de boas-vindas é liberado após verificar seu e-mail, conforme as regras da conta.</p>
     <button type="button" id="resend-button" hidden>Reenviar confirmação de e-mail</button>
+    <p id="mail-availability" class="availability" hidden></p>
     <dl class="balances"><div><dt>Saldo disponível</dt><dd id="balance"></dd></div><div id="debt-row" hidden><dt>Créditos pendentes</dt><dd id="debt"></dd></div></dl>
     <p id="debt-note" hidden>Novos créditos primeiro compensam os créditos pendentes.</p>
+    <p>Cada vídeo usa 1 crédito. Ganhe 1 crédito a cada compra paga.</p>
+    <p id="processing-availability" class="availability" hidden>Novas gerações estão temporariamente pausadas. Seus créditos e vídeos existentes continuam disponíveis.</p>
     <div class="links"><a href="meus-videos.html">Minha biblioteca de vídeos</a><a href="checkout.html">Criar novo vídeo</a><a href="conta.html#forgot">Recuperar senha</a></div>
+    <button id="logout-button" type="button" class="secondary">Sair da conta</button>
   </section>
   <section id="ledger-section" hidden><h2>Histórico de créditos</h2><p id="ledger-message"></p><ul id="history"></ul><button id="ledger-retry" type="button" hidden>Tentar carregar histórico novamente</button></section>
 </main>
 <script>
 const API_BASE = window.PersonaConfig.apiBaseUrl;
 const $ = id => document.getElementById(id);
+let availability = {};
+let authBusy = false;
+const accountView = () => ['account', 'login', 'signup'].includes(accountMode);
 const credits = value => `${Number(value).toLocaleString('pt-BR')} crédito${Number(value) === 1 ? '' : 's'}`;
 function message(text, error = false) { $('message').textContent = text; $('message').classList.toggle('error', error); $('message').hidden = false; }
 async function request(path, body, authenticated = false) {
@@ -108,12 +130,17 @@ async function request(path, body, authenticated = false) {
     throw Object.assign(new Error('Sua conta mudou.'), { stale: true });
   }
   if (!response.ok) {
-    const error = new Error(response.status === 401 && authenticated ? 'Sua sessão expirou. Entre novamente.' : typeof data.detail === 'string' ? data.detail : 'Não foi possível concluir. Tente novamente.');
+    const errors = {
+      'invalid credentials': 'E-mail ou senha incorretos.',
+      'email already registered': 'Este e-mail já tem uma conta. Entre ou recupere sua senha.',
+      'account email delivery unavailable': 'O envio de e-mails está temporariamente indisponível. Tente novamente mais tarde.',
+      'invalid or expired account link': 'Este link expirou ou já foi usado. Solicite um novo link.',
+    };
+    const error = new Error(response.status === 401 && authenticated ? 'Sua sessão expirou. Entre novamente.' : errors[data.detail] || (typeof data.detail === 'string' ? data.detail : 'Não foi possível concluir. Confira os dados e tente novamente.'));
     error.status = response.status;
     if (response.status === 401 && authenticated) {
       window.PersonaSession.clear();
-      $('account-details').hidden = $('ledger-section').hidden = true;
-      $('signed-out').hidden = false;
+      accountMode = 'login'; showMode();
       const googleRoot = document.querySelector('.google-auth');
       googleRoot.dataset.googleMode = 'login';
       googleRoot.dataset.googleDisabled = accountMode !== 'account' ? 'true' : 'false';
@@ -128,7 +155,7 @@ async function request(path, body, authenticated = false) {
 async function action(button, task) {
   button.disabled = true; $('message').hidden = true;
   try { await task(); } catch (error) { if (!error.stale) message(error.message, true); }
-  finally { button.disabled = false; }
+  finally { button.disabled = false; updateAvailability(); }
 }
 function renderBalances(balance, debt = 0) {
   $('balance').textContent = credits(balance);
@@ -141,7 +168,7 @@ async function loadLedger() {
     const ledger = await request('/credits/me', undefined, true);
     renderBalances(ledger.balance, ledger.debt);
     $('history').replaceChildren();
-    const labels = { signup_bonus: 'Boas-vindas', purchase: 'Compra de créditos', redeem: 'Créditos usados', adjustment: 'Ajuste de créditos', refund: 'Reembolso' };
+    const labels = { signup_bonus: 'Boas-vindas', purchase: 'Bônus de compra', redeem: 'Créditos usados', adjustment: 'Ajuste de créditos', refund: 'Reembolso' };
     for (const transaction of ledger.transactions) {
       const row = document.createElement('li'), info = document.createElement('div'), amount = document.createElement('strong');
       info.textContent = labels[transaction.kind] || 'Movimentação de créditos';
@@ -164,7 +191,7 @@ async function loadAccount() {
   $('account-retry').hidden = true; $('signed-out').hidden = true; $('loading').hidden = false;
   try {
     const user = await request('/auth/me', undefined, true);
-    if (accountMode !== 'account') return;
+    if (!accountView()) return;
     const googleRoot = document.querySelector('.google-auth');
     googleRoot.dataset.googleMode = 'link';
     googleRoot.dataset.googleDisabled = user.google_linked ? 'true' : 'false';
@@ -176,6 +203,7 @@ async function loadAccount() {
     $('verification-status').textContent = user.email_verified ? 'E-mail verificado' : 'Verificação de e-mail pendente';
     $('verification-status').classList.toggle('pending', !user.email_verified);
     $('resend-button').hidden = $('welcome-note').hidden = !!user.email_verified;
+    updateAvailability();
     renderBalances(user.credit_balance, user.credit_debt);
     $('account-details').hidden = $('ledger-section').hidden = false;
     await loadLedger();
@@ -221,6 +249,40 @@ $('resend-button').addEventListener('click', () => action($('resend-button'), as
 }));
 $('ledger-retry').addEventListener('click', () => action($('ledger-retry'), loadLedger));
 $('account-retry').addEventListener('click', () => action($('account-retry'), loadAccount));
+function updateAvailability() {
+  const unavailable = availability.account_email_enabled === false;
+  const signup = accountMode === 'signup';
+  $('auth-button').disabled = authBusy || (signup && unavailable);
+  $('auth-availability').hidden = !(signup && unavailable);
+  $('auth-availability').textContent = 'Novos cadastros estão temporariamente indisponíveis enquanto o envio de e-mails é configurado. Contas existentes podem entrar.';
+  $('resend-button').disabled = $('forgot-button').disabled = unavailable;
+  $('forgot-availability').hidden = !unavailable;
+  $('mail-availability').hidden = !unavailable;
+  $('mail-availability').textContent = 'Confirmação de e-mail e recuperação de senha estão temporariamente indisponíveis.';
+  $('processing-availability').hidden = availability.video_processing_enabled !== false;
+}
+$('auth-form').addEventListener('submit', event => {
+  event.preventDefault();
+  if (authBusy || (accountMode === 'signup' && availability.account_email_enabled === false)) return;
+  const signup = accountMode === 'signup';
+  const snapshot = window.PersonaSession.snapshot();
+  const password = $('auth-password').value;
+  if (signup && (password.length < 8 || password.length > 128)) return message('A senha deve ter de 8 a 128 caracteres.', true);
+  if (signup && password !== $('auth-confirm').value) return message('As senhas não coincidem.', true);
+  authBusy = true;
+  action($('auth-button'), async () => {
+    const payload = { email: $('auth-email').value.trim(), password };
+    if (signup) payload.name = $('auth-name').value.trim() || null;
+    const result = await request(signup ? '/auth/register' : '/auth/login', payload);
+    if (!window.PersonaSession.isCurrent(snapshot)) throw Object.assign(new Error('Sua conta mudou. Tente novamente.'), { stale: true });
+    if (!result.access_token) throw new Error('Não foi possível entrar. Tente novamente.');
+    accountMode = 'account';
+    $('auth-form').reset();
+    window.PersonaSession.setToken(result.access_token);
+    message(signup ? 'Conta criada. Confira seu e-mail para confirmar o cadastro e receber seu crédito.' : 'Você entrou na sua conta.');
+  }).finally(() => { authBusy = false; updateAvailability(); });
+});
+$('logout-button').addEventListener('click', () => { accountMode = 'login'; window.PersonaSession.clear(); $('auth-form').reset(); });
 function showMode() {
   for (const id of ['verify-section', 'reset-section', 'reset-success', 'forgot-section', 'signed-out', 'loading', 'account-details', 'ledger-section', 'account-retry']) $(id).hidden = true;
   $('message').hidden = true;
@@ -228,13 +290,27 @@ function showMode() {
   const googleRoot = document.querySelector('.google-auth');
   googleRoot.dataset.googleDisabled = accountMode !== 'account' ? 'true' : 'false';
   googleRoot.dataset.googleMode = localStorage.getItem('persona_access_token') ? 'link' : 'login';
-  if (accountMode !== 'account') $(accountMode + '-section').hidden = false;
-  else if (localStorage.getItem('persona_access_token')) loadAccount();
-  else $('signed-out').hidden = false;
+  if (!accountView()) $(accountMode + '-section').hidden = false;
+  else if (window.PersonaSession.getToken()) loadAccount();
+  else {
+    const signup = accountMode === 'signup';
+    $('signed-out').hidden = false;
+    $('signup-name').hidden = $('signup-confirm').hidden = $('signup-note').hidden = !signup;
+    $('auth-confirm').required = signup;
+    $('auth-password').minLength = signup ? 8 : 1;
+    $('auth-password').autocomplete = signup ? 'new-password' : 'current-password';
+    $('auth-heading').textContent = signup ? 'Criar minha conta' : 'Entrar na minha conta';
+    $('auth-button').textContent = signup ? 'Criar conta' : 'Entrar';
+    $('login-tab').setAttribute('aria-current', signup ? 'false' : 'page');
+    $('signup-tab').setAttribute('aria-current', signup ? 'page' : 'false');
+  }
+  updateAvailability();
 }
 window.addEventListener('hashchange', () => { consumeFragment(); showMode(); window.PersonaGoogle?.refresh(); });
 window.addEventListener('persona-google-auth', () => { accountMode = 'account'; loadAccount(); });
+window.addEventListener('persona-session-change', showMode);
 showMode();
+request('/config').then(config => { availability = config; updateAvailability(); }).catch(() => {});
 </script>
 </body>
 </html>
