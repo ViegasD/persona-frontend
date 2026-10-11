@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<script src="storefront-config.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Preparando seu vídeo | Recado Animado</title>
 <link rel="icon" type="image/png" href="img/Recado-animado-LOGO.png">
@@ -183,7 +184,7 @@ a{color:var(--accent);text-decoration:none}
 <script>
 'use strict';
 
-const API_BASE = 'https://hermes-persona-website.5tpiot.easypanel.host/api/v1';
+const API_BASE = window.PersonaConfig.apiBaseUrl;
 
 // ─── Character maps ───────────────────────────────────────────────────────────
 const CHAR_MAP = {
@@ -253,11 +254,17 @@ if (!ORDER_ID) {
 }
 
 // ─── API ──────────────────────────────────────────────────────────────────────
-async function apiFetch(path) {
+async function apiFetch(path, retryExpired = true) {
   const headers = {};
   const gt = sessionStorage.getItem('persona_guest_token');
   if (gt) headers['X-Guest-Token'] = gt;
+  const token = localStorage.getItem('persona_access_token');
+  if (token) headers.Authorization = 'Bearer ' + token;
   const res = await fetch(API_BASE + path, { credentials: 'include', headers });
+  if (res.status === 401 && token && retryExpired) {
+    if (token === window.PersonaSession.getToken()) window.PersonaSession.clear();
+    return apiFetch(path, false);
+  }
   if (!res.ok) { const e = new Error('HTTP ' + res.status); e.status = res.status; throw e; }
   return res.json();
 }
@@ -279,7 +286,7 @@ async function tick() {
       clearInterval(pollTimer);
     }
   } catch (e) {
-    if (e.status === 403 || e.status === 404) {
+    if (e.status === 401 || e.status === 403 || e.status === 404) {
       clearInterval(pollTimer);
       showErr('Pedido não encontrado', 'Não foi possível acessar este pedido. Verifique o link ou pesquise pelo seu telefone.');
     } else {

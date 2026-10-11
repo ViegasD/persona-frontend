@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="storefront-config.js"></script>
+<!-- Google sign-in paused pending app verification. Uncomment to re-enable.
+<script src="google-auth.js" defer></script>
+-->
 <title>Meus Vídeos | Recado Animado</title>
 <link rel="icon" type="image/png" href="img/Recado-animado-LOGO.png">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -23,10 +27,14 @@ a{color:var(--accent);text-decoration:none}
 
 .hero{text-align:center;margin-bottom:36px}
 .hero-emoji{font-size:3rem;margin-bottom:12px}
-.hero h1{font-size:clamp(1.6rem,5vw,2.2rem);font-weight:800;letter-spacing:-.03em;margin-bottom:8px}
+.hero h1{font-size:2rem;font-weight:800;letter-spacing:0;margin-bottom:8px}
 .hero p{color:var(--text2);font-size:.95rem;line-height:1.5}
 
-.search-card{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:24px}
+.search-card{border-top:1px solid var(--border);padding:24px 0}
+.account-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:16px 0}
+.account-bar p{overflow-wrap:anywhere;color:var(--text2);font-size:.88rem}
+.account-bar strong{color:var(--green)}
+[hidden]{display:none!important}
 .search-card label{display:block;font-size:.8rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
 .input-wrap{position:relative}
 .input-wrap input{width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;font-family:'Outfit',sans-serif;font-size:1rem;color:var(--text);outline:none;transition:border-color var(--t)}
@@ -52,7 +60,7 @@ a{color:var(--accent);text-decoration:none}
 .empty-state .emoji{font-size:2.5rem;margin-bottom:10px}
 .empty-state p{font-size:.9rem;line-height:1.5}
 
-.order-card{background:var(--bg3);border:1px solid var(--border);border-radius:18px;overflow:hidden;margin-bottom:16px}
+.order-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:16px}
 .order-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .order-meta{font-size:.8rem;color:var(--text2)}
 .order-meta strong{color:var(--text);font-weight:600}
@@ -102,12 +110,32 @@ a{color:var(--accent);text-decoration:none}
 <div class="container">
   <div class="hero">
     <div class="hero-emoji">🎬</div>
-    <h1>Encontre seus vídeos</h1>
-    <p>Digite o telefone ou e-mail usado no pedido para acessar seus vídeos personalizados.</p>
+    <h1>Meus vídeos</h1>
+    <p>Seus pedidos e créditos Recado Animado.</p>
   </div>
 
+  <div class="account-bar" id="account-bar" hidden>
+    <p id="account-summary"></p>
+    <a href="conta.html">Minha conta</a>
+    <p id="account-verification-link" hidden>E-mail pendente. <a href="conta.html">Reenviar confirmação</a>. O crédito de boas-vindas é liberado após verificar o e-mail.</p>
+    <a href="checkout.html">Criar novo vídeo</a>
+    <button type="button" class="btn-icon" id="logout" title="Sair da conta" aria-label="Sair da conta">Sair</button>
+  </div>
+
+  <form class="search-card" id="login-form">
+    <label for="account-email">E-mail da conta</label>
+    <div class="input-wrap"><input id="account-email" type="email" required autocomplete="username"></div>
+    <label for="account-password" style="margin-top:14px">Senha</label>
+    <div class="input-wrap"><input id="account-password" type="password" required autocomplete="current-password"></div>
+    <button class="btn-search" id="login-button" type="submit">Entrar</button>
+    <div class="google-auth" data-google-mode="login" hidden></div>
+    <p style="margin-top:14px"><a href="conta.html#forgot">Esqueci minha senha</a></p>
+    <p style="margin-top:14px"><a href="checkout.html">Criar conta e novo pedido</a></p>
+  </form>
+  <button class="btn-search" id="library-retry" type="button" hidden>Tentar carregar vídeos novamente</button>
+
   <div class="search-card">
-    <label for="phone-input">Telefone ou E-mail</label>
+    <label for="phone-input">Buscar pedidos deste navegador</label>
     <div class="input-wrap">
       <input type="text" id="phone-input" placeholder="Ex: 11999999999 ou email@exemplo.com" autocomplete="off" inputmode="tel">
     </div>
@@ -132,12 +160,111 @@ a{color:var(--accent);text-decoration:none}
 </div>
 
 <script>
-const API_BASE = 'https://hermes-persona-website.5tpiot.easypanel.host/api/v1';
+const API_BASE = window.PersonaConfig.apiBaseUrl;
 
 const STATUS_LABELS = {
   READY: { label: 'Pronto', cls: 'ready' },
   DELIVERED: { label: 'Entregue', cls: 'delivered' },
+  DRAFT: { label: 'Rascunho', cls: 'delivered' },
+  AWAITING_PAYMENT: { label: 'Aguardando pagamento', cls: 'delivered' },
+  PAID: { label: 'Pago', cls: 'delivered' },
+  QUEUED: { label: 'Na fila', cls: 'delivered' },
+  GENERATING: { label: 'Em produção', cls: 'delivered' },
+  FAILED: { label: 'Falhou', cls: 'delivered' },
+  REFUNDED: { label: 'Reembolsado', cls: 'delivered' },
 };
+
+function authHeaders() {
+  const headers = { 'Content-Type': 'application/json' };
+  const token = localStorage.getItem('persona_access_token');
+  const guest = sessionStorage.getItem('persona_guest_token');
+  if (token) headers.Authorization = 'Bearer ' + token;
+  if (guest) headers['X-Guest-Token'] = guest;
+  return headers;
+}
+
+async function accountRequest(path, options = {}) {
+  const response = await fetch(API_BASE + path, { credentials: 'include', ...options, headers: authHeaders() });
+  if (!response.ok) {
+    const error = new Error(response.status === 401 ? 'E-mail ou senha inválidos. Entre novamente.' : 'Não foi possível carregar a conta.');
+    error.status = response.status;
+    throw error;
+  }
+  return response.json();
+}
+
+async function loadLibrary() {
+  const session = window.PersonaSession.snapshot();
+  const retry = document.getElementById('library-retry');
+  retry.hidden = true;
+  document.getElementById('error-msg').classList.remove('show');
+  try {
+    const user = await accountRequest('/auth/me');
+    if (!window.PersonaSession.isCurrent(session)) return;
+    document.getElementById('login-form').hidden = true;
+    document.getElementById('account-bar').hidden = false;
+    document.querySelector('.google-auth').dataset.googleDisabled = 'true';
+    const summary = document.getElementById('account-summary');
+    summary.textContent = `${user.email} · ${user.credit_balance} crédito${user.credit_balance === 1 ? '' : 's'}`;
+    summary.textContent += user.email_verified ? ' · E-mail verificado' : ' · Verificação de e-mail pendente';
+    document.getElementById('account-verification-link').hidden = !!user.email_verified;
+    const orders = await accountRequest('/orders/mine');
+    if (!window.PersonaSession.isCurrent(session)) return;
+    renderizarResultados(orders);
+  } catch (error) {
+    if (!window.PersonaSession.isCurrent(session)) return;
+    if (error.status === 401) signOut();
+    else retry.hidden = false;
+    mostrarErro(error.message);
+  }
+}
+
+function signOut() {
+  window.PersonaSession.clear();
+  document.getElementById('account-bar').hidden = true;
+  document.getElementById('login-form').hidden = false;
+  document.getElementById('results').classList.remove('show');
+  document.getElementById('library-retry').hidden = true;
+  document.querySelector('.google-auth').dataset.googleDisabled = 'false';
+  window.PersonaGoogle?.refresh();
+}
+
+document.getElementById('login-form').addEventListener('submit', async event => {
+  event.preventDefault();
+  const button = document.getElementById('login-button');
+  window.PersonaGoogle?.invalidate();
+  const session = window.PersonaSession.snapshot();
+  button.disabled = true;
+  document.getElementById('error-msg').classList.remove('show');
+  try {
+    const token = await accountRequest('/auth/login', {
+      method: 'POST', body: JSON.stringify({
+        email: document.getElementById('account-email').value.trim(),
+        password: document.getElementById('account-password').value,
+      }),
+    });
+    if (!window.PersonaSession.isCurrent(session)) return;
+    window.PersonaSession.setToken(token.access_token);
+    document.getElementById('account-password').value = '';
+    await loadLibrary();
+  } catch (error) { mostrarErro(error.message); }
+  finally {
+    button.disabled = false;
+    if (!window.PersonaSession.getToken()) window.PersonaGoogle?.refresh();
+  }
+});
+
+window.addEventListener('persona-google-auth', () => {
+  document.getElementById('account-password').value = '';
+  loadLibrary().catch(error => mostrarErro(error.message));
+});
+
+document.getElementById('logout').addEventListener('click', signOut);
+document.getElementById('library-retry').addEventListener('click', loadLibrary);
+
+if (localStorage.getItem('persona_access_token')) {
+  loadLibrary();
+}
 
 async function buscar() {
   const input = document.getElementById('phone-input').value.trim();
@@ -162,10 +289,12 @@ async function buscar() {
       ? `email=${encodeURIComponent(input)}`
       : `phone=${encodeURIComponent(input)}`;
 
-    const res = await fetch(`${API_BASE}/orders/lookup?${param}`, { credentials: 'include' });
+    const res = await fetch(`${API_BASE}/orders/lookup?${param}`, { credentials: 'include', headers: authHeaders() });
 
     if (!res.ok) {
-      if (res.status === 422) {
+      if (res.status === 401) {
+        mostrarErro('Entre na conta ou abra o link recebido após seu pedido.');
+      } else if (res.status === 422) {
         mostrarErro('Formato inválido. Use apenas números para telefone ou um e-mail válido.');
       } else {
         mostrarErro('Erro ao buscar. Tente novamente em instantes.');
@@ -198,7 +327,7 @@ function renderizarResultados(orders) {
     listEl.innerHTML = `
       <div class="empty-state">
         <div class="emoji">🔍</div>
-        <p>Não encontramos vídeos prontos para esse contato.<br>Se você fez um pedido recentemente, ele pode estar em produção.</p>
+        <p>Nenhum vídeo encontrado.</p>
       </div>`;
     resultsEl.classList.add('show');
     return;
@@ -208,17 +337,17 @@ function renderizarResultados(orders) {
   titleEl.textContent = plural;
 
   listEl.innerHTML = allItems.map(item => {
-    const charName = item.character?.name || item.character_slug || 'Personagem';
+    const charName = item.character?.name || item.character_slug || item.character_ids?.join(', ') || 'Personagem';
     const childName = item.child_name || '';
-    const videoUrl = item.video_url || item.composite_url;
+    const videoUrl = item.video_url;
     const badge = STATUS_LABELS[item.order.status] || { label: item.order.status, cls: 'ready' };
 
-    const thumbHtml = item.composite_url
-      ? `<img class="item-thumb" src="${escHtml(item.composite_url)}" alt="${escHtml(charName)}" onerror="this.style.display='none'">`
+    const thumbHtml = item.thumbnail_url
+      ? `<img class="item-thumb" src="${escHtml(item.thumbnail_url)}" alt="${escHtml(charName)}" onerror="this.style.display='none'">`
       : `<div class="item-thumb-placeholder">🎭</div>`;
 
     const playBtn = videoUrl ? `
-      <a class="btn-icon" href="#" onclick="abrirVideo(event,'${escHtml(videoUrl)}')" title="Assistir">
+      <a class="btn-icon" href="${escHtml(videoUrl)}" onclick="abrirVideo(event,this.href)" title="Assistir">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
       </a>` : '';
 
@@ -235,7 +364,7 @@ function renderizarResultados(orders) {
       <div class="order-card">
         <div class="order-header">
           <span class="order-meta">Pedido <strong>#${item.order.id}</strong></span>
-          <span class="order-badge ${badge.cls}">${badge.label}</span>
+          <span class="order-badge ${badge.cls}">${escHtml(badge.label)}</span>
         </div>
         <div class="items-list">
           <div class="item-row">
