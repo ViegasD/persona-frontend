@@ -409,7 +409,7 @@ src="https://www.facebook.com/tr?id=1493963685734167&ev=PageView&noscript=1"/></
   <div class="account-head">
     <div>
       <div class="account-title">Conta Recado Animado</div>
-      <div class="account-copy">Confirme seu e-mail para ganhar 1 crédito. Ganhe mais 1 a cada compra paga.</div>
+      <div class="account-copy">Acesse seus pedidos e o saldo de créditos da sua conta.</div>
     </div>
     <div class="account-credit" id="accountCredits">0 créditos</div>
   </div>
@@ -636,7 +636,7 @@ function updateAccountUI() {
   if ($('btnAccountLogout')) $('btnAccountLogout').hidden = !state.account;
   if ($('accountManage')) $('accountManage').hidden = !state.account;
   if (state.account) {
-    setAccountStatus(`Conectado como ${state.account.email || state.account.name || 'cliente'}. ${state.account.email_verified ? 'E-mail confirmado.' : 'Abra o link enviado ao seu e-mail para liberar o crédito de boas-vindas.'}`);
+    setAccountStatus(`Conectado como ${state.account.email || state.account.name || 'cliente'}. ${state.account.email_verified ? 'E-mail confirmado.' : 'Confirme seu e-mail para usar o saldo de créditos.'}`);
   }
 }
 
@@ -672,7 +672,7 @@ window.addEventListener('persona-google-auth', () => {
 
 async function accountAuth(mode) {
   if (state.checkoutBusy || accountAuthBusy) return;
-  if (mode === 'register' && checkoutAvailability.account_email_enabled === false) {
+  if (mode === 'register' && (checkoutAvailability.account_email_enabled === false || checkoutAvailability.registration_enabled === false)) {
     setAccountStatus('Novos cadastros estão temporariamente indisponíveis. Contas existentes podem entrar.', true);
     return;
   }
@@ -711,7 +711,7 @@ async function accountAuth(mode) {
   } finally {
     accountAuthBusy = false;
     $('btnAccountLogin').disabled = state.checkoutBusy;
-    $('btnAccountRegister').disabled = state.checkoutBusy || checkoutAvailability.account_email_enabled === false;
+    $('btnAccountRegister').disabled = state.checkoutBusy || checkoutAvailability.account_email_enabled === false || checkoutAvailability.registration_enabled === false;
     if (!state.account && !state.checkoutBusy) window.PersonaGoogle?.refresh();
   }
 }
@@ -1504,6 +1504,12 @@ async function submitCheckout() {
   }
   if (state.checkoutBusy) return;
   const fields = ['fBuyerName', 'fWa', 'fEmail'];
+  if (checkoutAvailability.require_account_checkout && !window.PersonaSession.getToken()) {
+    showError('Entre na sua conta para concluir o pedido.'); return;
+  }
+  if (state.payMethod === 'credits' && checkoutAvailability.credit_redemption_enabled === false) {
+    showError('O pagamento com créditos está temporariamente indisponível.'); return;
+  }
   fields.forEach(id => { $(id).dataset.touched = '1'; });
   const allOk = fields.every(id => FIELD_RULES[id] ? FIELD_RULES[id].test($(id).value) : true);
   if (!allOk) return;
@@ -2000,7 +2006,7 @@ async function bootCheckout() {
   try {
     checkoutAvailability = await apiFetch('/config').catch(() => ({}));
     $('checkoutAvailability').hidden = checkoutAvailability.video_processing_enabled !== false;
-    $('btnAccountRegister').disabled = checkoutAvailability.account_email_enabled === false;
+    $('btnAccountRegister').disabled = checkoutAvailability.account_email_enabled === false || checkoutAvailability.registration_enabled === false;
     if (checkoutAvailability.account_email_enabled === false) setAccountStatus('Novos cadastros estão temporariamente indisponíveis. Contas existentes podem entrar.', true);
     await loadCatalog();
   } catch (_) {

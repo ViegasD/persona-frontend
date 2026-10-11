@@ -59,7 +59,7 @@ h1,h2,h3,.header-title,.wizard-title,.btn,.pkg-name,.pkg-price,.qc-name{font-fam
   <p id="message" role="status" aria-live="polite" hidden></p>
   <section id="verify-section" hidden>
     <h2>Confirmar e-mail</h2>
-    <p>Verifique seu e-mail para liberar o crédito de boas-vindas, conforme as regras da conta.</p>
+    <p>Confirme seu e-mail para proteger sua conta e usar seu saldo de créditos.</p>
     <button id="verify-button" type="button">Verificar meu e-mail</button>
     <div class="links"><a href="conta.html">Minha conta e reenvio de confirmação</a></div>
   </section>
@@ -89,7 +89,7 @@ h1,h2,h3,.header-title,.wizard-title,.btn,.pkg-name,.pkg-price,.qc-name{font-fam
       <div id="signup-confirm" hidden><label for="auth-confirm">Confirmar senha</label><input id="auth-confirm" type="password" autocomplete="new-password" maxlength="128"></div>
       <button id="auth-button" type="submit">Entrar</button>
     </form>
-    <p id="signup-note" hidden style="margin-top:16px">Confirme seu e-mail para receber 1 crédito de boas-vindas. Cada vídeo usa 1 crédito.</p>
+    <p id="signup-note" hidden style="margin-top:16px">Seu cadastro não gera créditos gratuitos. Cada vídeo usa 1 crédito do seu saldo.</p>
     <p id="auth-availability" class="availability" role="status" hidden></p>
     <div class="links"><a href="conta.html#forgot">Esqueci minha senha</a><a href="meus-videos.html">Meus vídeos</a></div>
   </section>
@@ -98,12 +98,12 @@ h1,h2,h3,.header-title,.wizard-title,.btn,.pkg-name,.pkg-price,.qc-name{font-fam
   <button id="account-retry" type="button" hidden>Tentar carregar conta novamente</button>
   <section id="account-details" hidden>
     <h2 id="account-email"></h2><p id="verification-status"></p>
-    <p id="welcome-note" hidden>O crédito de boas-vindas é liberado após verificar seu e-mail, conforme as regras da conta.</p>
+    <p id="welcome-note" hidden>Confirme seu e-mail para usar o saldo de créditos da sua conta.</p>
     <button type="button" id="resend-button" hidden>Reenviar confirmação de e-mail</button>
     <p id="mail-availability" class="availability" hidden></p>
     <dl class="balances"><div><dt>Saldo disponível</dt><dd id="balance"></dd></div><div id="debt-row" hidden><dt>Créditos pendentes</dt><dd id="debt"></dd></div></dl>
     <p id="debt-note" hidden>Novos créditos primeiro compensam os créditos pendentes.</p>
-    <p>Cada vídeo usa 1 crédito. Ganhe 1 crédito a cada compra paga.</p>
+    <p>Cada vídeo usa 1 crédito. Cadastros e compras de vídeos não geram créditos de bônus.</p>
     <p id="processing-availability" class="availability" hidden>Novas gerações estão temporariamente pausadas. Seus créditos e vídeos existentes continuam disponíveis.</p>
     <div class="links"><a href="meus-videos.html">Minha biblioteca de vídeos</a><a href="checkout.html">Criar novo vídeo</a><a href="conta.html#forgot">Recuperar senha</a></div>
     <button id="logout-button" type="button" class="secondary">Sair da conta</button>
@@ -134,6 +134,7 @@ async function request(path, body, authenticated = false) {
       'invalid credentials': 'E-mail ou senha incorretos.',
       'email already registered': 'Este e-mail já tem uma conta. Entre ou recupere sua senha.',
       'account email delivery unavailable': 'O envio de e-mails está temporariamente indisponível. Tente novamente mais tarde.',
+      'registration temporarily unavailable': 'Novos cadastros estão temporariamente indisponíveis. Contas existentes podem entrar.',
       'invalid or expired account link': 'Este link expirou ou já foi usado. Solicite um novo link.',
     };
     const error = new Error(response.status === 401 && authenticated ? 'Sua sessão expirou. Entre novamente.' : errors[data.detail] || (typeof data.detail === 'string' ? data.detail : 'Não foi possível concluir. Confira os dados e tente novamente.'));
@@ -219,7 +220,7 @@ $('verify-button').addEventListener('click', () => action($('verify-button'), as
   linkToken = ''; window.PersonaSession.setToken(result.access_token);
   accountMode = 'account';
   $('verify-section').hidden = true;
-  message('E-mail verificado. Consulte abaixo seu saldo e o crédito de boas-vindas.');
+  message('E-mail verificado. Sua conta está confirmada.');
   await loadAccount();
   window.PersonaGoogle?.refresh();
 }));
@@ -251,10 +252,11 @@ $('ledger-retry').addEventListener('click', () => action($('ledger-retry'), load
 $('account-retry').addEventListener('click', () => action($('account-retry'), loadAccount));
 function updateAvailability() {
   const unavailable = availability.account_email_enabled === false;
+  const signupUnavailable = unavailable || availability.registration_enabled === false;
   const signup = accountMode === 'signup';
-  $('auth-button').disabled = authBusy || (signup && unavailable);
-  $('auth-availability').hidden = !(signup && unavailable);
-  $('auth-availability').textContent = 'Novos cadastros estão temporariamente indisponíveis enquanto o envio de e-mails é configurado. Contas existentes podem entrar.';
+  $('auth-button').disabled = authBusy || (signup && signupUnavailable);
+  $('auth-availability').hidden = !(signup && signupUnavailable);
+  $('auth-availability').textContent = 'Novos cadastros estão temporariamente indisponíveis. Contas existentes podem entrar.';
   $('resend-button').disabled = $('forgot-button').disabled = unavailable;
   $('forgot-availability').hidden = !unavailable;
   $('mail-availability').hidden = !unavailable;
@@ -263,7 +265,7 @@ function updateAvailability() {
 }
 $('auth-form').addEventListener('submit', event => {
   event.preventDefault();
-  if (authBusy || (accountMode === 'signup' && availability.account_email_enabled === false)) return;
+  if (authBusy || (accountMode === 'signup' && (availability.account_email_enabled === false || availability.registration_enabled === false))) return;
   const signup = accountMode === 'signup';
   const snapshot = window.PersonaSession.snapshot();
   const password = $('auth-password').value;
@@ -279,7 +281,7 @@ $('auth-form').addEventListener('submit', event => {
     accountMode = 'account';
     $('auth-form').reset();
     window.PersonaSession.setToken(result.access_token);
-    message(signup ? 'Conta criada. Confira seu e-mail para confirmar o cadastro e receber seu crédito.' : 'Você entrou na sua conta.');
+    message(signup ? 'Conta criada. Confira seu e-mail para confirmar o cadastro.' : 'Você entrou na sua conta.');
   }).finally(() => { authBusy = false; updateAvailability(); });
 });
 $('logout-button').addEventListener('click', () => { accountMode = 'login'; window.PersonaSession.clear(); $('auth-form').reset(); });
