@@ -9,17 +9,17 @@
 -->
 <title>Meus Vídeos | Recado Animado</title>
 <link rel="icon" type="image/png" href="img/Recado-animado-LOGO.png">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0a0e1a;--bg2:#111827;--bg3:#1a2035;--border:rgba(255,255,255,.08);--text:#f0f0f5;--text2:#8a8f9e;--text3:#555a6e;--green:#30d158;--green-dim:rgba(48,209,88,.1);--accent:#4a9ef5;--purple:#BF5AF2;--purple-dim:rgba(191,90,242,.15);--gold:#FFD700;--red:#ff453a;--t:.4s cubic-bezier(.25,.1,.25,1)}
+:root{--bg:#f6f9fd;--bg2:#ffffff;--bg3:#ffffff;--border:#dce4ef;--text:#17335a;--text2:#4f6079;--text3:#5b6a80;--green:#187340;--green-dim:rgba(24,115,64,.1);--accent:#1f5fd1;--purple:#1f5fd1;--purple-dim:rgba(31,95,209,.1);--gold:#a87400;--red:#c62f28;--t:.25s cubic-bezier(.25,.1,.25,1)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{background:var(--bg)}
 body{font-family:'Outfit',sans-serif;color:var(--text);min-height:100dvh;-webkit-font-smoothing:antialiased}
 a{color:var(--accent);text-decoration:none}
 
-.header{position:sticky;top:0;z-index:100;padding:12px 20px;background:rgba(0,0,0,.85);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between}
+.header{position:sticky;top:0;z-index:100;padding:12px 20px;background:rgba(255,255,255,.94);backdrop-filter:saturate(140%) blur(10px);-webkit-backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .header-back{display:flex;align-items:center;gap:8px;font-size:.85rem;font-weight:500;color:var(--text2);transition:color var(--t);text-decoration:none}
-.header-back:hover{color:#fff}
+.header-back:hover{color:var(--text)}
 .header-back svg{width:18px;height:18px}
 .header-title{font-size:.95rem;font-weight:600}
 
@@ -92,6 +92,10 @@ a{color:var(--accent);text-decoration:none}
 
 .spinner{width:22px;height:22px;border:2.5px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:middle;margin-right:8px}
 @keyframes spin{to{transform:rotate(360deg)}}
+
+body{font-family:'DM Sans',sans-serif!important}
+h1,h2,h3,.header-title,.wizard-title,.btn,.pkg-name,.pkg-price,.qc-name{font-family:'Outfit',sans-serif}
+:focus-visible{outline:3px solid #ff8a3d;outline-offset:2px}
 </style>
 </head>
 <body>
