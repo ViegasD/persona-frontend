@@ -48,7 +48,9 @@ async function verifyCatalogBoot(browser) {
         const data = !retry && failure === 'empty-plans' ? []
           : !retry && failure === 'invalid-plan' ? [{ ...catalogPlans[0], price_cents: 'bad' }]
           : [{ ...catalogPlans[0], slug: 'catalog-new', price_cents: '2345',
-            video_count: '2', max_characters_per_video: '3' }];
+            video_count: '2', max_characters_per_video: '3' },
+            { ...catalogPlans[0], slug: 'aniversario', is_active: true },
+            { ...catalogPlans[0], slug: 'inactive-plan', is_active: false }];
         return route.fulfill({ json: data });
       }
       if (endpoint.endsWith('/catalog/characters')) {
@@ -105,14 +107,16 @@ async function verifyCatalogBoot(browser) {
       });
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
       await page.screenshot({ path: path.resolve('.cache/storefront-qa/catalog-characters-mobile.png'), animations: 'disabled' });
-      await page.evaluate(() => {
-        sessionStorage.setItem('persona_cart', JSON.stringify({ pkg: 'inactive-plan', ts: Date.now() }));
-      });
-      await page.goto(pathToFileURL(path.resolve(__dirname, '..', 'checkout.html')).href + '?plan=inactive-plan');
-      await page.locator('#catalogStatus').waitFor({ state: 'hidden' });
-      assert.equal(await page.locator('#cartResumeBanner').count(), 0);
-      assert.equal(await page.evaluate(() => state.pkg), null);
-      assert.equal(await page.locator('#btnS1').isDisabled(), true);
+      for (const slug of ['inactive-plan', 'aniversario']) {
+        await page.evaluate(slug => {
+          sessionStorage.setItem('persona_cart', JSON.stringify({ pkg: slug, ts: Date.now() }));
+        }, slug);
+        await page.goto(pathToFileURL(path.resolve(__dirname, '..', 'checkout.html')).href + '?plan=' + slug);
+        await page.locator('#catalogStatus').waitFor({ state: 'hidden' });
+        assert.equal(await page.locator('#cartResumeBanner').count(), 0);
+        assert.equal(await page.evaluate(() => state.pkg), null);
+        assert.equal(await page.locator('#btnS1').isDisabled(), true);
+      }
     }
     assert.deepEqual(errors, []);
     await context.close();

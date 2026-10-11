@@ -750,8 +750,8 @@ function catalogName(value) {
 async function loadCatalog() {
   const plans = await apiFetch('/catalog/plans', { signal: AbortSignal.timeout(15000) });
   if (!Array.isArray(plans) || !plans.length) throw new Error('No active plans');
-  // The public plans endpoint already filters the authoritative is_active flag.
-  const packages = plans.map(p => ({
+  // Also protect against stale catalogs from an older backend deployment.
+  const packages = plans.filter(p => p.is_active !== false && p.slug !== 'aniversario').map(p => ({
     id: catalogSlug(p.slug),
     name: catalogName(p.name),
     videos: catalogInteger(p.video_count, 1),
