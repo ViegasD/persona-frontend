@@ -1,0 +1,58 @@
+[
+  {
+    "source": "video-inicio.mp4",
+    "video": "hero.v1.mp4",
+    "poster": "hero.v1.webp",
+    "original_bytes": 35768089,
+    "optimized_bytes": 4784789
+  },
+  {
+    "source": "video-exemplo.mp4",
+    "video": "demo.v1.mp4",
+    "poster": "demo.v1.webp",
+    "original_bytes": 12670359,
+    "optimized_bytes": 1340569
+  },
+  {
+    "source": "reports/1.mp4",
+    "video": "reaction-1.v1.mp4",
+    "poster": "reaction-1.v1.webp",
+    "original_bytes": 21149704,
+    "optimized_bytes": 4187825
+  },
+  {
+    "source": "reports/2.mp4",
+    "video": "reaction-2.v1.mp4",
+    "poster": "reaction-2.v1.webp",
+    "original_bytes": 6218990,
+    "optimized_bytes": 1085462
+  },
+  {
+    "source": "reports/3.mp4",
+    "video": "reaction-3.v1.mp4",
+    "poster": "reaction-3.v1.webp",
+    "original_bytes": 8719525,
+    "optimized_bytes": 1974229
+  },
+  {
+    "source": "reports/4.mp4",
+    "video": "reaction-4.v1.mp4",
+    "poster": "reaction-4.v1.webp",
+    "original_bytes": 2145102,
+    "optimized_bytes": 1034296
+  },
+  {
+    "source": "reports/5.mp4",
+    "video": "reaction-5.v1.mp4",
+    "poster": "reaction-5.v1.webp",
+    "original_bytes": 9211124,
+    "optimized_bytes": 3866946
+  },
+  {
+    "source": "reports/6.mp4",
+    "video": "reaction-6.v1.mp4",
+    "poster": "reaction-6.v1.webp",
+    "original_bytes": 21706406,
+    "optimized_bytes": 6116268
+  }
+]

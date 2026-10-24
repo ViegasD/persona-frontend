@@ -9,6 +9,15 @@ RUN printf 'server {\n\
     index index.html;\n\
     location / {\n\
         try_files $uri $uri/ /index.html;\n\
+        add_header Cache-Control "no-cache";\n\
+    }\n\
+    location /img/optimized/ {\n\
+        try_files $uri =404;\n\
+        add_header Cache-Control "public, max-age=2592000, immutable";\n\
+    }\n\
+    location /img/ {\n\
+        try_files $uri =404;\n\
+        add_header Cache-Control "public, max-age=86400";\n\
     }\n\
     gzip on;\n\
     gzip_types text/plain text/css application/javascript text/html;\n\
