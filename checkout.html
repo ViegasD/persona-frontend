@@ -90,11 +90,16 @@ a{color:var(--accent);text-decoration:none}
 .chars-info{text-align:center;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:10px}
 .chars-counter{display:inline-flex;align-items:center;gap:5px;padding:5px 14px;border-radius:980px;background:var(--purple-dim);color:var(--purple);font-size:.82rem;font-weight:700}
 .chars-grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px;margin-bottom:20px}
-.char-opt{border-radius:14px;padding:12px 6px;text-align:center;background:var(--bg3);border:2px solid var(--border);cursor:pointer;transition:all var(--t);position:relative}
+.char-opt{border-radius:14px;padding:12px 6px;text-align:center;background:var(--bg3);border:2px solid var(--border);cursor:pointer;transition:all var(--t);position:relative;font:inherit;color:var(--text)}
+.char-opt .cn,.char-opt .cc{display:block}
+.video-picker{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.video-picker button{min-height:42px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg3);color:var(--text);font:inherit;cursor:pointer}
+.video-picker button[aria-pressed=true]{border-color:var(--purple);background:var(--purple-dim)}
+#sumExtraRow[hidden]{display:none}
 .char-opt:hover{border-color:rgba(31,95,209,.3)}
 .char-opt.selected{border-color:var(--purple);background:rgba(31,95,209,.05)}
 .char-opt.disabled{opacity:.3;cursor:not-allowed;pointer-events:none}
-.char-opt-img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;margin-bottom:4px;display:block}
+.char-opt-img{width:100%;aspect-ratio:1;object-fit:contain;border-radius:8px;margin-bottom:4px;display:block;background:var(--bg2)}
 .char-opt .cn{font-size:.7rem;font-weight:700}
 .char-opt .cc{font-size:.6rem;color:var(--text3)}
 .char-chk{position:absolute;top:5px;right:5px;width:20px;height:20px;border-radius:50%;background:var(--purple);display:flex;align-items:center;justify-content:center;opacity:0;transition:all .2s;transform:scale(.8)}
@@ -321,7 +326,7 @@ src="https://www.facebook.com/tr?id=1493963685734167&ev=PageView&noscript=1"/></
 <div class="form-grid">
 <div class="fg"><label class="fl">Seu nome completo <span class="req">*</span></label><input type="text" class="fi" id="fBuyerName" placeholder="Ex: Maria Santos" autocomplete="name"></div>
 <div class="form-row">
-<div class="fg"><label class="fl">WhatsApp <span class="req">*</span></label><input type="tel" class="fi" id="fWa" placeholder="(62) 99111-8737" required><span class="fh">Número de contato</span></div>
+<div class="fg"><label class="fl" for="fWa">Telefone de contato <span class="req">*</span></label><input type="tel" class="fi" id="fWa" placeholder="(62) 99111-8737" required><span class="fh">Número de contato</span></div>
 <div class="fg"><label class="fl">Email <span class="req">*</span></label><input type="email" class="fi" id="fEmail" placeholder="seu@email.com" required><span class="fh">Para confirmação</span></div>
 </div>
 <div class="order-sum">
@@ -329,6 +334,7 @@ src="https://www.facebook.com/tr?id=1493963685734167&ev=PageView&noscript=1"/></
 <div class="osr"><span class="lbl">Pacote</span><span class="val" id="sumPkg">—</span></div>
 <div class="osr"><span class="lbl">Qualidade</span><span class="val" id="sumQuality">—</span></div>
 <div class="osr" id="sumHdRow" style="display:none"><span class="lbl">Ultra (+20%)</span><span class="val" id="sumHd">—</span></div>
+<div class="osr" id="sumExtraRow" hidden><span class="lbl">Personagens extras (+10% cada)</span><span class="val" id="sumExtra">—</span></div>
 <div class="osr"><span class="lbl">Comprador</span><span class="val" id="sumBuyer">—</span></div>
 <div class="osr total"><span class="lbl">Total</span><span class="val" id="sumTotal">R$ 0,00</span></div>
 </div>
@@ -798,7 +804,7 @@ const OCC_LABELS = {
 
 const FIELD_RULES = {
   fBuyerName: { test: v => v.trim().length >= 2,                                         msg: 'Digite seu nome (mín. 2 letras)' },
-  fWa:        { test: v => /^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/.test(v.replace(/\s/g, '')), msg: 'WhatsApp inválido. Ex: (47) 99999-9999' },
+  fWa:        { test: v => /^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/.test(v.replace(/\s/g, '')), msg: 'Telefone inválido. Ex: (47) 99999-9999' },
   fEmail:     { test: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),                 msg: 'E-mail inválido' },
 };
 
@@ -822,9 +828,11 @@ let pollTimer = null;
 // ─── Pricing ────────────────────────────────────────────────────────────────
 function calcTotal() {
   const hdMult = state.quality === 'hd' ? 0.20 : 0;
-  return Math.round(state.basePrice * (1 + hdMult));
+  const extras = state.videos.reduce((n, slot) => n + Math.max(0, (slot?.length || 0) - 1), 0);
+  return Math.round(state.basePrice * (1 + hdMult + 0.10 * extras));
 }
 function hdPrice() { return Math.round(state.basePrice * 0.20); }
+function extraCharPrice() { return Math.round(state.basePrice * 0.10); }
 
 // ─── Stepper ────────────────────────────────────────────────────────────────
 const CHK = (s = '14px') => `<svg viewBox="0 0 20 20" fill="currentColor" width="${s}" height="${s}"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>`;
@@ -971,11 +979,10 @@ function buildCharSlots() {
   if (isTeste) {
     charSection.innerHTML = `<div style="background:rgba(31,95,209,.06);border:1px solid rgba(31,95,209,.18);border-radius:12px;padding:14px 16px;margin-bottom:24px;text-align:center"><div style="font-size:1.4rem;margin-bottom:6px">🎲</div><div style="font-size:.88rem;font-weight:700;color:var(--purple);margin-bottom:4px">Personagem aleatório</div><div style="font-size:.75rem;color:var(--text2)">Um personagem será escolhido aleatoriamente para o seu vídeo.</div></div>`;
   } else {
-    const label = state.maxVideos === 1
-      ? 'Selecione 1 personagem'
-      : `Selecione ${state.maxVideos} personagens (um por vídeo, em ordem)`;
+    const label = `Escolha de 1 a ${state.maxChars} personagem(ns) por vídeo.`;
     charSection.innerHTML = `
       <p style="font-size:.82rem;color:var(--text2);margin-bottom:10px">${label}</p>
+      <div class="video-picker" id="csVideoPicker" role="group" aria-label="Selecionar vídeo"></div>
       <div class="chars-info" style="margin-bottom:10px">
         <span class="chars-counter" id="csCounterBadge">0 / ${state.maxVideos}</span>
       </div>
@@ -1048,59 +1055,46 @@ function buildCharSlots() {
 function renderUnifiedCharGrid() {
   const grid = $('csCharGrid');
   if (!grid) return;
-  const allSelected = state.videos.map(v => v?.[0] || null);
-  const totalSelected = allSelected.filter(Boolean).length;
+  const vi = Math.min(state.activeVideo || 0, state.maxVideos - 1);
+  state.activeVideo = vi;
+  const slot = state.videos[vi] || [];
+  const picker = $('csVideoPicker');
+  if (picker) {
+    picker.innerHTML = Array.from({length:state.maxVideos}, (_, index) =>
+      `<button type="button" data-video-slot="${index}" aria-pressed="${vi === index}">Vídeo ${index + 1} (${state.videos[index]?.length || 0}/${state.maxChars})</button>`).join('');
+    picker.querySelectorAll('button').forEach(button => button.addEventListener('click', () => {
+      state.activeVideo = Number(button.dataset.videoSlot);
+      renderUnifiedCharGrid();
+    }));
+  }
   const counterEl = $('csCounterBadge');
-  if (counterEl) counterEl.textContent = `${totalSelected} / ${state.maxVideos}`;
+  if (counterEl) counterEl.textContent = `${slot.length} / ${state.maxChars}`;
 
   grid.innerHTML = CHARS.map(c => {
-    const slotIdx = allSelected.indexOf(c.id);
-    const sel = slotIdx !== -1;
-    const numBadge = sel && state.maxVideos > 1
-      ? `<div style="position:absolute;top:2px;left:2px;width:17px;height:17px;border-radius:50%;background:var(--purple);color:#fff;font-size:.6rem;font-weight:800;display:flex;align-items:center;justify-content:center;z-index:2">${slotIdx + 1}</div>`
-      : '';
+    const sel = slot.includes(c.id);
+    const disabled = !sel && slot.length >= state.maxChars;
     return `
-      <div class="char-opt${sel ? ' selected' : ''}${!sel && totalSelected >= state.maxVideos ? ' disabled' : ''}" data-id="${c.id}" style="position:relative">
-        ${numBadge}
+      <button type="button" class="char-opt${sel ? ' selected' : ''}${disabled ? ' disabled' : ''}" data-id="${c.id}" aria-pressed="${sel}" ${disabled ? 'disabled' : ''}>
         <div class="char-chk">${CHK('11px')}</div>
         ${c.img ? `<img class="char-opt-img" src="${catalogText(c.img)}" alt="${catalogText(c.name)}" loading="lazy" onerror="this.style.display='none'">` : ''}
-        <div class="cn">${catalogText(c.name)}</div>
-        <div class="cc">${catalogText(c.cat)}</div>
+        <span class="cn">${catalogText(c.name)}</span>
+        <span class="cc">${catalogText(c.cat)}</span>
+        ${!sel && slot.length >= 1 && !disabled ? `<span class="cc">+${fmt(extraCharPrice())}</span>` : ''}
         ${c.pop && !sel ? '<div style="margin-top:2px"><span style="font-size:.62rem;padding:1px 6px;border-radius:980px;background:rgba(31,95,209,.1);color:#1f5fd1;font-weight:700;">Popular</span></div>' : ''}
-      </div>`;
+      </button>`;
   }).join('');
 
   grid.querySelectorAll('.char-opt:not(.disabled)').forEach(o => {
     o.addEventListener('click', () => {
       const id = o.dataset.id;
-      const allSel = state.videos.map(v => v?.[0] || null);
-      const existingSlot = allSel.indexOf(id);
-      if (existingSlot !== -1) {
-        // Deselect and compact remaining up
-        const remaining = allSel.filter((v, i) => i !== existingSlot && v !== null);
-        for (let i = 0; i < state.maxVideos; i++) state.videos[i] = remaining[i] ? [remaining[i]] : [];
-      } else {
-        const emptySlot = allSel.findIndex(v => !v);
-        if (emptySlot !== -1) state.videos[emptySlot] = [id];
-      }
+      const selected = [...(state.videos[vi] || [])];
+      const index = selected.indexOf(id);
+      if (index >= 0) selected.splice(index, 1);
+      else if (selected.length < state.maxChars) selected.push(id);
+      state.videos[vi] = selected;
       renderUnifiedCharGrid();
       updateSlotCharLabels();
       updateCharStepUI();
-      // Scroll to first child name input when all slots filled
-      const allNowFilled = state.videos.filter(v => v?.[0]).length === state.maxVideos;
-      if (allNowFilled) {
-        const firstInput = document.getElementById('csName0');
-        if (firstInput) {
-          const y = firstInput.getBoundingClientRect().top + window.scrollY - 80;
-          window.scrollTo({ top: y, behavior: 'smooth' });
-          setTimeout(() => {
-            firstInput.style.animation = 'none';
-            firstInput.offsetHeight;
-            firstInput.style.animation = 'fieldHighlight 1.2s ease forwards';
-            firstInput.focus();
-          }, 500);
-        }
-      }
     });
   });
   updateSlotCharLabels();
@@ -1110,10 +1104,9 @@ function updateSlotCharLabels() {
   for (let vi = 0; vi < state.maxVideos; vi++) {
     const el = document.getElementById('csSlotChar' + vi);
     if (!el) continue;
-    const charId = state.videos[vi]?.[0];
-    if (charId) {
-      const c = CHARS.find(x => x.id === charId);
-      el.textContent = c ? `(${c.name})` : '';
+    const ids = state.videos[vi] || [];
+    if (ids.length) {
+      el.textContent = '(' + ids.map(id => CHARS.find(c => c.id === id)?.name || id).join(' + ') + ')';
       el.style.color = 'var(--purple)';
     } else {
       el.textContent = '(nenhum selecionado)';
@@ -1490,6 +1483,9 @@ function updateSummary() {
   }
 
   const buyerName = $('fBuyerName')?.value?.trim();
+  const extraCount = state.videos.reduce((n, slot) => n + Math.max(0, (slot?.length || 0) - 1), 0);
+  $('sumExtraRow').hidden = extraCount === 0;
+  $('sumExtra').textContent = fmt(Math.round(state.basePrice * 0.10 * extraCount));
   if ($('sumBuyer')) $('sumBuyer').textContent = buyerName || '—';
   $('sumTotal').textContent = state.payMethod === 'credits'
     ? `${state.maxVideos} crédito${state.maxVideos === 1 ? '' : 's'}` : fmt(calcTotal());
@@ -1732,7 +1728,7 @@ function showPixScreen(orderId, ck) {
 async function pollOrder(orderId) {
   try {
     const order = await apiFetch(`/orders/${orderId}`);
-    if (['PAID', 'QUEUED', 'RENDERING', 'READY', 'DELIVERED'].includes(order.status)) {
+    if (['PAID', 'QUEUED', 'GENERATING', 'READY', 'DELIVERED'].includes(order.status)) {
       clearInterval(pollTimer);
       showSuccess(order);
     }
@@ -1989,7 +1985,7 @@ async function restorePendingOrder() {
   // Quick-check if order is already paid/ready before restoring
   try {
     const order = await apiFetch(`/orders/${saved.orderId}`);
-    if (['PAID', 'QUEUED', 'RENDERING', 'READY', 'DELIVERED'].includes(order.status)) {
+    if (['PAID', 'QUEUED', 'GENERATING', 'READY', 'DELIVERED'].includes(order.status)) {
       sessionStorage.removeItem('persona_pending_order');
       showSuccess(order);
       return;

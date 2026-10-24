@@ -114,6 +114,7 @@ a{color:var(--accent);text-decoration:none}
 /* VIDEO OVERLAY */
 .v-overlay{position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;padding:20px}
 .v-overlay.show{display:flex;animation:fadeIn .25s ease}
+.v-overlay{border:0;max-width:none;max-height:none;width:100%;height:100%;margin:0}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 .v-inner{position:relative;width:100%;max-width:480px}
 .v-inner video{width:100%;border-radius:18px;display:block}
@@ -149,15 +150,15 @@ h1,h2,h3,.header-title,.wizard-title,.btn,.pkg-name,.pkg-price,.qc-name{font-fam
     <div class="magic-orb-wrap"><div class="magic-orb" id="magicOrb">✨</div></div>
     <h1 class="hero-title" id="heroTitle">Preparando sua magia!</h1>
     <p class="hero-sub" id="heroSub">Seus vídeos estão sendo gerados com IA</p>
-    <div class="eta-pill" id="etaPill">⏱ Geralmente menos de 1 minuto</div>
+    <div class="eta-pill" id="etaPill">Prazo de entrega: até 24h</div>
     <div class="elapsed" id="elapsedText"></div>
   </div>
 
   <div class="items-wrap" id="itemsList"></div>
 
   <div class="wa-note" id="wanote">
-    📱 <strong>Você também receberá no WhatsApp</strong> assim que o vídeo estiver pronto.<br>
-    Pode fechar esta página e aguardar a mensagem!
+    Seus vídeos estarão disponíveis nesta página quando ficarem prontos.<br>
+    Se comprou conectado à sua conta, você também poderá acessá-los em <a href="meus-videos.html">Meus vídeos</a>.
   </div>
 
   <div class="done-ctas" id="doneCtas">
@@ -172,18 +173,18 @@ h1,h2,h3,.header-title,.wizard-title,.btn,.pkg-name,.pkg-price,.qc-name{font-fam
   <div class="error-wrap">
     <div class="error-emoji">🔍</div>
     <h1 id="errTitle">Pedido não encontrado</h1>
-    <p id="errMsg">Não foi possível localizar o seu pedido. Pesquise pelo seu telefone.</p>
-    <a href="meus-videos.html" class="btn-primary">Buscar meu pedido</a>
+    <p id="errMsg">Confira o link do pedido ou entre na conta usada na compra.</p>
+    <a href="meus-videos.html" class="btn-primary">Meus vídeos</a>
   </div>
 </div>
 
 <!-- VIDEO LIGHTBOX -->
-<div class="v-overlay" id="vOverlay">
+<dialog class="v-overlay" id="vOverlay" aria-label="Assistir ao vídeo">
   <div class="v-inner">
-    <button class="v-close" id="vCloseBtn">✕</button>
+    <button class="v-close" id="vCloseBtn" aria-label="Fechar vídeo">✕</button>
     <video id="vPlayer" controls playsinline></video>
   </div>
-</div>
+</dialog>
 
 <script>
 'use strict';
@@ -250,9 +251,10 @@ let startTime = Date.now();
 let prevStatuses = {}; // item.id → last rendered status
 let isDone = false;
 let errCount = 0;
+let pollBusy = false;
 
 if (!ORDER_ID) {
-  showErr('Link inválido', 'Este link não contém um pedido válido. Pesquise pelo seu telefone ou e-mail abaixo.');
+  showErr('Link inválido', 'Este link não contém um pedido válido. Abra o link da compra ou entre na sua conta.');
 } else {
   startPolling();
 }
@@ -264,7 +266,7 @@ async function apiFetch(path, retryExpired = true) {
   if (gt) headers['X-Guest-Token'] = gt;
   const token = localStorage.getItem('persona_access_token');
   if (token) headers.Authorization = 'Bearer ' + token;
-  const res = await fetch(API_BASE + path, { credentials: 'include', headers });
+  const res = await fetch(API_BASE + path, { credentials: 'include', headers, signal: AbortSignal.timeout(15000) });
   if (res.status === 401 && token && retryExpired) {
     if (token === window.PersonaSession.getToken()) window.PersonaSession.clear();
     return apiFetch(path, false);
@@ -282,9 +284,16 @@ function startPolling() {
 }
 
 async function tick() {
+  if (pollBusy) return;
+  pollBusy = true;
   try {
     const order = await apiFetch('/orders/' + ORDER_ID);
     errCount = 0;
+    if (order.status === 'REFUNDED') {
+      clearInterval(pollTimer);
+      showErr('Pedido reembolsado', 'Este pedido foi reembolsado e seus vídeos não estão disponíveis.');
+      return;
+    }
     render(order);
     if (checkAllDone(order)) {
       clearInterval(pollTimer);
@@ -292,7 +301,7 @@ async function tick() {
   } catch (e) {
     if (e.status === 401 || e.status === 403 || e.status === 404) {
       clearInterval(pollTimer);
-      showErr('Pedido não encontrado', 'Não foi possível acessar este pedido. Verifique o link ou pesquise pelo seu telefone.');
+      showErr('Pedido não encontrado', 'Confira o link da compra ou entre na conta usada neste pedido.');
     } else {
       errCount++;
       // after 3 consecutive network failures show a subtle warning but keep polling
@@ -301,17 +310,25 @@ async function tick() {
         if (sub && !isDone) sub.textContent = 'Verificando conexão…';
       }
     }
-  }
+  } finally { pollBusy = false; }
 }
 
 function checkAllDone(order) {
   const items = order.items || [];
-  return items.length > 0 && items.every(i => i.status === 'READY' || i.status === 'FAILED');
+  return items.length > 0 && items.every(i => i.status === 'FAILED' || (i.status === 'READY' && i.video_url));
 }
 
 // ─── Render ───────────────────────────────────────────────────────────────────
 function render(order) {
   const items = order.items || [];
+  if (!isDone) {
+    document.getElementById('heroTitle').textContent = order.status === 'AWAITING_PAYMENT'
+      ? 'Aguardando confirmação do pagamento' : 'Preparando sua magia!';
+    document.getElementById('heroSub').textContent = order.status === 'AWAITING_PAYMENT'
+      ? 'A geração começa após a confirmação do pagamento.'
+      : items.some(i => i.status === 'READY' && !i.video_url)
+        ? 'Finalizando a disponibilização dos seus vídeos.' : 'Seu pedido está em processamento.';
+  }
   if (!items.length) return;
 
   // Render/update each item card
@@ -328,8 +345,9 @@ function renderCard(item, order) {
   let card = document.getElementById(cardId);
 
   // Only rebuild when status changes (or card is new)
-  if (card && prevStatuses[item.id] === item.status) return;
-  prevStatuses[item.id] = item.status;
+  const renderState = JSON.stringify([item.status, !!item.video_url, order.status]);
+  if (card && prevStatuses[item.id] === renderState) return;
+  prevStatuses[item.id] = renderState;
 
   const isNew = !card;
   if (isNew) {
@@ -347,22 +365,23 @@ function renderCard(item, order) {
   const cName  = slugs.length > 1
     ? slugs.map(s => CHAR_MAP[s] || s).join(' + ')
     : (slug ? (CHAR_MAP[slug] || slug) : 'Personagem');
-  const child  = order.recipient_name || '';
-  const badge  = BADGE[item.status] || BADGE.PENDING;
+  const child  = window.PersonaOrder.recipientName(item, order);
+  const badge  = item.status === 'READY' && !item.video_url
+    ? { cls: 'b-awaiting', txt: 'Finalizando entrega…' } : (BADGE[item.status] || BADGE.PENDING);
 
   let avatarHtml;
   if (slugs.length > 1) {
     const imgs = slugs.map(s => {
-      const img = CHAR_IMGS[s];
+      const img = API_BASE + '/catalog/characters/' + encodeURIComponent(s) + '/thumbnail';
       return img
-        ? `<img class="char-avatar" src="img/${esc(img)}" alt="${esc(CHAR_MAP[s] || s)}" loading="lazy" onerror="this.style.display='none'">`
+        ? `<img class="char-avatar" src="${esc(img)}" alt="${esc(CHAR_MAP[s] || s)}" loading="lazy" onerror="this.style.display='none'">`
         : `<div class="char-avatar-ph" style="width:44px;height:44px;border-radius:12px;font-size:1.4rem">🎭</div>`;
     }).join('');
     avatarHtml = `<div class="char-avatars">${imgs}</div>`;
   } else {
-    const cImg = slug ? CHAR_IMGS[slug] : null;
+    const cImg = slug ? API_BASE + '/catalog/characters/' + encodeURIComponent(slug) + '/thumbnail' : null;
     avatarHtml = cImg
-      ? `<img class="char-avatar" src="img/${esc(cImg)}" alt="${esc(cName)}" loading="lazy" onerror="this.style.display='none'">`
+      ? `<img class="char-avatar" src="${esc(cImg)}" alt="${esc(cName)}" loading="lazy" onerror="this.style.display='none'">`
       : `<div class="char-avatar-ph">🎭</div>`;
   }
 
@@ -458,8 +477,9 @@ function transitionDone(order) {
     sub.textContent   = 'Aproveite e compartilhe a magia com quem você ama ✨';
   } else {
     title.textContent = 'Processamento concluído';
-    sub.textContent   = anyFailed
-      ? 'Alguns vídeos foram gerados. Veja os detalhes abaixo.'
+    sub.textContent   = items.every(i => i.status === 'FAILED')
+      ? 'Não foi possível concluir seus vídeos. Entre em contato com o suporte informando o número do pedido.'
+      : anyFailed ? 'Alguns vídeos foram gerados. Veja os detalhes abaixo.'
       : 'Seus vídeos estão prontos!';
   }
 
@@ -498,16 +518,20 @@ function showErr(title, msg) {
 // ─── Video lightbox ───────────────────────────────────────────────────────────
 function openVideo(url) {
   document.getElementById('vPlayer').src = url;
+  document.getElementById('vOverlay').showModal();
   document.getElementById('vOverlay').classList.add('show');
   document.getElementById('vPlayer').play().catch(() => {});
 }
 
 document.getElementById('vCloseBtn').addEventListener('click', closeVideo);
+document.getElementById('vOverlay').addEventListener('close', closeVideo);
 document.getElementById('vOverlay').addEventListener('click', function (e) {
   if (e.target === this) closeVideo();
 });
 
 function closeVideo() {
+  const overlay = document.getElementById('vOverlay');
+  if (overlay.open) overlay.close();
   const p = document.getElementById('vPlayer');
   p.pause(); p.src = '';
   document.getElementById('vOverlay').classList.remove('show');

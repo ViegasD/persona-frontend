@@ -86,6 +86,7 @@ a{color:var(--accent);text-decoration:none}
 
 .video-overlay{position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .25s ease;display:none}
 .video-overlay.show{display:flex}
+.video-overlay{border:0;max-width:none;max-height:none;width:100%;height:100%;margin:0}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 .video-wrap{position:relative;width:100%;max-width:480px}
 .video-wrap video{width:100%;border-radius:18px;display:block}
@@ -150,12 +151,12 @@ h1,h2,h3,.header-title,.wizard-title,.btn,.pkg-name,.pkg-price,.qc-name{font-fam
 </div>
 
 <!-- Video lightbox -->
-<div class="video-overlay" id="video-overlay" onclick="fecharVideo(event)">
+<dialog class="video-overlay" id="video-overlay" aria-label="Assistir ao vídeo" onclick="fecharVideo(event)">
   <div class="video-wrap">
-    <button class="video-close" onclick="fecharVideo()">✕</button>
+    <button class="video-close" onclick="fecharVideo()" aria-label="Fechar vídeo">✕</button>
     <video id="video-player" controls playsinline></video>
   </div>
-</div>
+</dialog>
 
 <script>
 const API_BASE = window.PersonaConfig.apiBaseUrl;
@@ -310,7 +311,7 @@ function renderizarResultados(orders) {
 
   listEl.innerHTML = allItems.map(item => {
     const charName = item.character?.name || item.character_slug || item.character_ids?.join(', ') || 'Personagem';
-    const childName = item.child_name || '';
+    const childName = window.PersonaOrder.recipientName(item, item.order);
     const videoUrl = item.video_url;
     const badge = STATUS_LABELS[item.order.status] || { label: item.order.status, cls: 'ready' };
 
@@ -362,6 +363,7 @@ function abrirVideo(e, url) {
   const player = document.getElementById('video-player');
   const overlay = document.getElementById('video-overlay');
   player.src = url;
+  overlay.showModal();
   overlay.classList.add('show');
   player.play().catch(() => {});
 }
@@ -370,6 +372,7 @@ function fecharVideo(e) {
   if (e && e.target !== document.getElementById('video-overlay') && !e.currentTarget.classList?.contains('video-close')) return;
   const player = document.getElementById('video-player');
   const overlay = document.getElementById('video-overlay');
+  if (overlay.open) overlay.close();
   player.pause();
   player.src = '';
   overlay.classList.remove('show');
@@ -384,6 +387,8 @@ function mostrarErro(msg) {
 function escHtml(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+
+document.getElementById('video-overlay').addEventListener('close', () => fecharVideo());
 
 </script>
 </body>
