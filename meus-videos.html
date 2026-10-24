@@ -81,6 +81,8 @@ a{color:var(--accent);text-decoration:none}
 .btn-icon{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text2);cursor:pointer;transition:all var(--t);text-decoration:none}
 .btn-icon:hover{border-color:var(--purple);color:var(--purple);background:var(--purple-dim)}
 .btn-icon svg{width:16px;height:16px}
+#logout{width:auto;padding:0 12px}
+.library-loading{color:var(--text2);margin:24px 0;font-size:.9rem}
 
 .video-overlay{position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .25s ease;display:none}
 .video-overlay.show{display:flex}
@@ -115,7 +117,7 @@ h1,h2,h3,.header-title,.wizard-title,.btn,.pkg-name,.pkg-price,.qc-name{font-fam
   <div class="hero">
     <div class="hero-emoji">🎬</div>
     <h1>Meus vídeos</h1>
-    <p>Seus pedidos e créditos Recado Animado.</p>
+    <p>Vídeos da sua conta Recado Animado.</p>
   </div>
 
   <div class="account-bar" id="account-bar" hidden>
@@ -138,16 +140,8 @@ h1,h2,h3,.header-title,.wizard-title,.btn,.pkg-name,.pkg-price,.qc-name{font-fam
   </form>
   <button class="btn-search" id="library-retry" type="button" hidden>Tentar carregar vídeos novamente</button>
 
-  <div class="search-card">
-    <label for="phone-input">Buscar pedidos deste navegador</label>
-    <div class="input-wrap">
-      <input type="text" id="phone-input" placeholder="Ex: 11999999999 ou email@exemplo.com" autocomplete="off" inputmode="tel">
-    </div>
-
-    <button class="btn-search" id="btn-search" onclick="buscar()">Buscar meus vídeos</button>
-
-    <div class="error-msg" id="error-msg"></div>
-  </div>
+  <p class="library-loading" id="library-loading" role="status" hidden>Carregando seus vídeos…</p>
+  <div class="error-msg" id="error-msg" role="alert"></div>
 
   <div class="results" id="results">
     <div class="results-title" id="results-title"></div>
@@ -181,9 +175,7 @@ const STATUS_LABELS = {
 function authHeaders() {
   const headers = { 'Content-Type': 'application/json' };
   const token = localStorage.getItem('persona_access_token');
-  const guest = sessionStorage.getItem('persona_guest_token');
   if (token) headers.Authorization = 'Bearer ' + token;
-  if (guest) headers['X-Guest-Token'] = guest;
   return headers;
 }
 
@@ -200,7 +192,10 @@ async function accountRequest(path, options = {}) {
 async function loadLibrary() {
   const session = window.PersonaSession.snapshot();
   const retry = document.getElementById('library-retry');
+  const loading = document.getElementById('library-loading');
   retry.hidden = true;
+  loading.hidden = false;
+  document.getElementById('results').setAttribute('aria-busy', 'true');
   document.getElementById('error-msg').classList.remove('show');
   try {
     const user = await accountRequest('/auth/me');
@@ -220,6 +215,11 @@ async function loadLibrary() {
     if (error.status === 401) signOut();
     else retry.hidden = false;
     mostrarErro(error.message);
+  } finally {
+    if (window.PersonaSession.isCurrent(session)) {
+      loading.hidden = true;
+      document.getElementById('results').setAttribute('aria-busy', 'false');
+    }
   }
 }
 
@@ -228,6 +228,11 @@ function signOut() {
   document.getElementById('account-bar').hidden = true;
   document.getElementById('login-form').hidden = false;
   document.getElementById('results').classList.remove('show');
+  document.getElementById('results-list').replaceChildren();
+  document.getElementById('account-summary').textContent = '';
+  document.getElementById('library-loading').hidden = true;
+  document.getElementById('results').setAttribute('aria-busy', 'false');
+  fecharVideo();
   document.getElementById('library-retry').hidden = true;
   document.querySelector('.google-auth').dataset.googleDisabled = 'false';
   window.PersonaGoogle?.refresh();
@@ -266,54 +271,18 @@ window.addEventListener('persona-google-auth', () => {
 document.getElementById('logout').addEventListener('click', signOut);
 document.getElementById('library-retry').addEventListener('click', loadLibrary);
 
+window.addEventListener('storage', event => {
+  if (event.key !== 'persona_access_token' && event.key !== null) return;
+  document.getElementById('results').classList.remove('show');
+  document.getElementById('results-list').replaceChildren();
+  document.getElementById('account-summary').textContent = '';
+  fecharVideo();
+  if (window.PersonaSession.getToken()) loadLibrary();
+  else signOut();
+});
+
 if (localStorage.getItem('persona_access_token')) {
   loadLibrary();
-}
-
-async function buscar() {
-  const input = document.getElementById('phone-input').value.trim();
-  const errorEl = document.getElementById('error-msg');
-  const resultsEl = document.getElementById('results');
-  const btn = document.getElementById('btn-search');
-
-  errorEl.classList.remove('show');
-  resultsEl.classList.remove('show');
-
-  if (!input) {
-    mostrarErro('Por favor, informe um telefone ou e-mail.');
-    return;
-  }
-
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>Buscando…';
-
-  try {
-    const isEmail = input.includes('@');
-    const param = isEmail
-      ? `email=${encodeURIComponent(input)}`
-      : `phone=${encodeURIComponent(input)}`;
-
-    const res = await fetch(`${API_BASE}/orders/lookup?${param}`, { credentials: 'include', headers: authHeaders() });
-
-    if (!res.ok) {
-      if (res.status === 401) {
-        mostrarErro('Entre na conta ou abra o link recebido após seu pedido.');
-      } else if (res.status === 422) {
-        mostrarErro('Formato inválido. Use apenas números para telefone ou um e-mail válido.');
-      } else {
-        mostrarErro('Erro ao buscar. Tente novamente em instantes.');
-      }
-      return;
-    }
-
-    const orders = await res.json();
-    renderizarResultados(orders);
-  } catch (e) {
-    mostrarErro('Não foi possível conectar ao servidor. Verifique sua conexão.');
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = 'Buscar meus vídeos';
-  }
 }
 
 function renderizarResultados(orders) {
@@ -327,11 +296,10 @@ function renderizarResultados(orders) {
   );
 
   if (allItems.length === 0) {
-    titleEl.textContent = 'Nenhum vídeo encontrado';
+    titleEl.textContent = 'Seus vídeos';
     listEl.innerHTML = `
       <div class="empty-state">
-        <div class="emoji">🔍</div>
-        <p>Nenhum vídeo encontrado.</p>
+        <p>Você ainda não tem vídeos na sua conta.</p>
       </div>`;
     resultsEl.classList.add('show');
     return;
@@ -417,10 +385,6 @@ function escHtml(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// Allow pressing Enter to search
-document.getElementById('phone-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') buscar();
-});
 </script>
 </body>
 </html>
